@@ -36,8 +36,7 @@ class CustomDrawer extends StatelessWidget {
                   const Divider(height: 32),
                   _buildDrawerItem(
                       Assets.icons.fiRrHome.path, 'الرئيسية', () {}),
-                  _buildDrawerItem(Assets.icons.fiRrPresentation.path,
-                      'السيرة ذاتية', () {}),
+
                   _buildDrawerItem(
                       Assets.icons.fiRrCommentInfo.path, 'حول التطبيق', () {}),
                   _buildDrawerItem(Assets.icons.fiRrSettings.path, 'الاعدادات',
@@ -50,8 +49,7 @@ class CustomDrawer extends StatelessWidget {
                   }),
                   _buildDrawerItem(
                       Assets.icons.fiRrBook.path, 'سياسية الخصوصية', () {}),
-                  _buildDrawerItem(Assets.icons.fiRrStar.path,
-                      'المفضلة والاشارات المرجعية', () {}),
+
                   EsaySize.gap(2), const Divider(),
                   // اشتراک‌گذاری
                   ListTile(

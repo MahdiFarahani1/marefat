@@ -1,6 +1,7 @@
 import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/features/books/view/books_downloaded.dart';
 import 'package:bookapp/features/books/view/books_screen.dart';
+import 'package:bookapp/features/storage/view/storage_screen.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/images_network.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -49,6 +50,22 @@ class _HomePageState extends State<HomePage> {
             context, MaterialPageRoute(builder: (_) => DownloadedBooksPage()));
         break;
       case 1:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => BooksScreen()));
+        break;
+      case 2:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => StorageScreen()));
+        break;
+      case 3:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => BooksScreen()));
+        break;
+      case 4:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => DownloadedBooksPage()));
+        break;
+      case 5:
         Navigator.push(
             context, MaterialPageRoute(builder: (_) => BooksScreen()));
         break;

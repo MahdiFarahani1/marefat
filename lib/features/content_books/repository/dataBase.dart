@@ -4,18 +4,17 @@ import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 
 class BookDatabaseHelper {
+  static final BookDatabaseHelper _instance = BookDatabaseHelper._internal();
+  factory BookDatabaseHelper() => _instance;
+  BookDatabaseHelper._internal();
+
   Database? _database;
+  String? _currentBookId;
 
-  /// مسیر فایل زیپ کتاب
   String _zipPath(String id) => '/storage/emulated/0/Download/Books/$id.zip';
-
-  /// مسیر استخراج موقت دیتابیس
   String _extractDir(String id) => '/storage/emulated/0/Download/Books/tmp/$id';
-
-  /// مسیر دیتابیس استخراج‌شده
   String _dbFilePath(String id) => '${_extractDir(id)}/b$id.sqlite';
 
-  /// اکسترکت فایل ZIP و آماده‌سازی دیتابیس
   Future<String> _extractDatabaseFromZip(String id) async {
     final zipFile = File(_zipPath(id));
     if (!await zipFile.exists()) {
@@ -44,25 +43,32 @@ class BookDatabaseHelper {
     return dbPath;
   }
 
-  /// باز کردن دیتابیس
+  /// فقط یکبار دیتابیس باز میشه، اگه همون کتاب قبلاً باز شده، دوباره باز نمیشه
   Future<void> openDatabaseForBook(String id) async {
+    if (_database != null && _currentBookId == id) {
+      // دیتابیس از قبل برای همین کتاب باز شده
+      return;
+    }
+
+    // بستن دیتابیس قبلی اگه وجود داشت
+    await close();
+
     final dbPath = await _extractDatabaseFromZip(id);
     _database = await openDatabase(dbPath);
+    _currentBookId = id;
   }
 
-  /// گرفتن همه‌ی صفحات کتاب از جدول bpages
   Future<List<Map<String, dynamic>>> getBookPages() async {
     if (_database == null) {
       throw Exception('❌ دیتابیس هنوز باز نشده است!');
     }
-
     final result = await _database!.query('bpages', orderBy: 'id ASC');
-    return result; // فقط text رو اگر خواستی بعداً فیلتر کن
+    return result;
   }
 
-  /// بستن دیتابیس
   Future<void> close() async {
     await _database?.close();
     _database = null;
+    _currentBookId = null;
   }
 }
