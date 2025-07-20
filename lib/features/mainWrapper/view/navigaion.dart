@@ -4,7 +4,7 @@ import 'package:bookapp/features/mainWrapper/view/home_Page.dart';
 import 'package:bookapp/features/mainWrapper/bloc/navigation_cubit.dart';
 import 'package:bookapp/features/photo_gallery/view/photo_gallery_page.dart';
 import 'package:bookapp/features/questions/view/questions_category_screen.dart';
-import 'package:bookapp/features/storage/view/storage_screen.dart';
+import 'package:bookapp/features/storage/view/storage_book_screen.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/scaffold/appbar.dart';
 import 'package:bookapp/shared/scaffold/draver.dart';
@@ -72,7 +72,9 @@ class MainWrapper extends StatelessWidget {
                       state == 4 ? AppColors.textLight : AppColors.unselected,
                   iconPath: Assets.icons.fiRrBookmark.path,
                   title: 'المفضلة',
-                  screen: StorageScreen()),
+                  screen: StorageBookScreen(
+                    isBack: false,
+                  )),
             ],
             navBarBuilder: (navBarConfig) => Style6BottomNavBar(
                 navBarConfig: navBarConfig,

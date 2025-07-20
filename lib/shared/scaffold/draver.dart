@@ -1,8 +1,10 @@
+import 'package:bookapp/features/mainWrapper/view/navigaion.dart';
 import 'package:bookapp/features/settings/view/settings_screen.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/esay_size.dart';
 import 'package:flutter/material.dart';
 import 'package:bookapp/config/theme/app_colors.dart';
+import 'package:share_plus/share_plus.dart';
 
 class CustomDrawer extends StatelessWidget {
   final Function(bool) onThemeToggle;
@@ -34,8 +36,10 @@ class CustomDrawer extends StatelessWidget {
                   const SizedBox(height: 8),
 
                   const Divider(height: 32),
-                  _buildDrawerItem(
-                      Assets.icons.fiRrHome.path, 'الرئيسية', () {}),
+                  _buildDrawerItem(Assets.icons.fiRrHome.path, 'الرئيسية', () {
+                    Navigator.pop(context);
+                    MainWrapper.controllerNavBar.jumpToTab(0);
+                  }),
 
                   _buildDrawerItem(
                       Assets.icons.fiRrCommentInfo.path, 'حول التطبيق', () {}),
@@ -58,13 +62,16 @@ class CustomDrawer extends StatelessWidget {
                     title: const Text('مشاركة التطبيق'),
                     trailing: Assets.icons.fiRrAngleLeft
                         .image(width: 12, height: 12, color: Colors.black),
-                    onTap: () {},
+                    onTap: () {
+                      Share.share(
+                          'https://play.google.com/store/apps/details?id=com.dijlah.almarifaaldenyah');
+                    },
                   ),
 
                   ListTile(
                       leading: Assets.icons.fiRrMoon
                           .image(width: 18, height: 18, color: Colors.black),
-                      title: const Text('مشاركة التطبيق'),
+                      title: const Text('الوضع الليلي'),
                       trailing: Transform.scale(
                           scale: 0.77,
                           child: Switch(

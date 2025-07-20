@@ -127,12 +127,13 @@ class _DownloadedBooksPageState extends State<DownloadedBooksPage> {
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(20),
                                   onTap: () {
-                                    Navigator.push(
-                                      context,
+                                    Navigator.of(context, rootNavigator: true)
+                                        .push(
                                       MaterialPageRoute(
-                                        builder: (context) => ContentPage(
+                                        builder: (_) => ContentPage(
                                           bookId: book.id,
                                           bookName: book.title,
+                                          scrollPosetion: 0,
                                         ),
                                       ),
                                     );

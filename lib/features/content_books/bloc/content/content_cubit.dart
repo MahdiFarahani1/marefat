@@ -19,6 +19,9 @@ class ContentCubit extends Cubit<ContentState> {
   }) : super(const ContentState()) {
     _init();
   }
+  void updateCurrentPage(double newPage) {
+    emit(state.copyWith(currentPage: newPage));
+  }
 
   Future<void> _init() async {
     emit(state.copyWith(status: ContentStatus.loading));
@@ -49,7 +52,7 @@ class ContentCubit extends Cubit<ContentState> {
 
   Future<String> buildHtmlContent(List<Map<String, dynamic>> pages) async {
     final StringBuffer buffer = StringBuffer();
-    final bool vertical = true;
+    final bool vertical = false;
     final String bookText =
         vertical ? 'book_text_vertical' : 'book_text_horizontal';
     final String bookContainer =
@@ -73,7 +76,7 @@ class ContentCubit extends Cubit<ContentState> {
       //   final bgColor = settingsController.backgroundColor.value.toCssHex();
 
       buffer.write("""
-        <div class='$bookPage book_page' data-page='$i' style='color: black !important; background-color: grey !important;' id='page_$i'>
+        <div class='$bookPage book_page' data-page='$i' style='color: black !important; background-color: white !important;' id='page_$i'>
           ${isMarked ? "<div class='book-mark add_fav' id='book-mark_$i'></div>" : "<div class='book-mark' id='book-mark_$i'></div>"}
           <div class='comment-button'></div>
           <span class='page-number'>${i + 1}</span>
@@ -86,7 +89,7 @@ class ContentCubit extends Cubit<ContentState> {
     }
 
     // final fontCss = await loadFont();
-
+    // <style>$fontCss</style>
     return '''
       <!DOCTYPE html>
       <html lang="en">
@@ -94,6 +97,7 @@ class ContentCubit extends Cubit<ContentState> {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>''</style>
+     
         <link rel="stylesheet" href="asset://web/css/bootstrap.rtl.min.css">
         <link rel="stylesheet" href="asset://web/css/mhebooks.css">
       </head>

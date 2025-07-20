@@ -3,6 +3,7 @@ import 'package:bookapp/features/articles/bloc/cubit/article_cubit_cubit.dart';
 import 'package:bookapp/features/books/bloc/book/book_cubit.dart';
 import 'package:bookapp/features/books/bloc/download/download_cubit.dart';
 import 'package:bookapp/features/books/repositoreis/book_repository.dart';
+import 'package:bookapp/features/storage/bloc/bookmark/bookmark_cubit.dart';
 import 'package:bookapp/features/mainWrapper/bloc/navigation_cubit.dart';
 import 'package:bookapp/features/onbording/onbording_view.dart';
 import 'package:bookapp/features/photo_gallery/bloc/gallery_cubit.dart';
@@ -31,6 +32,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => DownloadCubit(),
+        ),
+        BlocProvider(
+          create: (context) => BookmarkCubit(),
         ),
         BlocProvider(
           create: (context) => NavigationCubit(),

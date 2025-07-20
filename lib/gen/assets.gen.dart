@@ -9,6 +9,16 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsDatabaseGen {
+  const $AssetsDatabaseGen();
+
+  /// File path: assets/database/bookmark.sqlite
+  String get bookmark => 'assets/database/bookmark.sqlite';
+
+  /// List of all assets
+  List<String> get values => [bookmark];
+}
+
 class $AssetsFontsGen {
   const $AssetsFontsGen();
 
@@ -46,6 +56,10 @@ class $AssetsFontsGen {
 
 class $AssetsIconsGen {
   const $AssetsIconsGen();
+
+  /// File path: assets/icons/bookstar.png
+  AssetGenImage get bookstar =>
+      const AssetGenImage('assets/icons/bookstar.png');
 
   /// File path: assets/icons/check.png
   AssetGenImage get check => const AssetGenImage('assets/icons/check.png');
@@ -2079,6 +2093,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/send.png
   AssetGenImage get send => const AssetGenImage('assets/icons/send.png');
 
+  /// File path: assets/icons/settingstow.png
+  AssetGenImage get settingstow =>
+      const AssetGenImage('assets/icons/settingstow.png');
+
   /// File path: assets/icons/up-and-down-arrows.png
   AssetGenImage get upAndDownArrows =>
       const AssetGenImage('assets/icons/up-and-down-arrows.png');
@@ -2088,6 +2106,7 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
+        bookstar,
         check,
         close,
         document,
@@ -2597,6 +2616,7 @@ class $AssetsIconsGen {
         questionMark,
         question,
         send,
+        settingstow,
         upAndDownArrows,
         warning
       ];
@@ -2636,6 +2656,20 @@ class $AssetsImagesGen {
   /// File path: assets/images/bg-sp.jpg
   AssetGenImage get bgSp => const AssetGenImage('assets/images/bg-sp.jpg');
 
+  /// File path: assets/images/bookmark1.png
+  AssetGenImage get bookmark1 =>
+      const AssetGenImage('assets/images/bookmark1.png');
+
+  /// File path: assets/images/bookmark2.png
+  AssetGenImage get bookmark2 =>
+      const AssetGenImage('assets/images/bookmark2.png');
+
+  /// File path: assets/images/com-c-1.png
+  AssetGenImage get comC1 => const AssetGenImage('assets/images/com-c-1.png');
+
+  /// File path: assets/images/com-c-2.png
+  AssetGenImage get comC2 => const AssetGenImage('assets/images/com-c-2.png');
+
   /// File path: assets/images/document.png
   AssetGenImage get document =>
       const AssetGenImage('assets/images/document.png');
@@ -2643,6 +2677,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/download.png
   AssetGenImage get download =>
       const AssetGenImage('assets/images/download.png');
+
+  /// File path: assets/images/loader.gif
+  AssetGenImage get loader => const AssetGenImage('assets/images/loader.gif');
 
   /// File path: assets/images/logo-appbar.png
   AssetGenImage get logoAppbar =>
@@ -2674,8 +2711,13 @@ class $AssetsImagesGen {
         b2,
         b3,
         bgSp,
+        bookmark1,
+        bookmark2,
+        comC1,
+        comC2,
         document,
         download,
+        loader,
         logoAppbar,
         logoHeader,
         logoSp,
@@ -2694,13 +2736,104 @@ class $AssetsLottieGen {
   List<String> get values => [error404];
 }
 
+class $AssetsWebGen {
+  const $AssetsWebGen();
+
+  /// Directory path: assets/web/css
+  $AssetsWebCssGen get css => const $AssetsWebCssGen();
+
+  /// Directory path: assets/web/html
+  $AssetsWebHtmlGen get html => const $AssetsWebHtmlGen();
+
+  /// Directory path: assets/web/js
+  $AssetsWebJsGen get js => const $AssetsWebJsGen();
+}
+
+class $AssetsWebCssGen {
+  const $AssetsWebCssGen();
+
+  /// File path: assets/web/css/AGCRegular.ttf
+  String get aGCRegular => 'assets/web/css/AGCRegular.ttf';
+
+  /// File path: assets/web/css/Al-Jazeera-Arabic-Regular.ttf
+  String get alJazeeraArabicRegular =>
+      'assets/web/css/Al-Jazeera-Arabic-Regular.ttf';
+
+  /// File path: assets/web/css/BloombergArabicBetav4-Regular.ttf
+  String get bloombergArabicBetav4Regular =>
+      'assets/web/css/BloombergArabicBetav4-Regular.ttf';
+
+  /// File path: assets/web/css/bookmark1.png
+  AssetGenImage get bookmark1 =>
+      const AssetGenImage('assets/web/css/bookmark1.png');
+
+  /// File path: assets/web/css/bookmark2.png
+  AssetGenImage get bookmark2 =>
+      const AssetGenImage('assets/web/css/bookmark2.png');
+
+  /// File path: assets/web/css/bootstrap.rtl.min.css
+  String get bootstrapRtlMin => 'assets/web/css/bootstrap.rtl.min.css';
+
+  /// File path: assets/web/css/mhebooks.css
+  String get mhebooks => 'assets/web/css/mhebooks.css';
+
+  /// List of all assets
+  List<dynamic> get values => [
+        aGCRegular,
+        alJazeeraArabicRegular,
+        bloombergArabicBetav4Regular,
+        bookmark1,
+        bookmark2,
+        bootstrapRtlMin,
+        mhebooks
+      ];
+}
+
+class $AssetsWebHtmlGen {
+  const $AssetsWebHtmlGen();
+
+  /// File path: assets/web/html/12.png
+  AssetGenImage get a12 => const AssetGenImage('assets/web/html/12.png');
+
+  /// File path: assets/web/html/about1.htm
+  String get about1 => 'assets/web/html/about1.htm';
+
+  /// File path: assets/web/html/about2.htm
+  String get about2 => 'assets/web/html/about2.htm';
+
+  /// File path: assets/web/html/yaqoobi.png
+  AssetGenImage get yaqoobi =>
+      const AssetGenImage('assets/web/html/yaqoobi.png');
+
+  /// List of all assets
+  List<dynamic> get values => [a12, about1, about2, yaqoobi];
+}
+
+class $AssetsWebJsGen {
+  const $AssetsWebJsGen();
+
+  /// File path: assets/web/js/bootstrap.bundle.min.js
+  String get bootstrapBundleMin => 'assets/web/js/bootstrap.bundle.min.js';
+
+  /// File path: assets/web/js/jquery-3.5.1.min.js
+  String get jquery351Min => 'assets/web/js/jquery-3.5.1.min.js';
+
+  /// File path: assets/web/js/main.js
+  String get main => 'assets/web/js/main.js';
+
+  /// List of all assets
+  List<String> get values => [bootstrapBundleMin, jquery351Min, main];
+}
+
 class Assets {
   Assets._();
 
+  static const $AssetsDatabaseGen database = $AssetsDatabaseGen();
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsLottieGen lottie = $AssetsLottieGen();
+  static const $AssetsWebGen web = $AssetsWebGen();
 }
 
 class AssetGenImage {

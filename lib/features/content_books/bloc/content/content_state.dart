@@ -1,10 +1,8 @@
-enum ContentStatus { init, loading, success, error }
-
 class ContentState {
   final ContentStatus status;
   final List<Map<String, dynamic>> pages;
   final List<Map<String, dynamic>> groups;
-  final int currentPage;
+  final double currentPage;
   final double scrollPosition;
   final String htmlContent;
   final bool showWebView;
@@ -28,7 +26,7 @@ class ContentState {
     ContentStatus? status,
     List<Map<String, dynamic>>? pages,
     List<Map<String, dynamic>>? groups,
-    int? currentPage,
+    double? currentPage,
     double? scrollPosition,
     String? htmlContent,
     bool? showWebView,
@@ -48,3 +46,5 @@ class ContentState {
     );
   }
 }
+
+enum ContentStatus { init, loading, success, error }

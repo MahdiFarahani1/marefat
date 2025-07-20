@@ -1,12 +1,14 @@
 import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/features/books/view/books_downloaded.dart';
 import 'package:bookapp/features/books/view/books_screen.dart';
-import 'package:bookapp/features/storage/view/storage_screen.dart';
+import 'package:bookapp/features/storage/view/storage_book_screen.dart';
 import 'package:bookapp/gen/assets.gen.dart';
+import 'package:bookapp/shared/func/launchURL.dart';
 import 'package:bookapp/shared/utils/images_network.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 class HomePage extends StatefulWidget {
@@ -55,19 +57,26 @@ class _HomePageState extends State<HomePage> {
         break;
       case 2:
         Navigator.push(
-            context, MaterialPageRoute(builder: (_) => StorageScreen()));
+            context,
+            MaterialPageRoute(
+                builder: (_) => StorageBookScreen(
+                      isBack: true,
+                    )));
         break;
       case 3:
         Navigator.push(
-            context, MaterialPageRoute(builder: (_) => BooksScreen()));
+            context,
+            MaterialPageRoute(
+                builder: (_) => StorageBookScreen(
+                      isBack: true,
+                    )));
         break;
       case 4:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => DownloadedBooksPage()));
+        LaunchUrl.launchEmail(LaunchUrl.email);
         break;
       case 5:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => BooksScreen()));
+        Share.share(
+            'https://play.google.com/store/apps/details?id=com.dijlah.almarifaaldenyah');
         break;
       default:
         break;

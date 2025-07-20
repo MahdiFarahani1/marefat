@@ -1,5 +1,6 @@
 import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/gen/assets.gen.dart';
+import 'package:bookapp/shared/scaffold/appbar.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -35,6 +36,7 @@ class _SettingsPageState extends State<SettingsPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppbar.littleAppBar(context, title: 'الإعدادات'),
       backgroundColor: const Color(0xFFF5F7FA),
       body: SafeArea(
         child: Padding(
