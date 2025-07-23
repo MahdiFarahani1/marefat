@@ -87,7 +87,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                     topRight: Radius.circular(16),
                                     bottomRight: Radius.circular(16),
                                   ),
-                                  gradient: customGradinet(),
+                                  gradient: customGradinet(context),
                                 ),
                                 child: Center(
                                     child: Assets.icons.newspaper1

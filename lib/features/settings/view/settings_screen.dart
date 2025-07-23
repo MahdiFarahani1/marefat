@@ -1,112 +1,91 @@
-import 'package:bookapp/config/theme/app_colors.dart';
+import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
+import 'package:bookapp/features/settings/bloc/settings_state.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/scaffold/appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage>
-    with SingleTickerProviderStateMixin {
-  double _fontSize = 18;
-  double _lineHeight = 1.5;
-  String _fontFamily = 'جَزَلة';
-  int _gradientIndex = 0;
-  int _bgColorIndex = 2;
-  int _pageDirection = 1;
-
-  final List<List<Color>> _gradients = [
-    [Color(0xFF283048), Color(0xFF859398)],
-    [Color(0xFF8E2DE2), Color(0xFF4A00E0)],
-    [Color(0xFFFFB75E), Color(0xFFED8F03)],
-    [Color(0xFF56CCF2), Color(0xFF2F80ED)],
-    [Color(0xFF00C9FF), Color(0xFF92FE9D)],
-  ];
-  final List<String> _fonts = ['جَزَلة', 'أميري', 'الكوفي', 'Tajawal'];
-  final List<Color> _bgColors = [
-    Color(0xFFB0BEC5),
-    Color(0xFFFFF3CD),
-    Colors.white,
-  ];
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppbar.littleAppBar(context, title: 'الإعدادات'),
-      backgroundColor: const Color(0xFFF5F7FA),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: ListView(
-            children: [
-              _animatedSection(
-                child: _sectionTitle('حجم الخط'),
-                delay: 0,
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: CustomAppbar.littleAppBar(context, title: 'الإعدادات'),
+          backgroundColor: const Color(0xFFF5F7FA),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: ListView(
+                children: [
+                  _animatedSection(
+                    child: _sectionTitle('حجم الخط'),
+                    delay: 0,
+                  ),
+                  _animatedSection(
+                    child: _fontSizeSlider(context, state.fontSize),
+                    delay: 50,
+                  ),
+                  const SizedBox(height: 24),
+                  _animatedSection(
+                    child: _sectionTitle('تباعد الأسطر'),
+                    delay: 100,
+                  ),
+                  _animatedSection(
+                    child: _lineHeightSlider(context, state.lineHeight),
+                    delay: 150,
+                  ),
+                  const SizedBox(height: 24),
+                  _animatedSection(
+                    child: _sectionTitle('ألوان المظهر'),
+                    delay: 200,
+                  ),
+                  _animatedSection(
+                    child: _colorGradientPicker(context, state.gradientIndex),
+                    delay: 250,
+                  ),
+                  const SizedBox(height: 24),
+                  _animatedSection(
+                    child: _sectionTitle('نوع الخط'),
+                    delay: 300,
+                  ),
+                  _animatedSection(
+                    child: _fontFamilyCardSelector(context, state.fontFamily),
+                    delay: 350,
+                  ),
+                  const SizedBox(height: 24),
+                  _animatedSection(
+                    child: _sectionTitle('لون الخلفية'),
+                    delay: 400,
+                  ),
+                  _animatedSection(
+                    child: _backgroundColorPicker(context, state.bgColorIndex),
+                    delay: 450,
+                  ),
+                  const SizedBox(height: 24),
+                  _animatedSection(
+                    child: _sectionTitle('عرض الصفحة'),
+                    delay: 500,
+                  ),
+                  _animatedSection(
+                    child: _pageDirectionToggle(context, state.pageDirection),
+                    delay: 550,
+                  ),
+                ],
               ),
-              _animatedSection(
-                child: _fontSizeSlider(),
-                delay: 50,
-              ),
-              const SizedBox(height: 24),
-              _animatedSection(
-                child: _sectionTitle('تباعد الأسطر'),
-                delay: 100,
-              ),
-              _animatedSection(
-                child: _lineHeightSlider(),
-                delay: 150,
-              ),
-              const SizedBox(height: 24),
-              _animatedSection(
-                child: _sectionTitle('ألوان المظهر'),
-                delay: 200,
-              ),
-              _animatedSection(
-                child: _colorGradientPicker(),
-                delay: 250,
-              ),
-              const SizedBox(height: 24),
-              _animatedSection(
-                child: _sectionTitle('نوع الخط'),
-                delay: 300,
-              ),
-              _animatedSection(
-                child: _fontFamilyCardSelector(),
-                delay: 350,
-              ),
-              const SizedBox(height: 24),
-              _animatedSection(
-                child: _sectionTitle('لون الخلفية'),
-                delay: 400,
-              ),
-              _animatedSection(
-                child: _backgroundColorPicker(),
-                delay: 450,
-              ),
-              const SizedBox(height: 24),
-              _animatedSection(
-                child: _sectionTitle('عرض الصفحة'),
-                delay: 500,
-              ),
-              _animatedSection(
-                child: _pageDirectionToggle(),
-                delay: 550,
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   Widget _animatedSection({required Widget child, required int delay}) {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
-      duration: Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 400),
       curve: Curves.easeOut,
       builder: (context, value, childWidget) {
         return Opacity(
@@ -118,7 +97,6 @@ class _SettingsPageState extends State<SettingsPage>
         );
       },
       child: child,
-      onEnd: () {},
     );
   }
 
@@ -137,7 +115,7 @@ class _SettingsPageState extends State<SettingsPage>
         ),
       );
 
-  Widget _fontSizeSlider() {
+  Widget _fontSizeSlider(BuildContext context, double fontSize) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
@@ -146,22 +124,23 @@ class _SettingsPageState extends State<SettingsPage>
           children: [
             Expanded(
               child: Slider(
-                value: _fontSize,
+                value: fontSize,
                 min: 12,
                 max: 30,
                 divisions: 9,
-                label: _fontSize.toStringAsFixed(0),
+                label: fontSize.toStringAsFixed(0),
                 onChanged: (value) {
-                  setState(() => _fontSize = value);
+                  context.read<SettingsCubit>().updateFontSize(value);
                 },
               ),
             ),
             AnimatedSwitcher(
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
               child: Text(
-                _fontSize.toStringAsFixed(0),
-                key: ValueKey(_fontSize),
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                fontSize.toStringAsFixed(0),
+                key: ValueKey(fontSize),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
           ],
@@ -170,7 +149,7 @@ class _SettingsPageState extends State<SettingsPage>
     );
   }
 
-  Widget _lineHeightSlider() {
+  Widget _lineHeightSlider(BuildContext context, double lineHeight) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
@@ -179,22 +158,23 @@ class _SettingsPageState extends State<SettingsPage>
           children: [
             Expanded(
               child: Slider(
-                value: _lineHeight,
+                value: lineHeight,
                 min: 1.0,
                 max: 2.5,
                 divisions: 15,
-                label: _lineHeight.toStringAsFixed(2),
+                label: lineHeight.toStringAsFixed(2),
                 onChanged: (value) {
-                  setState(() => _lineHeight = value);
+                  context.read<SettingsCubit>().updateLineHeight(value);
                 },
               ),
             ),
             AnimatedSwitcher(
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
               child: Text(
-                _lineHeight.toStringAsFixed(2),
-                key: ValueKey(_lineHeight),
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                lineHeight.toStringAsFixed(2),
+                key: ValueKey(lineHeight),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
           ],
@@ -203,29 +183,29 @@ class _SettingsPageState extends State<SettingsPage>
     );
   }
 
-  Widget _colorGradientPicker() {
+  Widget _colorGradientPicker(BuildContext context, int gradientIndex) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: SizedBox(
         height: 60,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
-          itemCount: _gradients.length,
-          separatorBuilder: (_, __) => SizedBox(width: 16),
+          itemCount: SettingsCubit.backgrounds.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 16),
           itemBuilder: (context, index) {
-            final isSelected = _gradientIndex == index;
+            final isSelected = gradientIndex == index;
             return GestureDetector(
               onTap: () {
-                setState(() => _gradientIndex = index);
+                context.read<SettingsCubit>().updateGradientIndex(index);
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
                 child: AnimatedContainer(
-                  duration: Duration(milliseconds: 250),
+                  duration: const Duration(milliseconds: 250),
                   width: isSelected ? 55 : 50,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: _gradients[index],
+                      colors: SettingsCubit.backgrounds[index],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -233,9 +213,10 @@ class _SettingsPageState extends State<SettingsPage>
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
-                              color: _gradients[index][0].withOpacity(0.3),
+                              color: SettingsCubit.backgrounds[index][0]
+                                  .withOpacity(0.3),
                               blurRadius: 8,
-                              offset: Offset(0, 4),
+                              offset: const Offset(0, 4),
                             ),
                           ]
                         : [],
@@ -244,7 +225,7 @@ class _SettingsPageState extends State<SettingsPage>
                         : null,
                   ),
                   child: isSelected
-                      ? Icon(Icons.check, color: Colors.white)
+                      ? const Icon(Icons.check, color: Colors.white)
                       : null,
                 ),
               ),
@@ -255,7 +236,7 @@ class _SettingsPageState extends State<SettingsPage>
     );
   }
 
-  Widget _fontFamilyCardSelector() {
+  Widget _fontFamilyCardSelector(BuildContext context, String fontFamily) {
     final fonts = ['جَزَلة', 'أميري', 'الكوفي', 'Tajawal'];
 
     return Card(
@@ -270,9 +251,11 @@ class _SettingsPageState extends State<SettingsPage>
             ...fonts.map((font) {
               return RadioListTile<String>(
                 value: font,
-                groupValue: _fontFamily,
+                groupValue: fontFamily,
                 onChanged: (value) {
-                  if (value != null) setState(() => _fontFamily = value);
+                  if (value != null) {
+                    context.read<SettingsCubit>().updateFontFamily(value);
+                  }
                 },
                 title: Text(
                   font,
@@ -290,23 +273,23 @@ class _SettingsPageState extends State<SettingsPage>
     );
   }
 
-  Widget _backgroundColorPicker() {
+  Widget _backgroundColorPicker(BuildContext context, int bgColorIndex) {
     return Card(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List.generate(_bgColors.length, (index) {
-            final color = _bgColors[index];
-            final isSelected = _bgColorIndex == index;
+          children: List.generate(SettingsCubit.bgColorsPage.length, (index) {
+            final color = SettingsCubit.bgColorsPage[index];
+            final isSelected = bgColorIndex == index;
             return GestureDetector(
               onTap: () {
-                setState(() => _bgColorIndex = index);
+                context.read<SettingsCubit>().updateBgColorIndex(index);
               },
               child: AnimatedContainer(
-                duration: Duration(milliseconds: 250),
+                duration: const Duration(milliseconds: 250),
                 width: isSelected ? 48 : 42,
                 height: isSelected ? 48 : 42,
                 decoration: BoxDecoration(
@@ -322,13 +305,14 @@ class _SettingsPageState extends State<SettingsPage>
                           BoxShadow(
                             color: color.withOpacity(0.2),
                             blurRadius: 8,
-                            offset: Offset(0, 4),
+                            offset: const Offset(0, 4),
                           ),
                         ]
                       : [],
                 ),
-                child:
-                    isSelected ? Icon(Icons.check, color: Colors.white) : null,
+                child: isSelected
+                    ? const Icon(Icons.check, color: Colors.black)
+                    : null,
               ),
             );
           }),
@@ -337,30 +321,35 @@ class _SettingsPageState extends State<SettingsPage>
     );
   }
 
-  Widget _pageDirectionToggle() {
-    PageDirection dire = PageDirection.horizontal; // تغییر بده به state واقعی
-
+  Widget _pageDirectionToggle(
+      BuildContext context, PageDirection pageDirection) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Row(
         children: [
-          // عمودی
+          // عمودي
           Expanded(
             child: InkWell(
               onTap: () {
-                setState(() =>
-                    dire = PageDirection.vertical); // ← ست کردن استیت واقعی
+                context
+                    .read<SettingsCubit>()
+                    .updatePageDirection(PageDirection.vertical);
               },
               child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 14),
                 decoration: BoxDecoration(
-                  color: dire == PageDirection.vertical
-                      ? AppColors.primary.withOpacity(0.1)
+                  color: pageDirection == PageDirection.vertical
+                      ? context
+                          .read<SettingsCubit>()
+                          .state
+                          .primry
+                          .withOpacity(0.1)
                       : Colors.white,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: dire == PageDirection.vertical
-                        ? AppColors.primary
+                    color: pageDirection == PageDirection.vertical
+                        ? context.read<SettingsCubit>().state.primry
                         : Colors.transparent,
                     width: 1.5,
                   ),
@@ -383,19 +372,24 @@ class _SettingsPageState extends State<SettingsPage>
           Expanded(
             child: InkWell(
               onTap: () {
-                setState(() =>
-                    dire = PageDirection.horizontal); // ← ست کردن استیت واقعی
+                context
+                    .read<SettingsCubit>()
+                    .updatePageDirection(PageDirection.horizontal);
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 decoration: BoxDecoration(
-                  color: dire == PageDirection.horizontal
-                      ? AppColors.primary.withOpacity(0.1)
+                  color: pageDirection == PageDirection.horizontal
+                      ? context
+                          .read<SettingsCubit>()
+                          .state
+                          .primry
+                          .withOpacity(0.1)
                       : Colors.white,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: dire == PageDirection.horizontal
-                        ? AppColors.primary
+                    color: pageDirection == PageDirection.horizontal
+                        ? context.read<SettingsCubit>().state.primry
                         : Colors.transparent,
                     width: 1.5,
                   ),
@@ -405,8 +399,9 @@ class _SettingsPageState extends State<SettingsPage>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Transform.rotate(
-                          angle: 1.5708,
-                          child: Assets.icons.upAndDownArrows.image(width: 24)),
+                        angle: 1.5708,
+                        child: Assets.icons.upAndDownArrows.image(width: 24),
+                      ),
                       const SizedBox(width: 6),
                       const Text('أفقي'),
                     ],

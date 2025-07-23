@@ -1,9 +1,11 @@
 import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/features/questions/models/question_model.dart';
 import 'package:bookapp/features/questions/view/questionContent.dart';
+import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ItemQuestion {
   static Widget buildQuestionList(List<QuestionModel> questions) {
@@ -27,7 +29,11 @@ class ItemQuestion {
                   )),
               child: Container(
                 decoration: BoxDecoration(
-                    color: AppColors.tertiary.withAlpha(100),
+                    color: context
+                        .read<SettingsCubit>()
+                        .state
+                        .unselected
+                        .withAlpha(100),
                     borderRadius: BorderRadius.circular(8)),
                 child: ListTile(
                   title: Text(question.title),
@@ -36,7 +42,7 @@ class ItemQuestion {
                     height: 36,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: customGradinet(),
+                      gradient: customGradinet(context),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.1),

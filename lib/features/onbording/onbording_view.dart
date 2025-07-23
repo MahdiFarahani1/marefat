@@ -1,6 +1,6 @@
 import 'package:bookapp/config/splash/splash.dart';
 import 'package:bookapp/gen/assets.gen.dart';
-import 'package:bookapp/shared/utils/linearGradient.dart';
+import 'package:bookapp/shared/utils/esay_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -17,19 +17,21 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   final List<_OnboardItem> pages = [
     _OnboardItem(
-      title: 'مرحباً بك في تطبيقنا',
-      description: 'ابدأ رحلتك معنا لاكتشاف محتوى فريد وتجربة سلسة.',
-      image: Assets.images.copyrightPana.path,
+      title: 'المعرفة الدينية',
+      description:
+          'يهتم بتبيين المعرفة الدينية على وجه ميسر وبلغة واضحة، لتسهيل الوصول إليها لكل باحث عن الحقيقة وساع إليها.',
+      image: Assets.images.inSp1.path,
     ),
     _OnboardItem(
-      title: 'سهولة الوصول',
-      description: 'ابحث، اقرأ، واحفظ بكل سهولة وسرعة.',
-      image: Assets.images.bookshopPana.path,
+      title: 'كتب ومؤلفات',
+      description:
+          'مجموعة من الكتب العقائدية والفكرية للسيد محمد باقر السيستاني حفظه الله',
+      image: Assets.images.inSp2.path,
     ),
     _OnboardItem(
-      title: 'جاهز للانطلاق؟',
-      description: 'اضغط على "ابدأ" وابدأ تجربتك المميزة الآن.',
-      image: Assets.images.webinarPana.path,
+      title: 'أسئلة وأجوبة',
+      description: 'أسئلة وأجوبة متنوعة ترتبط بالمعرفة الدينية',
+      image: Assets.images.inSp3.path,
     ),
   ];
 
@@ -52,7 +54,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(gradient: customGradinet()),
+        width: EsaySize.width(context),
+        height: EsaySize.height(context),
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage(Assets.images.bgSp.path), fit: BoxFit.cover)),
         child: Column(
           children: [
             Expanded(
@@ -66,7 +72,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     padding: const EdgeInsets.all(24),
                     child: Column(
                       children: [
-                        const SizedBox(height: 40),
+                        SizedBox(height: EsaySize.height(context) * 0.15),
                         Image.asset(page.image, height: 260)
                             .animate()
                             .fade(duration: 800.ms)
@@ -74,10 +80,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         const SizedBox(height: 32),
                         Text(page.title,
                                 textAlign: TextAlign.center,
-                                style: theme.textTheme.titleLarge?.copyWith(
+                                style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 24,
-                                    color: Colors.white))
+                                    color: Colors.black))
                             .animate()
                             .fade()
                             .slideY(begin: 0.5, delay: 200.ms),

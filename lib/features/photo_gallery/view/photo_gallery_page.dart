@@ -91,7 +91,7 @@ class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
                                 onTap: () {},
                                 child: Container(
                                     decoration: BoxDecoration(
-                                        gradient: customGradinet(),
+                                        gradient: customGradinet(context),
                                         shape: BoxShape.circle),
                                     child: Assets.icons.send
                                         .image(

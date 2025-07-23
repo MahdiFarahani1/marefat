@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'package:bookapp/config/theme/app_colors.dart';
+import 'package:bookapp/features/content_books/view/content_page.dart';
+import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/storage/bloc/page_bookmark/page_bookmark_cubit.dart';
 import 'package:bookapp/features/storage/bloc/page_bookmark/page_bookmark_state.dart';
 import 'package:bookapp/shared/utils/linearGradient.dart';
@@ -14,10 +17,25 @@ class StoragePageScreen extends StatefulWidget {
 }
 
 class _StoragePageScreenState extends State<StoragePageScreen> {
+  Timer? _refreshTimer;
+
   @override
   void initState() {
     super.initState();
     PageBookmarkCubit.instance.loadPageBookmarks();
+
+    // Auto-refresh every 2 seconds for real-time updates
+    _refreshTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
+      if (mounted) {
+        PageBookmarkCubit.instance.loadPageBookmarks();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -33,27 +51,20 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
           leading: widget.isBack
               ? IconButton(
                   onPressed: () => Navigator.pop(context),
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                  ))
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                )
               : const SizedBox.shrink(),
           actions: [
             IconButton(
-              onPressed: () {
-                PageBookmarkCubit.instance.loadPageBookmarks();
-              },
-              icon: const Icon(
-                Icons.refresh,
-                color: Colors.white,
-              ),
+              onPressed: () => PageBookmarkCubit.instance.loadPageBookmarks(),
+              icon: const Icon(Icons.refresh, color: Colors.white),
               tooltip: 'بروزرسانی',
             ),
           ],
           centerTitle: true,
           elevation: 0,
           flexibleSpace: Container(
-            decoration: BoxDecoration(gradient: customGradinet()),
+            decoration: BoxDecoration(gradient: customGradinet(context)),
           ),
         ),
         body: BlocBuilder<PageBookmarkCubit, PageBookmarkState>(
@@ -63,9 +74,7 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
             }
 
             if (state.status == PageBookmarkStatus.error) {
-              return const Center(
-                child: Text('خطا در بارگذاری صفحات'),
-              );
+              return const Center(child: Text('خطا در بارگذاری صفحات'));
             }
 
             if (state.pageBookmarks.isEmpty) {
@@ -85,17 +94,13 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
             }
 
             return RefreshIndicator(
-              onRefresh: () async {
-                await PageBookmarkCubit.instance.loadPageBookmarks();
-              },
-              child: AnimatedList(
-                initialItemCount: state.pageBookmarks.length,
-                itemBuilder: (context, index, animation) {
-                  if (index >= state.pageBookmarks.length)
-                    return const SizedBox();
+              onRefresh: () => PageBookmarkCubit.instance.loadPageBookmarks(),
+              child: ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemCount: state.pageBookmarks.length,
+                itemBuilder: (context, index) {
                   final pageBookmark = state.pageBookmarks[index];
-                  return _buildAnimatedPageBookmarkItem(
-                      pageBookmark, animation, index);
+                  return _buildPageBookmarkItem(pageBookmark, index);
                 },
               ),
             );
@@ -105,130 +110,112 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
     );
   }
 
-  Widget _buildAnimatedPageBookmarkItem(Map<String, dynamic> pageBookmark,
-      Animation<double> animation, int index) {
-    return SlideTransition(
-      position: animation.drive(
-        Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(
-          CurveTween(curve: Curves.easeOutCubic),
+  Widget _buildPageBookmarkItem(Map<String, dynamic> pageBookmark, int index) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Card(
+        elevation: 8,
+        shadowColor: Colors.black26,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
         ),
-      ),
-      child: FadeTransition(
-        opacity: animation,
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Card(
-            elevation: 8,
-            shadowColor: Colors.black26,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white,
+                Colors.green.shade50,
+              ],
             ),
-            child: Container(
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(16),
+            leading: Container(
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white,
-                    Colors.green.shade50,
-                  ],
-                ),
+                gradient: customGradinet(context),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: context
+                        .read<SettingsCubit>()
+                        .state
+                        .primry
+                        .withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(16),
-                leading: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    gradient: customGradinet(),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.bookmark_added,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                ),
-                title: Text(
-                  pageBookmark['book_name'] ?? 'بدون عنوان',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Colors.black87,
-                  ),
-                ),
-                subtitle: Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.pages,
-                        size: 16,
-                        color: Colors.grey.shade600,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'موقعیت: ${pageBookmark['scrollposition']?.toStringAsFixed(1) ?? '0.0'}',
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                trailing: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.red.shade50,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.delete_outline,
-                      color: Colors.red.shade600,
+              child: const Icon(
+                Icons.bookmark_added,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+            title: Text(
+              pageBookmark['book_name'] ?? 'بدون عنوان',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Colors.black87,
+              ),
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                children: [
+                  Icon(Icons.pages, size: 16, color: Colors.grey.shade600),
+                  const SizedBox(width: 4),
+                  Text(
+                    'موقعیت: ${pageBookmark['scrollposition']?.toStringAsFixed(1) ?? '0.0'}',
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 12,
                     ),
-                    onPressed: () => _showDeletePageDialog(
+                  ),
+                ],
+              ),
+            ),
+            trailing: Container(
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: IconButton(
+                icon: Icon(Icons.delete_outline, color: Colors.red.shade600),
+                onPressed: () {
+                  final double scroll = pageBookmark['scrollposition'];
+                  _showDeletePageDialog(
                       context,
                       pageBookmark['book_id']?.toString() ?? '',
                       pageBookmark['book_name'] ?? 'بدون عنوان',
-                    ),
-                    tooltip: 'حذف صفحه',
-                  ),
-                ),
-                onTap: () {
-                  // Navigate to book content with scroll position
-                  _navigateToPage(pageBookmark);
+                      scroll.toInt());
                 },
+                tooltip: 'حذف صفحه',
               ),
             ),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContentPage(
+                        bookId: pageBookmark['book_id'].toString(),
+                        bookName: pageBookmark['book_name'],
+                        scrollPosetion: pageBookmark['scrollposition'] - 1),
+                  ));
+            },
           ),
         ),
       ),
     );
   }
 
-  void _navigateToPage(Map<String, dynamic> pageBookmark) {
-    // Add navigation logic here to open book at specific scroll position
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'باز کردن کتاب: ${pageBookmark['book_name']} در موقعیت ${pageBookmark['scrollposition']?.toStringAsFixed(1)}',
-        ),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
-  }
-
   void _showDeletePageDialog(
-      BuildContext context, String bookId, String bookName) {
+      BuildContext context, String bookId, String bookName, int pageNumber) {
     if (bookId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -246,7 +233,7 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -264,21 +251,14 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: TextButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              ),
-              child: const Text(
-                'لغو',
-                style: TextStyle(fontSize: 16),
-              ),
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('لغو', style: TextStyle(fontSize: 16)),
             ),
             ElevatedButton(
               onPressed: () {
-                PageBookmarkCubit.instance.removePageBookmark(
-                    bookId, 0); // Note: page number needs to be extracted
-                Navigator.of(context).pop();
+                PageBookmarkCubit.instance
+                    .removePageBookmark(bookId, pageNumber);
+                Navigator.of(dialogContext).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: const Text('صفحه با موفقیت حذف شد'),
@@ -293,16 +273,8 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
               ),
-              child: const Text(
-                'حذف',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+              child: const Text('حذف', style: TextStyle(fontSize: 16)),
             ),
           ],
         );

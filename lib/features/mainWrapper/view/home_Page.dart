@@ -1,13 +1,16 @@
-import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/features/books/view/books_downloaded.dart';
 import 'package:bookapp/features/books/view/books_screen.dart';
-import 'package:bookapp/features/storage/view/storage_book_screen.dart';
+import 'package:bookapp/features/mainWrapper/bloc/slider/slider_cubit.dart';
+import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
+import 'package:bookapp/features/storage/view/storage_comment_screen.dart';
+import 'package:bookapp/features/storage/view/storage_page_screen.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/func/launchURL.dart';
 import 'package:bookapp/shared/utils/images_network.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
@@ -19,8 +22,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentPage = 0;
-
   final List<String> sliderImages = [
     Assets.images.b1.path,
     Assets.images.b2.path,
@@ -59,7 +60,7 @@ class _HomePageState extends State<HomePage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (_) => StorageBookScreen(
+                builder: (_) => StoragePageScreen(
                       isBack: true,
                     )));
         break;
@@ -67,7 +68,7 @@ class _HomePageState extends State<HomePage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (_) => StorageBookScreen(
+                builder: (_) => CommentScreen(
                       isBack: true,
                     )));
         break;
@@ -81,6 +82,12 @@ class _HomePageState extends State<HomePage> {
       default:
         break;
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<SliderCubit>().loadSliders();
   }
 
   @override
@@ -109,47 +116,73 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 15.0),
 
             // 🖼️ Image Slider
-            SizedBox(
-              height: 160,
-              child: CarouselSlider(
-                options: CarouselOptions(
-                  height: 160,
-                  autoPlay: true,
-                  enlargeCenterPage: true,
-                  viewportFraction: 0.9,
-                  onPageChanged: (index, reason) {
-                    setState(() => _currentPage = index);
-                  },
-                ),
-                items: sliderImages.map((imagePath) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Image.asset(
-                      imagePath,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    ),
+            BlocBuilder<SliderCubit, SliderState>(
+              builder: (context, state) {
+                if (state.statusSlider is SliderLoading) {
+                  return const SizedBox(
+                    height: 160,
+                    child: Center(child: CircularProgressIndicator()),
                   );
-                }).toList(),
-              ),
+                } else if (state.statusSlider is SliderLoaded) {
+                  final sliders = (state.statusSlider as SliderLoaded).sliders;
+
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 160,
+                        child: CarouselSlider(
+                          options: CarouselOptions(
+                            height: 160,
+                            autoPlay: true,
+                            enlargeCenterPage: true,
+                            viewportFraction: 0.9,
+                            onPageChanged: (index, reason) {
+                              context
+                                  .read<SliderCubit>()
+                                  .indicatorChanged(index);
+                            },
+                          ),
+                          items: sliders.map((slider) {
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.network(
+                                slider.photoUrl,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          sliders.length,
+                          (index) => AnimatedContainer(
+                            duration: Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                            width: state.currentIndex == index ? 10 : 6,
+                            height: state.currentIndex == index ? 10 : 6,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: state.currentIndex == index
+                                  ? context.read<SettingsCubit>().state.primry
+                                  : Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                } else if (state.currentIndex is SliderError) {
+                  return Text('!!!!!!!!!!');
+                } else {
+                  return const SizedBox();
+                }
+              },
             ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                sliderImages.length,
-                (index) => Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                  width: _currentPage == index ? 10 : 6,
-                  height: _currentPage == index ? 10 : 6,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color:
-                        _currentPage == index ? AppColors.primary : Colors.grey,
-                  ),
-                ),
-              ),
-            ),
+
             const SizedBox(height: 20.0),
 
             // 📚 Feature Grid

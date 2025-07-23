@@ -7,7 +7,17 @@ class BookmarkCubit extends Cubit<BookMarkState> {
   static const String bookSaveKey = 'booksave';
   final GetStorage _box = GetStorage();
 
-  BookmarkCubit() : super(const BookMarkState());
+  // Singleton pattern for global state management
+  static BookmarkCubit? _instance;
+  static BookmarkCubit get instance {
+    _instance ??= BookmarkCubit._internal();
+    return _instance!;
+  }
+
+  BookmarkCubit._internal() : super(const BookMarkState());
+
+  // Factory constructor for normal usage
+  factory BookmarkCubit() => instance;
 
   Future<void> loadBookmarks() async {
     try {
@@ -39,7 +49,8 @@ class BookmarkCubit extends Cubit<BookMarkState> {
     } catch (e) {
       emit(state.copyWith(status: BookMarkStatus.error));
     }
-    loadBookmarks();
+
+    await loadBookmarks();
   }
 
   Future<void> addBookmark(String bookName, String bookId) async {

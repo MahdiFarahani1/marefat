@@ -1,9 +1,11 @@
 import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/features/articles/view/articles_screen.dart';
 import 'package:bookapp/features/mainWrapper/view/home_Page.dart';
-import 'package:bookapp/features/mainWrapper/bloc/navigation_cubit.dart';
+import 'package:bookapp/features/mainWrapper/bloc/navbar/navigation_cubit.dart';
 import 'package:bookapp/features/photo_gallery/view/photo_gallery_page.dart';
 import 'package:bookapp/features/questions/view/questions_category_screen.dart';
+import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
+import 'package:bookapp/features/settings/bloc/settings_state.dart';
 import 'package:bookapp/features/storage/view/storage_book_screen.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/scaffold/appbar.dart';
@@ -23,75 +25,93 @@ class MainWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      drawer: CustomDrawer(onThemeToggle: (p0) {}, isDarkMode: true),
+      drawer: CustomDrawer(
+        isDarkMode: true,
+        onThemeToggle: (p0) {},
+      ),
       appBar: CustomAppbar.show(context),
       body: BlocBuilder<NavigationCubit, int>(
         builder: (context, state) {
-          return PersistentTabView(
-            controller: controllerNavBar,
-            onTabChanged: (value) {
-              BlocProvider.of<NavigationCubit>(context).setPage(value);
-            },
-            tabs: [
-              navItem(
-                  widthIcon: 20,
-                  heightIcon: 20,
-                  itemColor:
-                      state == 0 ? AppColors.textLight : AppColors.unselected,
-                  iconPath: Assets.icons.fiRrBookAlt.path,
-                  title: 'المكتبة',
-                  screen: HomePage()),
-              navItem(
-                  widthIcon: 20,
-                  heightIcon: 20,
-                  itemColor:
-                      state == 1 ? AppColors.textLight : AppColors.unselected,
-                  iconPath: Assets.icons.fiRrDuplicate.path,
-                  title: 'المقالات',
-                  screen: ArticlesScreen()),
-              navItem(
-                  itemColor:
-                      state == 2 ? AppColors.textLight : AppColors.unselected,
-                  iconPath: Assets.icons.question.path,
-                  widthIcon: 22,
-                  heightIcon: 22,
-                  title: 'الاسئلة',
-                  screen: QuestionsScreen()),
-              navItem(
-                  widthIcon: 20,
-                  heightIcon: 20,
-                  itemColor:
-                      state == 3 ? AppColors.textLight : AppColors.unselected,
-                  iconPath: Assets.icons.fiRrGallery.path,
-                  title: 'الصور',
-                  screen: PhotoGalleryPage()),
-              navItem(
-                  widthIcon: 20,
-                  heightIcon: 20,
-                  itemColor:
-                      state == 4 ? AppColors.textLight : AppColors.unselected,
-                  iconPath: Assets.icons.fiRrBookmark.path,
-                  title: 'المفضلة',
-                  screen: StorageBookScreen(
-                    isBack: false,
-                  )),
-            ],
-            navBarBuilder: (navBarConfig) => Style6BottomNavBar(
-                navBarConfig: navBarConfig,
-                navBarDecoration: NavBarDecoration(
-                  padding: EdgeInsets.all(9),
-                  gradient: customGradinet(),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 10,
-                    ),
-                  ],
+          return BlocBuilder<SettingsCubit, SettingsState>(
+            builder: (context, settingsState) {
+              return PersistentTabView(
+                controller: controllerNavBar,
+                onTabChanged: (value) {
+                  BlocProvider.of<NavigationCubit>(context).setPage(value);
+                },
+                tabs: [
+                  navItem(
+                      widthIcon: 20,
+                      heightIcon: 20,
+                      itemColor:
+                          state == 0 ? Colors.white : settingsState.unselected,
+                      iconPath: Assets.icons.fiRrBookAlt.path,
+                      title: 'المكتبة',
+                      screen: HomePage()),
+                  navItem(
+                      widthIcon: 20,
+                      heightIcon: 20,
+                      itemColor:
+                          state == 1 ? Colors.white : settingsState.unselected,
+                      iconPath: Assets.icons.fiRrDuplicate.path,
+                      title: 'المقالات',
+                      screen: ArticlesScreen()),
+                  navItem(
+                      itemColor:
+                          state == 2 ? Colors.white : settingsState.unselected,
+                      iconPath: Assets.icons.question.path,
+                      widthIcon: 22,
+                      heightIcon: 22,
+                      title: 'الاسئلة',
+                      screen: QuestionsScreen()),
+                  navItem(
+                      widthIcon: 20,
+                      heightIcon: 20,
+                      itemColor:
+                          state == 3 ? Colors.white : settingsState.unselected,
+                      iconPath: Assets.icons.fiRrGallery.path,
+                      title: 'الصور',
+                      screen: PhotoGalleryPage()),
+                  navItem(
+                      widthIcon: 20,
+                      heightIcon: 20,
+                      itemColor:
+                          state == 4 ? Colors.white : settingsState.unselected,
+                      iconPath: Assets.icons.fiRrBookmark.path,
+                      title: 'المفضلة',
+                      screen: StorageBookScreen(
+                        isBack: false,
+                      )),
+                ],
+                navBarBuilder: (navBarConfig) =>
+                    BlocBuilder<SettingsCubit, SettingsState>(
+                  builder: (context, state) {
+                    return Style6BottomNavBar(
+                        navBarConfig: navBarConfig,
+                        navBarDecoration: NavBarDecoration(
+                          padding: EdgeInsets.all(9),
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                context.read<SettingsCubit>().state.primry,
+                                context.read<SettingsCubit>().state.unselected,
+                              ]),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        itemAnimationProperties: ItemAnimation(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        ));
+                  },
                 ),
-                itemAnimationProperties: ItemAnimation(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                )),
+              );
+            },
           );
         },
       ),
@@ -119,7 +139,7 @@ class MainWrapper extends StatelessWidget {
           ),
           iconSize: 22,
           title: title,
-          activeForegroundColor: AppColors.textLight,
+          activeForegroundColor: Colors.white,
           textStyle: TextStyle(fontSize: 11)),
     );
   }

@@ -5,6 +5,7 @@ import 'package:bookapp/features/questions/bloc/questionItems/question_cubit.dar
 import 'package:bookapp/features/questions/bloc/questionItems/status_question.dart';
 import 'package:bookapp/features/questions/view/search_question.dart';
 import 'package:bookapp/features/questions/widgets/item_question.dart';
+import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/error_widget.dart';
 import 'package:bookapp/shared/utils/esay_size.dart';
@@ -42,9 +43,9 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
           child: AnimatedStack(
             enableClickToDismiss: true,
             preventForegroundInteractions: true,
-            backgroundColor: AppColors.tertiary,
+            backgroundColor: context.read<SettingsCubit>().state.unselected,
             animateButton: true,
-            fabBackgroundColor: AppColors.tertiary,
+            fabBackgroundColor: context.read<SettingsCubit>().state.unselected,
             fabIconColor: Colors.white,
             columnWidget: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +101,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                     duration: const Duration(milliseconds: 600),
                     curve: Curves.easeInOut,
                     decoration: BoxDecoration(
-                      gradient: customGradinet(),
+                      gradient: customGradinet(context),
                     ),
                   ),
                   title: Text(
@@ -207,8 +208,8 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         leading: Container(
-          decoration:
-              BoxDecoration(gradient: customGradinet(), shape: BoxShape.circle),
+          decoration: BoxDecoration(
+              gradient: customGradinet(context), shape: BoxShape.circle),
           child: const Icon(Icons.question_answer_rounded, color: Colors.white)
               .padAll(14),
         ),

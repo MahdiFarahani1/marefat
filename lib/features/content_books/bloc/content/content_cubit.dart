@@ -1,48 +1,57 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:bookapp/features/content_books/repository/dataBase.dart';
+import 'package:bookapp/features/settings/bloc/settings_state.dart';
+import 'package:bookapp/features/settings/view/settings_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:bookapp/features/settings/bloc/settings_cubit.dart'; // یادت نره مسیرتو تنظیم کنی
 import 'content_state.dart';
 
 class ContentCubit extends Cubit<ContentState> {
   final String bookId;
   final BookDatabaseHelper repository;
+  final SettingsCubit settingsCubit;
 
-//  final SettingsController settingsController;
   late InAppWebViewController inAppWebViewController;
+  late final StreamSubscription settingsSubscription;
+
   ContentCubit({
     required this.bookId,
     required this.repository,
-
-    // required this.settingsController,
+    required this.settingsCubit,
   }) : super(const ContentState()) {
     _init();
+
+    // گوش دادن به تغییرات SettingsCubit
+    settingsSubscription = settingsCubit.stream.listen((settingsState) {
+      _rebuildHtml(settingsState);
+    });
   }
+
   void updateCurrentPage(double newPage) {
     emit(state.copyWith(currentPage: newPage));
   }
 
   Future<void> _init() async {
     emit(state.copyWith(status: ContentStatus.loading));
-
-    // final bookmarks = Constants.localStorage.read('bookmarks') ?? {};
-    //  final isBookmarked = bookmarks.containsKey(bookId.toString());
-
     try {
       await repository.openDatabaseForBook(bookId);
-      // final dbPath = await repository.getDatabasePath(bookId);
       final loadedPages = await repository.getBookPages();
-      // final loadedGroups = await repository.getGroups(dbPath);
 
-      final html = await buildHtmlContent(loadedPages);
+      final settingsState = settingsCubit.state;
+      final html = await buildHtmlContent(loadedPages,
+          fontSize: settingsState.fontSize,
+          lineHeight: settingsState.lineHeight,
+          vertical: settingsState.pageDirection == PageDirection.vertical,
+          backgroundColor:
+              SettingsCubit.bgColorsPage[settingsState.bgColorIndex]);
 
       emit(state.copyWith(
         status: ContentStatus.success,
         pages: loadedPages,
-        //   groups: loadedGroups,
         htmlContent: html,
-        //  isBookmarked: isBookmarked,
       ));
     } catch (e) {
       print('❌ Error loading content: $e');
@@ -50,9 +59,37 @@ class ContentCubit extends Cubit<ContentState> {
     }
   }
 
-  Future<String> buildHtmlContent(List<Map<String, dynamic>> pages) async {
+  Future<void> _rebuildHtml(SettingsState settingsState) async {
+    if (state.pages.isEmpty) return;
+
+    final html = await buildHtmlContent(state.pages,
+        fontSize: settingsState.fontSize,
+        lineHeight: settingsState.lineHeight,
+        vertical: settingsState.pageDirection == PageDirection.vertical,
+        backgroundColor:
+            SettingsCubit.bgColorsPage[settingsState.bgColorIndex]);
+
+    emit(state.copyWith(htmlContent: html));
+
+    // بازنشانی محتوا داخل WebView
+    if (state.showWebView) {
+      inAppWebViewController.loadData(
+        data: html,
+        mimeType: 'text/html',
+        encoding: 'utf-8',
+      );
+    }
+  }
+
+  Future<String> buildHtmlContent(List<Map<String, dynamic>> pages,
+      {required double fontSize,
+      required double lineHeight,
+      required bool vertical,
+      required Color backgroundColor}) async {
     final StringBuffer buffer = StringBuffer();
-    final bool vertical = false;
+    String bgColorHex =
+        '#${backgroundColor.value.toRadixString(16).substring(2)}';
+
     final String bookText =
         vertical ? 'book_text_vertical' : 'book_text_horizontal';
     final String bookContainer =
@@ -61,43 +98,26 @@ class ContentCubit extends Cubit<ContentState> {
         ? 'BookPage-vertical book-page-vertical'
         : 'BookPage-horizontal book-page-horizontal';
 
-    List<dynamic> bookmarks = [];
-    // final String? savedBookmarks = Constants.localStorage.read('bookmark');
-    // if (savedBookmarks != null) {
-    //   final decoded = jsonDecode(savedBookmarks);
-    //   bookmarks = decoded is List ? decoded : [decoded];
-    // }
-
-    print(pages.length);
     for (int i = 0; i < pages.length; i++) {
-      bool isMarked = false;
-      // bool isMarked =
-      //     bookmarks.any((b) => b['bookId'] == bookId && b['pageNumber'] == i);
-      //   final bgColor = settingsController.backgroundColor.value.toCssHex();
-
       buffer.write("""
-        <div class='$bookPage book_page' data-page='$i' style='color: black !important; background-color: white !important;' id='page_$i'>
-          ${isMarked ? "<div class='book-mark add_fav' id='book-mark_$i'></div>" : "<div class='book-mark' id='book-mark_$i'></div>"}
+        <div class='$bookPage book_page' data-page='$i' style='color: black !important; background-color: $bgColorHex !important;' id='page_$i'>
+          <div class='book-mark' id='book-mark_$i'></div>
           <div class='comment-button'></div>
           <span class='page-number'>${i + 1}</span>
           <br>
-          <div class='$bookText text_style' id='page___$i' style="font-size:${'settingsController.fontSize'}px !important; line-height:${'settingsController.lineHeight'} !important;">
+          <div class='$bookText text_style' id='page___$i' style="font-size:${fontSize}px !important; line-height:${lineHeight} !important;">
             <div style='text-align:center;'><img class='pageLoading' src='asset://images/loader.gif'></div>
           </div>
         </div>
       """);
     }
 
-    // final fontCss = await loadFont();
-    // <style>$fontCss</style>
     return '''
       <!DOCTYPE html>
       <html lang="en">
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>''</style>
-     
         <link rel="stylesheet" href="asset://web/css/bootstrap.rtl.min.css">
         <link rel="stylesheet" href="asset://web/css/mhebooks.css">
       </head>
@@ -113,46 +133,6 @@ class ContentCubit extends Cubit<ContentState> {
     ''';
   }
 
-  // Future<String> loadFont() async {
-  //   String fontPath = 'assets/fonts/SegoeUI.woff2';
-  //   String mime = 'font/woff2';
-
-  //   switch (settingsController.fontFamily.value) {
-  //     case 'لوتوس':
-  //       fontPath = 'assets/fonts/Lotus-Light.woff2';
-  //       break;
-  //     case 'البهيج':
-  //       fontPath = 'assets/fonts/BahijMuna-Bold.woff2';
-  //       break;
-  //   }
-
-  //   final mainFont = await rootBundle.load(fontPath);
-  //   final aboFont = await rootBundle.load('assets/fonts/abo.ttf');
-
-  //   final mainFontBase64 = _getFontUriAsBase64(mainFont, mime);
-  //   final aboFontBase64 = _getFontUriAsBase64(aboFont, 'font/truetype');
-
-  //   return '''
-  //     @font-face {
-  //       font-family: "${settingsController.fontFamily.value}";
-  //       src: url("$mainFontBase64") format('woff2');
-  //     }
-  //     @font-face {
-  //       font-family: "AboThar";
-  //       src: url("$aboFontBase64") format('truetype');
-  //     }
-  //     .AboThar {
-  //       font-family: "AboThar" !important;
-  //       color: #4caf50 !important;
-  //       font-size: 20px;
-  //     }
-  //     body, p, div, span {
-  //       font-family: "${settingsController.fontFamily.value}" !important;
-  //       direction: rtl;
-  //     }
-  //   ''';
-  // }
-
   String _getFontUriAsBase64(ByteData data, String mime) {
     final buffer = data.buffer;
     return "data:$mime;charset=utf-8;base64,${base64Encode(buffer.asUint8List(data.offsetInBytes, data.lengthInBytes))}";
@@ -160,5 +140,11 @@ class ContentCubit extends Cubit<ContentState> {
 
   void handleBack() {
     emit(state.copyWith(showWebView: false));
+  }
+
+  @override
+  Future<void> close() {
+    settingsSubscription.cancel();
+    return super.close();
   }
 }

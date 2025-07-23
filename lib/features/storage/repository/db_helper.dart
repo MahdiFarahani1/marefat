@@ -36,7 +36,7 @@ class DatabaseHelper {
     }
 
     // باز کردن دیتابیس
-    return await openDatabase(path, readOnly: false);
+    return await openDatabase(path, readOnly: false, version: 2);
   }
 
   static Future<List<Map<String, dynamic>>> getAllBooks() async {
@@ -49,13 +49,32 @@ class DatabaseHelper {
     return await db.query('page');
   }
 
+  static Future<List<Map<String, dynamic>>> getAllcomments() async {
+    final db = await database;
+    return await db.query('comment');
+  }
+
   static Future<int> insertPage(
       String bookName, int bookID, double scrollPos) async {
     final db = await database;
     return await db.insert(
       'page',
       {'book_name': bookName, 'book_id': bookID, 'scrollposition': scrollPos},
-      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  static Future<int> insertComment(String bookName, double pageNumber,
+      String title, String content, String time) async {
+    final db = await database;
+    return await db.insert(
+      'comment',
+      {
+        'book_name': bookName,
+        'title': title,
+        'page_number': pageNumber,
+        '_text': content,
+        'date_time': time
+      },
     );
   }
 
@@ -77,12 +96,40 @@ class DatabaseHelper {
     );
   }
 
-  static Future<int> deletePage(int bookId) async {
+  static Future<void> deletePage(int bookId, double pageNumber) async {
     final db = await database;
-    return await db.delete(
+    await db.delete(
       'page',
-      where: 'book_id = ?',
-      whereArgs: [bookId],
+      where: 'book_id = ? AND scrollposition = ?',
+      whereArgs: [bookId, pageNumber],
+    );
+  }
+
+  static Future<void> deleteComment(String bookName, double pageNumber) async {
+    final db = await database;
+    await db.delete(
+      'comment',
+      where: 'book_name = ? AND page_number = ?',
+      whereArgs: [bookName, pageNumber],
+    );
+  }
+
+  static Future<int> updateComment(String bookName, double pageNumber,
+      String newTitle, String newText) async {
+    final db = await database;
+    final now = DateTime.now();
+    final dateTime =
+        '${now.year}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')} - ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+
+    return await db.update(
+      'comment',
+      {
+        'title': newTitle,
+        '_text': newText,
+        'date_time': dateTime,
+      },
+      where: 'book_name = ? AND page_number = ?',
+      whereArgs: [bookName, pageNumber],
     );
   }
 }

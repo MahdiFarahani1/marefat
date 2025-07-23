@@ -1,10 +1,12 @@
 import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/features/articles/model/artile_model.dart';
+import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/ui_helper/dialog_common.dart';
 import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 class ArticleDetailScreen extends StatelessWidget {
@@ -20,7 +22,7 @@ class ArticleDetailScreen extends StatelessWidget {
         floatingActionButton: Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: customGradinet(),
+            gradient: customGradinet(context),
           ),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -53,7 +55,7 @@ class ArticleDetailScreen extends StatelessWidget {
             ),
           ],
           flexibleSpace: Container(
-            decoration: BoxDecoration(gradient: customGradinet()),
+            decoration: BoxDecoration(gradient: customGradinet(context)),
           ),
         ),
         body: SafeArea(
@@ -68,7 +70,7 @@ class ArticleDetailScreen extends StatelessWidget {
                   article.title ?? '',
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                    color: context.read<SettingsCubit>().state.primry,
                   ),
                 ).animate().fadeIn(duration: 500.ms).slideY(begin: 0.3),
 

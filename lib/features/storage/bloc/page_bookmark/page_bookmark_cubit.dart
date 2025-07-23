@@ -33,20 +33,23 @@ class PageBookmarkCubit extends Cubit<PageBookmarkState> {
   }
 
   void loadInitialState(String bookId, int pageNumber) {
-    final savedFlag = _box.read('$pageSaveKey${bookId}_$pageNumber') ?? false;
+    final savedFlag = _box.read('$pageSaveKey$bookId$pageNumber') ?? false;
     emit(state.copyWith(isSaved: savedFlag));
   }
 
   Future<void> togglePageBookmark(
       String bookName, String bookId, int pageNumber) async {
     try {
-      final current = _box.read('$pageSaveKey${bookId}_$pageNumber') ?? false;
+      final current = _box.read('$pageSaveKey$bookId$pageNumber') ?? false;
 
       if (current) {
         await _removePageBookmark(bookId, pageNumber);
       } else {
         await _addPageBookmark(bookName, bookId, pageNumber);
       }
+
+      // Reload the list after toggle
+      await loadPageBookmarks();
     } catch (e) {
       emit(state.copyWith(status: PageBookmarkStatus.error));
     }
@@ -58,7 +61,7 @@ class PageBookmarkCubit extends Cubit<PageBookmarkState> {
 
   Future<void> _addPageBookmark(
       String bookName, String bookId, int pageNumber) async {
-    await _box.write('$pageSaveKey${bookId}_$pageNumber', true);
+    await _box.write('$pageSaveKey$bookId$pageNumber', true);
     await DatabaseHelper.insertPage(
         bookName, int.parse(bookId), pageNumber.toDouble());
 
@@ -77,8 +80,8 @@ class PageBookmarkCubit extends Cubit<PageBookmarkState> {
         return;
       }
 
-      await _box.remove('$pageSaveKey${bookId}_$pageNumber');
-      await DatabaseHelper.deletePage(int.parse(bookId));
+      await _box.remove('$pageSaveKey$bookId$pageNumber');
+      await DatabaseHelper.deletePage(int.parse(bookId), pageNumber.toDouble());
 
       final updatedPageBookmarks = await DatabaseHelper.getAllpages();
       emit(state.copyWith(

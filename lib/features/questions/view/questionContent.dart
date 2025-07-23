@@ -36,7 +36,7 @@ class QuestionsContent extends StatelessWidget {
                       borderRadius: const BorderRadius.vertical(
                         bottom: Radius.circular(30),
                       ),
-                      gradient: customGradinet(),
+                      gradient: customGradinet(context),
                     ),
                   ),
 

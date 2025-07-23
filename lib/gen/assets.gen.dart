@@ -22,36 +22,17 @@ class $AssetsDatabaseGen {
 class $AssetsFontsGen {
   const $AssetsFontsGen();
 
-  /// File path: assets/fonts/AGCBold.ttf
-  String get aGCBold => 'assets/fonts/AGCBold.ttf';
+  /// File path: assets/fonts/IBMPlexSansArabic-Regular.ttf
+  String get iBMPlexSansArabicRegular =>
+      'assets/fonts/IBMPlexSansArabic-Regular.ttf';
 
-  /// File path: assets/fonts/AGCRegular.ttf
-  String get aGCRegular => 'assets/fonts/AGCRegular.ttf';
-
-  /// File path: assets/fonts/Al-Jazeera-Arabic-Bold.ttf
-  String get alJazeeraArabicBold => 'assets/fonts/Al-Jazeera-Arabic-Bold.ttf';
-
-  /// File path: assets/fonts/Al-Jazeera-Arabic-Regular.ttf
-  String get alJazeeraArabicRegular =>
-      'assets/fonts/Al-Jazeera-Arabic-Regular.ttf';
-
-  /// File path: assets/fonts/BloombergArabicBetav4-Bold.ttf
-  String get bloombergArabicBetav4Bold =>
-      'assets/fonts/BloombergArabicBetav4-Bold.ttf';
-
-  /// File path: assets/fonts/BloombergArabicBetav4-Regular.ttf
-  String get bloombergArabicBetav4Regular =>
-      'assets/fonts/BloombergArabicBetav4-Regular.ttf';
+  /// File path: assets/fonts/IBMPlexSansArabic-SemiBold.ttf
+  String get iBMPlexSansArabicSemiBold =>
+      'assets/fonts/IBMPlexSansArabic-SemiBold.ttf';
 
   /// List of all assets
-  List<String> get values => [
-        aGCBold,
-        aGCRegular,
-        alJazeeraArabicBold,
-        alJazeeraArabicRegular,
-        bloombergArabicBetav4Bold,
-        bloombergArabicBetav4Regular
-      ];
+  List<String> get values =>
+      [iBMPlexSansArabicRegular, iBMPlexSansArabicSemiBold];
 }
 
 class $AssetsIconsGen {
@@ -2628,21 +2609,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/40.jpg
   AssetGenImage get a40 => const AssetGenImage('assets/images/40.jpg');
 
-  /// File path: assets/images/Bookshop-pana.png
-  AssetGenImage get bookshopPana =>
-      const AssetGenImage('assets/images/Bookshop-pana.png');
-
-  /// File path: assets/images/Copyright-pana.png
-  AssetGenImage get copyrightPana =>
-      const AssetGenImage('assets/images/Copyright-pana.png');
-
   /// File path: assets/images/FAQs-amico (1).png
   AssetGenImage get fAQsAmico1 =>
       const AssetGenImage('assets/images/FAQs-amico (1).png');
-
-  /// File path: assets/images/Webinar-pana.png
-  AssetGenImage get webinarPana =>
-      const AssetGenImage('assets/images/Webinar-pana.png');
 
   /// File path: assets/images/b1.jpg
   AssetGenImage get b1 => const AssetGenImage('assets/images/b1.jpg');
@@ -2678,6 +2647,15 @@ class $AssetsImagesGen {
   AssetGenImage get download =>
       const AssetGenImage('assets/images/download.png');
 
+  /// File path: assets/images/in-sp-1.png
+  AssetGenImage get inSp1 => const AssetGenImage('assets/images/in-sp-1.png');
+
+  /// File path: assets/images/in-sp-2.png
+  AssetGenImage get inSp2 => const AssetGenImage('assets/images/in-sp-2.png');
+
+  /// File path: assets/images/in-sp-3.png
+  AssetGenImage get inSp3 => const AssetGenImage('assets/images/in-sp-3.png');
+
   /// File path: assets/images/loader.gif
   AssetGenImage get loader => const AssetGenImage('assets/images/loader.gif');
 
@@ -2696,17 +2674,10 @@ class $AssetsImagesGen {
   AssetGenImage get question =>
       const AssetGenImage('assets/images/question.jpg');
 
-  /// File path: assets/images/undraw_questions_g2px.png
-  AssetGenImage get undrawQuestionsG2px =>
-      const AssetGenImage('assets/images/undraw_questions_g2px.png');
-
   /// List of all assets
   List<AssetGenImage> get values => [
         a40,
-        bookshopPana,
-        copyrightPana,
         fAQsAmico1,
-        webinarPana,
         b1,
         b2,
         b3,
@@ -2717,12 +2688,14 @@ class $AssetsImagesGen {
         comC2,
         document,
         download,
+        inSp1,
+        inSp2,
+        inSp3,
         loader,
         logoAppbar,
         logoHeader,
         logoSp,
-        question,
-        undrawQuestionsG2px
+        question
       ];
 }
 

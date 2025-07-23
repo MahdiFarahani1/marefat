@@ -66,6 +66,14 @@ class BookDatabaseHelper {
     return result;
   }
 
+  Future<List<Map<String, dynamic>>> getBookGroup() async {
+    if (_database == null) {
+      throw Exception('❌ دیتابیس هنوز باز نشده است!');
+    }
+    final result = await _database!.query('bgroups', orderBy: 'id ASC');
+    return result;
+  }
+
   Future<void> close() async {
     await _database?.close();
     _database = null;

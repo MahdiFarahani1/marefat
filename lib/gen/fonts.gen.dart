@@ -10,12 +10,6 @@
 class FontFamily {
   FontFamily._();
 
-  /// Font family: A
-  static const String a = 'A';
-
-  /// Font family: B
-  static const String b = 'B';
-
-  /// Font family: C
-  static const String c = 'C';
+  /// Font family: App
+  static const String app = 'App';
 }

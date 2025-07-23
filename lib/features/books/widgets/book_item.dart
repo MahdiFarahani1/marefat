@@ -5,6 +5,7 @@ import 'package:bookapp/features/books/bloc/download/download_cubit.dart';
 import 'package:bookapp/features/books/bloc/download/download_state.dart';
 import 'package:bookapp/features/books/model/model_books.dart';
 import 'package:bookapp/features/books/repositoreis/book_repository.dart';
+import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/images_network.dart';
 import 'package:flutter/material.dart';
@@ -197,7 +198,10 @@ class BookItemTile extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: downloadState.isDownloadedBook
                                   ? Colors.transparent
-                                  : AppColors.tertiary,
+                                  : context
+                                      .read<SettingsCubit>()
+                                      .state
+                                      .unselected,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             padding: EdgeInsets.all(8),
