@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:bookapp/features/content_books/repository/dataBase.dart';
 import 'package:bookapp/features/settings/bloc/settings_state.dart';
 import 'package:bookapp/features/settings/view/settings_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -13,7 +14,7 @@ class ContentCubit extends Cubit<ContentState> {
   final String bookId;
   final BookDatabaseHelper repository;
   final SettingsCubit settingsCubit;
-
+  final BuildContext context;
   late InAppWebViewController inAppWebViewController;
   late final StreamSubscription settingsSubscription;
 
@@ -21,12 +22,13 @@ class ContentCubit extends Cubit<ContentState> {
     required this.bookId,
     required this.repository,
     required this.settingsCubit,
+    required this.context,
   }) : super(const ContentState()) {
-    _init();
+    _init(context);
 
     // گوش دادن به تغییرات SettingsCubit
     settingsSubscription = settingsCubit.stream.listen((settingsState) {
-      _rebuildHtml(settingsState);
+      _rebuildHtml(settingsState, context);
     });
   }
 
@@ -34,19 +36,18 @@ class ContentCubit extends Cubit<ContentState> {
     emit(state.copyWith(currentPage: newPage));
   }
 
-  Future<void> _init() async {
+  Future<void> _init(BuildContext context) async {
     emit(state.copyWith(status: ContentStatus.loading));
     try {
       await repository.openDatabaseForBook(bookId);
       final loadedPages = await repository.getBookPages();
 
       final settingsState = settingsCubit.state;
-      final html = await buildHtmlContent(loadedPages,
+      final html = await buildHtmlContent(loadedPages, context,
           fontSize: settingsState.fontSize,
           lineHeight: settingsState.lineHeight,
           vertical: settingsState.pageDirection == PageDirection.vertical,
-          backgroundColor:
-              SettingsCubit.bgColorsPage[settingsState.bgColorIndex]);
+          backgroundColor: settingsState.pageColor);
 
       emit(state.copyWith(
         status: ContentStatus.success,
@@ -59,15 +60,15 @@ class ContentCubit extends Cubit<ContentState> {
     }
   }
 
-  Future<void> _rebuildHtml(SettingsState settingsState) async {
+  Future<void> _rebuildHtml(
+      SettingsState settingsState, BuildContext context) async {
     if (state.pages.isEmpty) return;
 
-    final html = await buildHtmlContent(state.pages,
+    final html = await buildHtmlContent(state.pages, context,
         fontSize: settingsState.fontSize,
         lineHeight: settingsState.lineHeight,
         vertical: settingsState.pageDirection == PageDirection.vertical,
-        backgroundColor:
-            SettingsCubit.bgColorsPage[settingsState.bgColorIndex]);
+        backgroundColor: settingsState.pageColor);
 
     emit(state.copyWith(htmlContent: html));
 
@@ -81,7 +82,8 @@ class ContentCubit extends Cubit<ContentState> {
     }
   }
 
-  Future<String> buildHtmlContent(List<Map<String, dynamic>> pages,
+  Future<String> buildHtmlContent(
+      List<Map<String, dynamic>> pages, BuildContext context,
       {required double fontSize,
       required double lineHeight,
       required bool vertical,
@@ -111,6 +113,8 @@ class ContentCubit extends Cubit<ContentState> {
         </div>
       """);
     }
+    final fontCss =
+        await loadFont(context.read<SettingsCubit>().state.fontFamily);
 
     return '''
       <!DOCTYPE html>
@@ -118,6 +122,7 @@ class ContentCubit extends Cubit<ContentState> {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+           <style>$fontCss</style>
         <link rel="stylesheet" href="asset://web/css/bootstrap.rtl.min.css">
         <link rel="stylesheet" href="asset://web/css/mhebooks.css">
       </head>
@@ -130,6 +135,49 @@ class ContentCubit extends Cubit<ContentState> {
         <script src="asset://web/js/main.js"></script>
       </body>
       </html>
+    ''';
+  }
+
+  Future<String> loadFont(String fontfamily) async {
+    String fontPath = 'assets/fonts/SegoeUI.woff2';
+    String fontMime = 'font/woff2';
+
+    switch (fontfamily) {
+      case 'لوتوس':
+        fontPath = 'assets/fonts/Lotus-Light.woff2';
+        break;
+      case 'البهيج':
+        fontPath = 'assets/fonts/BahijMuna-Bold.woff2';
+        break;
+      case 'دجلة':
+      default:
+        fontPath = 'assets/fonts/SegoeUI.woff2';
+    }
+
+    final ByteData mainFont = await rootBundle.load(fontPath);
+    final ByteData aboFont = await rootBundle.load('assets/fonts/abo.ttf');
+
+    final String mainFontBase64 = _getFontUriAsBase64(mainFont, fontMime);
+    final String aboFontBase64 = _getFontUriAsBase64(aboFont, 'font/truetype');
+
+    return '''
+      @font-face {
+        font-family: "$fontfamily";
+        src: url("$mainFontBase64") format('woff2');
+      }
+      @font-face {
+        font-family: "AboThar";
+        src: url("$aboFontBase64") format('truetype');
+      }
+      .AboThar {
+        font-family: "AboThar" !important;
+          color: #4caf50 !important;
+        font-size: 20px;
+      }
+      body, p, div, span {
+        font-family: "$fontfamily" !important;
+        direction: rtl;
+      }
     ''';
   }
 

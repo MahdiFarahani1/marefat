@@ -1,6 +1,7 @@
 import 'package:bookapp/features/books/view/books_downloaded.dart';
 import 'package:bookapp/features/books/view/books_screen.dart';
 import 'package:bookapp/features/mainWrapper/bloc/slider/slider_cubit.dart';
+import 'package:bookapp/features/search/view/search_screen.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/storage/view/storage_comment_screen.dart';
 import 'package:bookapp/features/storage/view/storage_page_screen.dart';
@@ -100,19 +101,35 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 🔍 Search Bar
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'ابحث عن كتاب أو مؤلف...',
-                prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                filled: true,
-                fillColor: Colors.grey[200],
-                border: OutlineInputBorder(
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SearchScreen()),
+                );
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(15.0),
-                  borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 15.0),
+                child: Row(
+                  children: [
+                    const Icon(Icons.search, color: Colors.grey),
+                    const SizedBox(width: 12),
+                    Text(
+                      'ابحث عن كتاب أو مؤلف...',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2, end: 0),
             const SizedBox(height: 15.0),
 
             // 🖼️ Image Slider
@@ -150,9 +167,15 @@ class _HomePageState extends State<HomePage> {
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                               ),
-                            );
+                            )
+                                .animate()
+                                .fadeIn(duration: 800.ms)
+                                .scale(begin: Offset(0.8, 0.8));
                           }).toList(),
-                        ),
+                        )
+                            .animate()
+                            .fadeIn(duration: 700.ms, delay: 200.ms)
+                            .slideX(begin: 0.3),
                       ),
                       const SizedBox(height: 8),
                       Row(
@@ -201,25 +224,41 @@ class _HomePageState extends State<HomePage> {
                   model: features[index],
                   color: featureColors[index % featureColors.length],
                   onTap: () => _onFeatureTap(index),
-                );
+                )
+                    .animate(delay: (100 * index).ms)
+                    .fadeIn(duration: 600.ms)
+                    .slideY(begin: 0.3)
+                    .scale(begin: Offset(0.8, 0.8));
               },
-            ),
+            ).animate(delay: 400.ms).fadeIn(duration: 800.ms),
             const SizedBox(height: 20.0),
 
             // 📖 Book Lists
-            const SectionHeader(title: 'الكتب الأكثر شهرة'),
+            const SectionHeader(title: 'الكتب الأكثر شهرة')
+                .animate(delay: 600.ms)
+                .fadeIn(duration: 700.ms)
+                .slideX(begin: -0.3),
             const SizedBox(height: 15.0),
             BookList(
               title: 'الثقافة الصغيرة',
               author: 'علي محمد أفغاني',
-            ),
+            )
+                .animate(delay: 700.ms)
+                .fadeIn(duration: 800.ms)
+                .slideX(begin: 0.5),
 
-            const SectionHeader(title: 'الكتب الأحدث'),
+            const SectionHeader(title: 'الكتب الأحدث')
+                .animate(delay: 800.ms)
+                .fadeIn(duration: 700.ms)
+                .slideX(begin: -0.3),
             const SizedBox(height: 15.0),
             BookList(
               title: 'الخريف في السماء',
               author: 'زهرة رضوي',
-            ),
+            )
+                .animate(delay: 900.ms)
+                .fadeIn(duration: 800.ms)
+                .slideX(begin: 0.5),
           ],
         ),
       ),
@@ -267,13 +306,20 @@ class FeatureItem extends StatelessWidget {
               width: 30,
               height: 30,
               color: Colors.white,
-            ).animate().fadeIn(duration: 400.ms).scale(),
+            )
+                .animate()
+                .fadeIn(duration: 500.ms)
+                .scale(begin: Offset(0.5, 0.5))
+                .shimmer(duration: 1000.ms),
             const SizedBox(height: 8),
             Text(
               model.label,
               style: const TextStyle(color: Colors.white, fontSize: 13),
               textAlign: TextAlign.center,
             )
+                .animate()
+                .fadeIn(duration: 600.ms, delay: 200.ms)
+                .slideY(begin: 0.5)
           ],
         ),
       ),
@@ -288,18 +334,18 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'الكتب الأكثر شهرة',
-          style: TextStyle(
+          title,
+          style: const TextStyle(
               fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
-        ),
-        Text(
+        ).animate().fadeIn(duration: 600.ms).slideX(begin: -0.3),
+        const Text(
           'عرض الكل',
           style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w600),
-        ),
+        ).animate().fadeIn(duration: 600.ms, delay: 200.ms).slideX(begin: 0.3),
       ],
     );
   }
@@ -328,7 +374,11 @@ class BookList extends StatelessWidget {
                 'https://maarifadeen.com/upload_list/source/Library/cov/377.jpg',
             title: title,
             author: author,
-          );
+          )
+              .animate(delay: (150 * index).ms)
+              .fadeIn(duration: 700.ms)
+              .slideX(begin: 0.5)
+              .scale(begin: Offset(0.8, 0.8));
         },
       ),
     );
@@ -358,7 +408,11 @@ class BookCard extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
             child: ImageNetworkCommon(imageurl: imagePath),
-          ),
+          )
+              .animate()
+              .fadeIn(duration: 600.ms)
+              .scale(begin: Offset(0.8, 0.8))
+              .shimmer(duration: 1200.ms, delay: 400.ms),
           const SizedBox(height: 8.0),
           Text(
             title,
@@ -369,12 +423,18 @@ class BookCard extends StatelessWidget {
               fontSize: 14,
               color: Colors.black87,
             ),
-          ),
+          )
+              .animate()
+              .fadeIn(duration: 500.ms, delay: 300.ms)
+              .slideY(begin: 0.3),
           const SizedBox(height: 4.0),
           Text(
             author,
             style: const TextStyle(fontSize: 12, color: Colors.grey),
-          ),
+          )
+              .animate()
+              .fadeIn(duration: 500.ms, delay: 400.ms)
+              .slideY(begin: 0.3),
         ],
       ),
     );

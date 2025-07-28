@@ -4,6 +4,7 @@ import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/scaffold/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -61,7 +62,7 @@ class SettingsPage extends StatelessWidget {
                     delay: 400,
                   ),
                   _animatedSection(
-                    child: _backgroundColorPicker(context, state.bgColorIndex),
+                    child: _backgroundColorPicker(context),
                     delay: 450,
                   ),
                   const SizedBox(height: 24),
@@ -123,15 +124,19 @@ class SettingsPage extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Slider(
-                value: fontSize,
-                min: 12,
-                max: 30,
-                divisions: 9,
-                label: fontSize.toStringAsFixed(0),
-                onChanged: (value) {
-                  context.read<SettingsCubit>().updateFontSize(value);
-                },
+              child: SliderTheme(
+                data: SliderThemeData(
+                    valueIndicatorTextStyle: TextStyle(color: Colors.white)),
+                child: Slider(
+                  value: fontSize,
+                  min: 10,
+                  max: 26,
+                  divisions: 9,
+                  label: fontSize.toStringAsFixed(0),
+                  onChanged: (value) {
+                    context.read<SettingsCubit>().updateFontSize(value);
+                  },
+                ),
               ),
             ),
             AnimatedSwitcher(
@@ -157,21 +162,25 @@ class SettingsPage extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Slider(
-                value: lineHeight,
-                min: 1.0,
-                max: 2.5,
-                divisions: 15,
-                label: lineHeight.toStringAsFixed(2),
-                onChanged: (value) {
-                  context.read<SettingsCubit>().updateLineHeight(value);
-                },
+              child: SliderTheme(
+                data: SliderThemeData(
+                    valueIndicatorTextStyle: TextStyle(color: Colors.white)),
+                child: Slider(
+                  value: lineHeight,
+                  min: 1.0,
+                  max: 3.0,
+                  divisions: 15,
+                  label: lineHeight.toStringAsFixed(1),
+                  onChanged: (value) {
+                    context.read<SettingsCubit>().updateLineHeight(value);
+                  },
+                ),
               ),
             ),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),
               child: Text(
-                lineHeight.toStringAsFixed(2),
+                lineHeight.toStringAsFixed(1),
                 key: ValueKey(lineHeight),
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -273,51 +282,25 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _backgroundColorPicker(BuildContext context, int bgColorIndex) {
-    return Card(
-      margin: const EdgeInsets.all(8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List.generate(SettingsCubit.bgColorsPage.length, (index) {
-            final color = SettingsCubit.bgColorsPage[index];
-            final isSelected = bgColorIndex == index;
-            return GestureDetector(
-              onTap: () {
-                context.read<SettingsCubit>().updateBgColorIndex(index);
-              },
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                width: isSelected ? 48 : 42,
-                height: isSelected ? 48 : 42,
-                decoration: BoxDecoration(
-                  color: color,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color:
-                        isSelected ? Colors.blueAccent : Colors.grey.shade300,
-                    width: isSelected ? 3 : 2,
-                  ),
-                  boxShadow: isSelected
-                      ? [
-                          BoxShadow(
-                            color: color.withOpacity(0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ]
-                      : [],
-                ),
-                child: isSelected
-                    ? const Icon(Icons.check, color: Colors.black)
-                    : null,
-              ),
-            );
-          }),
-        ),
-      ),
+  Widget _backgroundColorPicker(BuildContext context) {
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        return Card(
+          margin: const EdgeInsets.all(8),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildCicle(Colors.white, state, context),
+                  _buildCicle(Color(0xFFDAD0A7), state, context),
+                  _buildCicle(Colors.grey, state, context),
+                ]),
+          ),
+        );
+      },
     );
   }
 
@@ -411,6 +394,27 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCicle(
+      Color color, SettingsState settingState, BuildContext context) {
+    return ZoomTapAnimation(
+      onTap: () {
+        context.read<SettingsCubit>().updateBgColor(color);
+      },
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: settingState.pageColor == color ? Colors.red : Colors.grey,
+            width: 1,
+          ),
+        ),
       ),
     );
   }

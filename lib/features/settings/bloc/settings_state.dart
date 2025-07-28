@@ -2,35 +2,39 @@ import 'dart:ui';
 
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/settings/view/settings_screen.dart';
+import 'package:flutter/material.dart';
 
 class SettingsState {
   final double fontSize;
   final double lineHeight;
   final String fontFamily;
   final int gradientIndex;
-  final int bgColorIndex;
+
   final PageDirection pageDirection;
   final Color primry;
   final Color unselected;
-
+  Color pageColor;
+  bool isApplying;
   SettingsState({
     required this.fontSize,
     required this.lineHeight,
     required this.fontFamily,
     required this.gradientIndex,
-    required this.bgColorIndex,
     required this.pageDirection,
     required this.primry,
     required this.unselected,
+    required this.pageColor,
+    required this.isApplying,
   });
 
   factory SettingsState.initial() {
     return SettingsState(
+      isApplying: false,
+      pageColor: Colors.white,
       fontSize: 18,
       lineHeight: 1.5,
-      fontFamily: 'جَزَلة',
+      fontFamily: 'لوتوس',
       gradientIndex: 0,
-      bgColorIndex: 2,
       pageDirection: PageDirection.horizontal,
       primry: SettingsCubit.backgrounds[0][0],
       unselected: SettingsCubit.backgrounds[0][1],
@@ -38,6 +42,8 @@ class SettingsState {
   }
 
   SettingsState copyWith({
+    bool? isApplying,
+    Color? pageColor,
     double? fontSize,
     double? lineHeight,
     String? fontFamily,
@@ -47,11 +53,12 @@ class SettingsState {
   }) {
     final newGradientIndex = gradientIndex ?? this.gradientIndex;
     return SettingsState(
+      isApplying: isApplying ?? this.isApplying,
+      pageColor: pageColor ?? this.pageColor,
       fontSize: fontSize ?? this.fontSize,
       lineHeight: lineHeight ?? this.lineHeight,
       fontFamily: fontFamily ?? this.fontFamily,
       gradientIndex: newGradientIndex,
-      bgColorIndex: bgColorIndex ?? this.bgColorIndex,
       pageDirection: pageDirection ?? this.pageDirection,
       primry: SettingsCubit.backgrounds[newGradientIndex][0],
       unselected: SettingsCubit.backgrounds[newGradientIndex][1],

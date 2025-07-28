@@ -15,11 +15,12 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   void loadSettings() {
     emit(SettingsState(
+      isApplying: false,
+      pageColor: Colors.white,
       fontSize: _box.read('fontSize') ?? 18,
       lineHeight: _box.read('lineHeight') ?? 1.5,
-      fontFamily: _box.read('fontFamily') ?? 'جَزَلة',
+      fontFamily: _box.read('fontFamily') ?? 'لوتوس',
       gradientIndex: _box.read('gradientIndex') ?? 0,
-      bgColorIndex: _box.read('bgColorIndex') ?? 2,
       pageDirection: PageDirection.values[_box.read('pageDirection') ?? 1],
       primry: SettingsCubit.backgrounds[0][0],
       unselected: SettingsCubit.backgrounds[0][1],
@@ -51,9 +52,18 @@ class SettingsCubit extends Cubit<SettingsState> {
     emit(state.copyWith(bgColorIndex: index));
   }
 
+  void updateBgColor(Color color) {
+    // _box.write('bgColorIndex', index);
+    emit(state.copyWith(pageColor: color));
+  }
+
   void updatePageDirection(PageDirection direction) {
     _box.write('pageDirection', direction.index);
     emit(state.copyWith(pageDirection: direction));
+  }
+
+  void changeStateApply(bool isApply) {
+    emit(state.copyWith(isApplying: isApply));
   }
 
   static List<List<Color>> backgrounds = [
@@ -80,10 +90,5 @@ class SettingsCubit extends Cubit<SettingsState> {
       Color(0xFF616161), // خاکستری تیره
       Color(0xFF9BC5C3), // سبز آبی ملایم
     ],
-  ];
-  static final bgColorsPage = [
-    const Color(0xFFB0BEC5),
-    const Color(0xFFFFF3CD),
-    Colors.white,
   ];
 }

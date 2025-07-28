@@ -8,6 +8,7 @@ import 'package:another_xlider/models/trackbar.dart';
 import 'package:bookapp/core/extensions/widget_ex.dart';
 import 'package:bookapp/features/content_books/repository/modal_comment.dart';
 import 'package:bookapp/features/content_books/view/groups_page.dart';
+import 'package:bookapp/features/content_books/widgets/settings_dialog.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/settings/bloc/settings_state.dart';
 import 'package:bookapp/features/settings/view/settings_screen.dart';
@@ -93,9 +94,13 @@ class _ContentPageState extends State<ContentPage> {
               );
             },
           ),
-          Assets.icons.settingstow
-              .image(color: Colors.white, width: 28, height: 28)
-              .padAll(8)
+          ZoomTapAnimation(
+            onTap: () async =>
+                await TextSettingsDialog().show(context, webViewController!),
+            child: Assets.icons.settingstow
+                .image(color: Colors.white, width: 28, height: 28)
+                .padAll(8),
+          )
         ],
         leadingWidth: 100,
         leading: Row(
@@ -132,6 +137,7 @@ class _ContentPageState extends State<ContentPage> {
       body: SafeArea(
         child: BlocProvider(
           create: (context) => ContentCubit(
+              context: context,
               settingsCubit: SettingsCubit(),
               bookId: widget.bookId,
               repository: BookDatabaseHelper()),

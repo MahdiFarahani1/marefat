@@ -1,3 +1,5 @@
+import 'package:bookapp/features/about/view/about_app_screen.dart';
+import 'package:bookapp/features/about/view/privacy_policy_screen.dart';
 import 'package:bookapp/features/mainWrapper/view/navigaion.dart';
 import 'package:bookapp/features/settings/view/settings_screen.dart';
 import 'package:bookapp/gen/assets.gen.dart';
@@ -41,7 +43,13 @@ class CustomDrawer extends StatelessWidget {
                   }),
 
                   _buildDrawerItem(
-                      Assets.icons.fiRrCommentInfo.path, 'حول التطبيق', () {}),
+                      Assets.icons.fiRrCommentInfo.path, 'حول التطبيق', () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AboutAppScreen(),
+                        ));
+                  }),
                   _buildDrawerItem(Assets.icons.fiRrSettings.path, 'الاعدادات',
                       () {
                     Navigator.push(
@@ -51,7 +59,13 @@ class CustomDrawer extends StatelessWidget {
                         ));
                   }),
                   _buildDrawerItem(
-                      Assets.icons.fiRrBook.path, 'سياسية الخصوصية', () {}),
+                      Assets.icons.fiRrBook.path, 'سياسية الخصوصية', () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PrivacyPolicyScreen(),
+                        ));
+                  }),
 
                   EsaySize.gap(2), const Divider(),
                   // اشتراک‌گذاری
