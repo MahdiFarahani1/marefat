@@ -3,7 +3,6 @@
 import 'package:bookapp/features/books/bloc/book/book_cubit.dart';
 import 'package:bookapp/features/books/bloc/book/book_state.dart';
 import 'package:bookapp/features/books/bloc/download/download_cubit.dart';
-import 'package:bookapp/features/books/model/model_books.dart';
 import 'package:bookapp/features/books/repositoreis/book_repository.dart';
 import 'package:bookapp/features/books/widgets/book_item.dart';
 import 'package:bookapp/gen/assets.gen.dart';
@@ -42,10 +41,10 @@ class BooksScreen extends StatelessWidget {
             } else if (state is BookLoaded) {
               final downloadCubit = context.read<DownloadCubit>();
               for (var book in state.books) {
-                downloadCubit.checkIfDownloaded(book);
-                downloadCubit.checkIfBookDownloaded(book);
+                downloadCubit.checkIfDownloaded(book.id.toString(), book.pdf!);
+                downloadCubit.checkIfBookDownloaded(book.id.toString());
               }
-              return BookList(books: state.books);
+              return BookDownloadList(books: state.books);
             }
             return const SizedBox.shrink();
           },
@@ -67,6 +66,7 @@ class _DownloadAllButton extends StatelessWidget {
           final state = context.read<BookCubit>().state;
           if (state is BookLoaded && state.books.isNotEmpty) {
             AppDialog.showConfirmDialog(
+              onDiss: () {},
               context: context,
               title: 'تحميل جميع الكتب',
               message: 'هل أنت متأكد أنك تريد تحميل جميع الكتب؟',
@@ -82,28 +82,6 @@ class _DownloadAllButton extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-    );
-  }
-}
-
-class BookList extends StatelessWidget {
-  final List<BookModel> books;
-  const BookList({super.key, required this.books});
-
-  @override
-  Widget build(BuildContext context) {
-    final repo = context.read<BookRepository>();
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: books.length,
-      itemBuilder: (context, index) {
-        final book = books[index];
-        return BookItemTile(
-          key: ValueKey(book.pdf),
-          book: book,
-          repo: repo,
-        );
-      },
     );
   }
 }

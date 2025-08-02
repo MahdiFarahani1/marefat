@@ -67,6 +67,8 @@ class AppDialog {
     required String title,
     required String message,
     required VoidCallback onConfirmed,
+    required VoidCallback onDiss,
+    bool? isComplateBack = false,
   }) async {
     await showDialog(
       context: context,
@@ -102,7 +104,16 @@ class AppDialog {
                   children: [
                     Expanded(
                       child: OutlinedButton(
-                        onPressed: () => Navigator.pop(ctx),
+                        onPressed: () {
+                          if (isComplateBack! == false) {
+                            Navigator.pop(ctx);
+                          } else {
+                            Navigator.pop(ctx);
+
+                            onDiss();
+                            print('sddfaqerasdasdg');
+                          }
+                        },
                         style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),

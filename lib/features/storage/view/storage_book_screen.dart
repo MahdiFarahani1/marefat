@@ -197,6 +197,7 @@ class _StorageBookScreenState extends State<StorageBookScreen> {
                                 ),
                                 onPressed: () async {
                                   await AppDialog.showConfirmDialog(
+                                    onDiss: () {},
                                     context: context,
                                     title: 'الکتاب',
                                     message:

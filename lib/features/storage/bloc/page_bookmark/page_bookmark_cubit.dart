@@ -22,7 +22,7 @@ class PageBookmarkCubit extends Cubit<PageBookmarkState> {
   Future<void> loadPageBookmarks() async {
     try {
       emit(state.copyWith(status: PageBookmarkStatus.loading));
-      final pageBookmarks = await DatabaseHelper.getAllpages();
+      final pageBookmarks = await DatabaseStorageHelper.getAllpages();
       emit(state.copyWith(
         pageBookmarks: pageBookmarks,
         status: PageBookmarkStatus.success,
@@ -62,10 +62,10 @@ class PageBookmarkCubit extends Cubit<PageBookmarkState> {
   Future<void> _addPageBookmark(
       String bookName, String bookId, int pageNumber) async {
     await _box.write('$pageSaveKey$bookId$pageNumber', true);
-    await DatabaseHelper.insertPage(
+    await DatabaseStorageHelper.insertPage(
         bookName, int.parse(bookId), pageNumber.toDouble());
 
-    final updatedPageBookmarks = await DatabaseHelper.getAllpages();
+    final updatedPageBookmarks = await DatabaseStorageHelper.getAllpages();
     emit(state.copyWith(
       isSaved: true,
       pageBookmarks: updatedPageBookmarks,
@@ -81,9 +81,10 @@ class PageBookmarkCubit extends Cubit<PageBookmarkState> {
       }
 
       await _box.remove('$pageSaveKey$bookId$pageNumber');
-      await DatabaseHelper.deletePage(int.parse(bookId), pageNumber.toDouble());
+      await DatabaseStorageHelper.deletePage(
+          int.parse(bookId), pageNumber.toDouble());
 
-      final updatedPageBookmarks = await DatabaseHelper.getAllpages();
+      final updatedPageBookmarks = await DatabaseStorageHelper.getAllpages();
       emit(state.copyWith(
         isSaved: false,
         pageBookmarks: updatedPageBookmarks,

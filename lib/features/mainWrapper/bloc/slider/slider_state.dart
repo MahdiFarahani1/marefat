@@ -17,9 +17,10 @@ abstract class StatusSlider {}
 class SliderLoading extends StatusSlider {}
 
 class SliderLoaded extends StatusSlider {
-  final List<SliderItem> sliders;
+  final List<SliderModel> sliders;
+  final List<LastBookModel> books;
 
-  SliderLoaded(this.sliders);
+  SliderLoaded({required this.sliders, required this.books});
 }
 
 class SliderError extends StatusSlider {

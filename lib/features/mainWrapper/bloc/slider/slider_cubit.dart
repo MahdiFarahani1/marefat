@@ -8,11 +8,14 @@ class SliderCubit extends Cubit<SliderState> {
   SliderCubit()
       : super(SliderState(currentIndex: 0, statusSlider: SliderLoading()));
 
-  Future<void> loadSliders() async {
+  Future<void> loadHomeApi() async {
     try {
       emit(state.copyWith(statusSlider: SliderLoading()));
       final sliders = await SliderRepository.fetchSliders();
-      emit(state.copyWith(statusSlider: SliderLoaded(sliders)));
+
+      final lastBook = await SliderRepository.fetchLastBooks();
+      emit(state.copyWith(
+          statusSlider: SliderLoaded(sliders: sliders, books: lastBook)));
     } catch (e) {
       emit(state.copyWith(statusSlider: SliderError(e.toString())));
     }

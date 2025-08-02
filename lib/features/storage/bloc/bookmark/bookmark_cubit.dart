@@ -22,7 +22,7 @@ class BookmarkCubit extends Cubit<BookMarkState> {
   Future<void> loadBookmarks() async {
     try {
       emit(state.copyWith(status: BookMarkStatus.loading));
-      final bookmarks = await DatabaseHelper.getAllBooks();
+      final bookmarks = await DatabaseStorageHelper.getAllBooks();
       emit(state.copyWith(
         bookmarks: bookmarks,
         status: BookMarkStatus.success,
@@ -58,9 +58,9 @@ class BookmarkCubit extends Cubit<BookMarkState> {
       emit(state.copyWith(status: BookMarkStatus.loading));
 
       await _box.write('$bookSaveKey$bookId', true);
-      await DatabaseHelper.insertBook(bookName, int.parse(bookId));
+      await DatabaseStorageHelper.insertBook(bookName, int.parse(bookId));
 
-      final updatedBookmarks = await DatabaseHelper.getAllBooks();
+      final updatedBookmarks = await DatabaseStorageHelper.getAllBooks();
       emit(state.copyWith(
         isSaved: true,
         bookmarks: updatedBookmarks,
@@ -79,9 +79,9 @@ class BookmarkCubit extends Cubit<BookMarkState> {
       }
 
       await _box.remove('$bookSaveKey$bookId');
-      await DatabaseHelper.deleteBook(int.parse(bookId));
+      await DatabaseStorageHelper.deleteBook(int.parse(bookId));
 
-      final updatedBookmarks = await DatabaseHelper.getAllBooks();
+      final updatedBookmarks = await DatabaseStorageHelper.getAllBooks();
       emit(state.copyWith(
         isSaved: false,
         bookmarks: updatedBookmarks,

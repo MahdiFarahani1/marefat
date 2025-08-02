@@ -4,7 +4,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DatabaseHelper {
+class DatabaseStorageHelper {
   static Database? _database;
 
   // اسم دیتابیس شما
@@ -44,6 +44,17 @@ class DatabaseHelper {
     return await db.query('book');
   }
 
+  static Future<List<Map<String, dynamic>>> getAllReading() async {
+    final db = await database;
+    return await db.query('reading');
+  }
+
+  static Future<List<Map<String, dynamic>>> getAllReadingAbout(
+      int bookId) async {
+    final db = await database;
+    return await db.query('reading', where: 'book_id = ?', whereArgs: [bookId]);
+  }
+
   static Future<List<Map<String, dynamic>>> getAllpages() async {
     final db = await database;
     return await db.query('page');
@@ -61,6 +72,43 @@ class DatabaseHelper {
       'page',
       {'book_name': bookName, 'book_id': bookID, 'scrollposition': scrollPos},
     );
+  }
+
+  static Future<int> insertReading(
+      String bookName, int bookID, double scrollPos, int length) async {
+    final db = await database;
+
+    // بررسی وجود book_id
+    final List<Map<String, dynamic>> existing = await db.query(
+      'reading',
+      where: 'book_id = ?',
+      whereArgs: [bookID],
+    );
+
+    if (existing.isNotEmpty) {
+      // اگر وجود داشت، آپدیت کن
+      return await db.update(
+        'reading',
+        {
+          'book_name': bookName,
+          'scrollposition': scrollPos,
+          'pagesL': length,
+        },
+        where: 'book_id = ?',
+        whereArgs: [bookID],
+      );
+    } else {
+      // اگر نبود، اینسرت کن
+      return await db.insert(
+        'reading',
+        {
+          'book_name': bookName,
+          'book_id': bookID,
+          'scrollposition': scrollPos,
+          'pagesL': length,
+        },
+      );
+    }
   }
 
   static Future<int> insertComment(String bookName, double pageNumber,
@@ -100,6 +148,15 @@ class DatabaseHelper {
     final db = await database;
     await db.delete(
       'page',
+      where: 'book_id = ? AND scrollposition = ?',
+      whereArgs: [bookId, pageNumber],
+    );
+  }
+
+  static Future<void> deleteReading(int bookId, double pageNumber) async {
+    final db = await database;
+    await db.delete(
+      'reading',
       where: 'book_id = ? AND scrollposition = ?',
       whereArgs: [bookId, pageNumber],
     );

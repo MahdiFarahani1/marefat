@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/core/constant/const_class.dart';
 import 'package:bookapp/features/books/bloc/download/download_cubit.dart';
 import 'package:bookapp/features/books/bloc/download/download_state.dart';
@@ -7,13 +5,12 @@ import 'package:bookapp/features/books/model/model_books.dart';
 import 'package:bookapp/features/books/repositoreis/book_repository.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
+import 'package:bookapp/shared/func/downloaded_book.dart';
 import 'package:bookapp/shared/utils/images_network.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 class BookItemTile extends StatelessWidget {
@@ -25,45 +22,6 @@ class BookItemTile extends StatelessWidget {
     required this.repo,
     super.key,
   });
-
-  void _handleDownloadOrOpen(BuildContext context, DownloadState downloadState,
-      String url, String fileNamee, Function onTap) async {
-    final fileName = fileNamee;
-    final dir = await getApplicationDocumentsDirectory();
-    final filePath = '${dir.path}/$fileName';
-    final file = File(filePath);
-
-    if (await file.exists()) {
-      await OpenFile.open(filePath);
-    } else if (!downloadState.isDownloadingPdf &&
-        !downloadState.isDownloadedPdf) {
-      onTap();
-    }
-  }
-
-  Future<void> _handleBookDownload(
-    BuildContext context,
-    DownloadState downloadState,
-    String url,
-    String fileNamee,
-    Function onTap,
-  ) async {
-    final downloadsDir = Directory('/storage/emulated/0/Download/Books');
-
-    if (!await downloadsDir.exists()) {
-      await downloadsDir.create(recursive: true);
-    }
-
-    final filePath = '${downloadsDir.path}/$fileNamee';
-    final file = File(filePath);
-
-    if (await file.exists()) {
-      return;
-    } else if (!downloadState.isDownloadingBook &&
-        !downloadState.isDownloadedBook) {
-      onTap();
-    }
-  }
 
   // Future<bool> _requestStoragePermission() async {
   //   final status = await Permission.storage.status;
@@ -147,14 +105,14 @@ class BookItemTile extends StatelessWidget {
                         GestureDetector(
                           onTap: downloadState.isDownloadingPdf
                               ? null
-                              : () => _handleDownloadOrOpen(
+                              : () => handleDownloadOrOpen(
                                       context,
                                       downloadState,
                                       ConstantApp.upload + book.pdf!,
                                       book.pdf!.split('/').last, () {
                                     context
                                         .read<DownloadCubit>()
-                                        .startPdfDownload(book,
+                                        .startPdfDownload(book.id.toString(),
                                             ConstantApp.upload + book.pdf!);
                                   }),
                           child: Text(
@@ -176,7 +134,7 @@ class BookItemTile extends StatelessWidget {
                         ZoomTapAnimation(
                           onTap: () async {
                             if (downloadState.isDownloadedBook == false) {
-                              _handleBookDownload(
+                              handleBookDownload(
                                 context,
                                 downloadState,
                                 ConstantApp.downloadBook + book.id.toString(),
@@ -185,7 +143,7 @@ class BookItemTile extends StatelessWidget {
                                   await context
                                       .read<DownloadCubit>()
                                       .startBookDownload(
-                                        book,
+                                        book.id.toString(),
                                         '${ConstantApp.downloadBook}${book.id}',
                                       );
                                 },
@@ -239,6 +197,28 @@ class BookItemTile extends StatelessWidget {
               )
             ],
           ),
+        );
+      },
+    );
+  }
+}
+
+class BookDownloadList extends StatelessWidget {
+  final List<BookModel> books;
+  const BookDownloadList({super.key, required this.books});
+
+  @override
+  Widget build(BuildContext context) {
+    final repo = context.read<BookRepository>();
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: books.length,
+      itemBuilder: (context, index) {
+        final book = books[index];
+        return BookItemTile(
+          key: ValueKey(book.pdf),
+          book: book,
+          repo: repo,
         );
       },
     );

@@ -1,37 +1,76 @@
+import 'package:bookapp/shared/utils/linearGradient.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bookapp/features/search/bloc/search_cubit.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
+import 'package:path/path.dart' as path;
 
-class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+class SearchPage extends StatefulWidget {
+  const SearchPage({super.key});
 
   @override
-  State<SearchScreen> createState() => _SearchScreenState();
+  State<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
-  bool isAdvancedSearch = false;
-  bool isTextSelected = true;
-  bool isTitleSelected = true;
-  String selectedCategory = 'اختيار';
+class _SearchPageState extends State<SearchPage> {
+  final TextEditingController _queryController = TextEditingController();
 
-  final TextEditingController _searchController = TextEditingController();
-  final List<String> categories = [
-    'اختيار',
-    'الفقه',
-    'التفسير',
-    'الحديث',
-    'العقيدة',
-    'السيرة',
-    'التاريخ',
-    'الأدب',
+  bool searchText = true;
+  bool searchTitle = false;
+  String selectedBookId = 'all';
+  String selectedBookPath = 'all';
+
+  List<Map<String, String>> books = [
+    {'id': 'all', 'name': 'همه کتاب‌ها', 'path': 'all'},
   ];
 
   @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _loadBooksFromDirectory();
+  }
+
+  Future<void> _loadBooksFromDirectory() async {
+    try {
+      const String baseDirPath = '/storage/emulated/0/Download/Books/tmp';
+      final Directory baseDirectory = Directory(baseDirPath);
+
+      if (await baseDirectory.exists()) {
+        final List<FileSystemEntity> entities =
+            await baseDirectory.list().toList();
+
+        final List<Directory> bookDirectories =
+            entities.whereType<Directory>().toList();
+
+        List<Map<String, String>> foundBooks = [
+          {'id': 'all', 'name': 'همه کتاب‌ها', 'path': 'all'},
+        ];
+
+        for (Directory bookDir in bookDirectories) {
+          final String bookId = path.basename(bookDir.path);
+          final String sqlitePath = path.join(bookDir.path, 'b$bookId.sqlite');
+
+          final File sqliteFile = File(sqlitePath);
+          if (await sqliteFile.exists()) {
+            foundBooks.add({
+              'id': bookId,
+              'name': bookId,
+              'path': sqlitePath,
+            });
+          }
+        }
+
+        setState(() {
+          books = foundBooks;
+        });
+      } else {
+        print('Books directory does not exist: $baseDirPath');
+      }
+    } catch (e) {
+      print('Error loading books from directory: $e');
+    }
   }
 
   @override
@@ -40,131 +79,106 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SafeArea(
+      appBar: AppBar(
+        title: const Text(
+          'البحث',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(gradient: customGradinet(context)),
+        ),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            // Content
-            Expanded(
-              child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Column(
-                  children: [
-                    _buildSearchBar(primaryColor),
-                    const SizedBox(height: 20),
-                    _buildSearchTypeToggle(primaryColor),
-                    const SizedBox(height: 20),
-                    if (isAdvancedSearch) ...[
-                      _buildAdvancedOptions(primaryColor),
-                      const SizedBox(height: 20),
-                    ],
-                    _buildSearchButton(primaryColor),
-                    const SizedBox(height: 25),
-                    _buildResultsSection(),
-                  ],
-                ),
+            // Search Form Section
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  // Search Input
+                  _buildSearchInput(primaryColor)
+                      .animate()
+                      .fadeIn(duration: 500.ms)
+                      .slideY(begin: -0.2),
+
+                  const SizedBox(height: 20),
+
+                  // Search Options
+                  _buildSearchOptions(primaryColor)
+                      .animate()
+                      .fadeIn(duration: 600.ms, delay: 200.ms)
+                      .slideY(begin: 0.2),
+
+                  const SizedBox(height: 20),
+
+                  // Book Selection Dropdown
+                  _buildBookDropdown(primaryColor)
+                      .animate()
+                      .fadeIn(duration: 700.ms, delay: 400.ms)
+                      .slideY(begin: 0.2),
+
+                  const SizedBox(height: 20),
+
+                  // Search Buttons
+                  _buildSearchButtons(primaryColor)
+                      .animate()
+                      .fadeIn(duration: 800.ms, delay: 600.ms)
+                      .scale(begin: Offset(0.9, 0.9)),
+                ],
               ),
             ),
+
+            // Results Section
+            Container(
+              height:
+                  MediaQuery.of(context).size.height * 0.5, // نصف ارتفاع صفحه
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: BlocBuilder<SearchCubit, SearchState>(
+                builder: (context, state) {
+                  return _buildSearchResults(state);
+                },
+              ),
+            )
+                .animate()
+                .fadeIn(duration: 900.ms, delay: 800.ms)
+                .slideY(begin: 0.3),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSearchTypeToggle(Color primaryColor) {
-    return Container(
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () => setState(() => isAdvancedSearch = true),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.easeInOut,
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  color: isAdvancedSearch ? primaryColor : Colors.transparent,
-                  borderRadius: BorderRadius.circular(11),
-                ),
-                child: Text(
-                  'بحث متقدم',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: isAdvancedSearch
-                        ? Colors.white
-                        : Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withValues(alpha: 0.7),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: GestureDetector(
-              onTap: () => setState(() => isAdvancedSearch = false),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.easeInOut,
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  color: !isAdvancedSearch ? primaryColor : Colors.transparent,
-                  borderRadius: BorderRadius.circular(11),
-                ),
-                child: Text(
-                  'بحث بسيط',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: !isAdvancedSearch
-                        ? Colors.white
-                        : Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withValues(alpha: 0.7),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ).animate().fadeIn(duration: 600.ms, delay: 200.ms).slideY(begin: 0.2);
-  }
-
-  Widget _buildSearchBar(Color primaryColor) {
+  Widget _buildSearchInput(Color primaryColor) {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
       ),
       child: TextField(
-        controller: _searchController,
+        controller: _queryController,
         decoration: InputDecoration(
-          hintText: 'ابحث عن كتاب أو مؤلف...',
+          hintText: 'ابحث عن كلمة أو عبارة...',
           hintStyle: TextStyle(
             color:
                 Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
@@ -173,86 +187,78 @@ class _SearchScreenState extends State<SearchScreen> {
           prefixIcon: Icon(
             Icons.search_rounded,
             color: primaryColor,
-            size: 20,
+            size: 22,
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide.none,
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: BorderSide(color: primaryColor, width: 1.5),
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: primaryColor, width: 2),
           ),
           filled: true,
           fillColor: Theme.of(context).colorScheme.surface,
           contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
         style: TextStyle(
-          fontSize: 15,
+          fontSize: 16,
           color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
-    ).animate().fadeIn(duration: 500.ms, delay: 100.ms).slideY(begin: -0.2);
+    );
   }
 
-  Widget _buildAdvancedOptions(Color primaryColor) {
-    return Column(
-      children: [
-        // Info banner
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.blue.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
+  Widget _buildSearchOptions(Color primaryColor) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-          child: Row(
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'البحث في:',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
             children: [
-              Icon(Icons.info_outline_rounded, color: Colors.blue, size: 16),
-              const SizedBox(width: 8),
               Expanded(
-                child: Text(
-                  'يتطلب البحث 3 أحرف أو أكثر',
-                  style: TextStyle(
-                    color: Colors.blue.shade700,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
+                child: _buildCheckboxOption(
+                  'النص',
+                  searchText,
+                  (value) => setState(() => searchText = value!),
+                  primaryColor,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildCheckboxOption(
+                  'العنوان',
+                  searchTitle,
+                  (value) => setState(() => searchTitle = value!),
+                  primaryColor,
                 ),
               ),
             ],
           ),
-        ).animate().fadeIn(duration: 400.ms, delay: 300.ms).slideY(begin: 0.2),
-
-        const SizedBox(height: 16),
-
-        // Search options
-        Row(
-          children: [
-            Expanded(
-              child: _buildCheckboxOption(
-                  'النص',
-                  isTextSelected,
-                  (value) => setState(() => isTextSelected = value!),
-                  primaryColor),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildCheckboxOption(
-                  'العنوان',
-                  isTitleSelected,
-                  (value) => setState(() => isTitleSelected = value!),
-                  primaryColor),
-            ),
-          ],
-        ).animate().fadeIn(duration: 500.ms, delay: 400.ms).slideY(begin: 0.2),
-
-        const SizedBox(height: 16),
-
-        // Category dropdown
-        _buildCategoryDropdown(primaryColor),
-      ],
+        ],
+      ),
     );
   }
 
@@ -260,13 +266,11 @@ class _SearchScreenState extends State<SearchScreen> {
       String title, bool value, Function(bool?) onChanged, Color primaryColor) {
     return GestureDetector(
       onTap: () => onChanged(!value),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(14),
+      child: Container(
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: value
-              ? primaryColor.withValues(alpha: 0.08)
-              : Theme.of(context).colorScheme.surface,
+          color:
+              value ? primaryColor.withValues(alpha: 0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: value
@@ -274,21 +278,13 @@ class _SearchScreenState extends State<SearchScreen> {
                 : Theme.of(context)
                     .colorScheme
                     .onSurface
-                    .withValues(alpha: 0.15),
-            width: value ? 1.5 : 1,
+                    .withValues(alpha: 0.2),
+            width: 1.5,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 6,
-              offset: const Offset(0, 1),
-            ),
-          ],
         ),
         child: Row(
           children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
+            Container(
               width: 18,
               height: 18,
               decoration: BoxDecoration(
@@ -308,12 +304,12 @@ class _SearchScreenState extends State<SearchScreen> {
                   ? const Icon(Icons.check, color: Colors.white, size: 12)
                   : null,
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Text(
               title,
               style: TextStyle(
                 fontSize: 14,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
                 color: value
                     ? primaryColor
                     : Theme.of(context)
@@ -328,190 +324,366 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildCategoryDropdown(Color primaryColor) {
+  Widget _buildBookDropdown(Color primaryColor) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-            color: Theme.of(context)
-                .colorScheme
-                .onSurface
-                .withValues(alpha: 0.15)),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 1),
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: selectedCategory,
-          isExpanded: true,
-          icon: Icon(Icons.keyboard_arrow_down_rounded,
-              color: primaryColor, size: 20),
-          style: TextStyle(
-            fontSize: 14,
-            color: Theme.of(context).colorScheme.onSurface,
-            fontWeight: FontWeight.w500,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'اختر الكتاب:',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
-          items: categories.map((String category) {
-            return DropdownMenuItem<String>(
-              value: category,
-              child: Text(category,
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurface)),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            setState(() {
-              selectedCategory = newValue!;
-            });
-          },
-        ),
+          const SizedBox(height: 12),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: 0.2)),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: selectedBookId,
+                isExpanded: true,
+                icon: Icon(Icons.keyboard_arrow_down_rounded,
+                    color: primaryColor, size: 24),
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.w500,
+                ),
+                items: books.map((book) {
+                  return DropdownMenuItem<String>(
+                    value: book['id'],
+                    child: Text(
+                      book['name']!,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedBookId = newValue!;
+                    // Find the selected book and update the path
+                    final selectedBook = books.firstWhere(
+                      (book) => book['id'] == newValue,
+                      orElse: () =>
+                          {'id': 'all', 'name': 'همه کتاب‌ها', 'path': 'all'},
+                    );
+                    selectedBookPath = selectedBook['path']!;
+                  });
+                },
+              ),
+            ),
+          ),
+        ],
       ),
-    ).animate().fadeIn(duration: 600.ms, delay: 500.ms).slideY(begin: 0.2);
+    );
   }
 
-  Widget _buildSearchButton(Color primaryColor) {
-    return Container(
-      width: double.infinity,
-      height: 48,
-      decoration: BoxDecoration(
-        color: primaryColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: primaryColor.withValues(alpha: 0.25),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
+  Widget _buildSearchButtons(Color primaryColor) {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            height: 48,
+            decoration: BoxDecoration(
+              color: primaryColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: primaryColor, width: 1.5),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () {
+                  context
+                      .read<SearchCubit>()
+                      .quickSearch(_queryController.text);
+                },
+                child: Center(
+                  child: Text(
+                    'بحث سريع',
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: _performSearch,
-          child: const Center(
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Container(
+            height: 48,
+            decoration: BoxDecoration(
+              color: primaryColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () {
+                  context.read<SearchCubit>().advancedSearch(
+                        query: _queryController.text,
+                        searchText: searchText,
+                        searchTitle: searchTitle,
+                        selectedBookPath: selectedBookPath,
+                      );
+                },
+                child: const Center(
+                  child: Text(
+                    'بحث متقدم',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSearchResults(SearchState state) {
+    if (state is SearchLoading) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(
+                color: context.read<SettingsCubit>().state.primry),
+            const SizedBox(height: 16),
+            Text(
+              'جاري البحث...',
+              style: TextStyle(
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface
+                    .withValues(alpha: 0.7),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (state is SearchError) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Colors.red.withValues(alpha: 0.5),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'حدث خطأ',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              state.message,
+              style: TextStyle(
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface
+                    .withValues(alpha: 0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (state is SearchSuccess) {
+      if (state.results.isEmpty) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.search_off,
+                size: 64,
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface
+                    .withValues(alpha: 0.3),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'لا توجد نتائج',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'جرب كلمات مختلفة أو تحقق من الإعدادات',
+                style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: 0.7),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      }
+
+      return Column(
+        children: [
+          // Results header
+          Container(
+            padding: const EdgeInsets.all(16),
             child: Row(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.search_rounded, color: Colors.white, size: 18),
-                SizedBox(width: 6),
+                Icon(
+                  Icons.search,
+                  color: context.read<SettingsCubit>().state.primry,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
                 Text(
-                  'بحث',
+                  'النتائج (${state.results.length})',
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ],
             ),
           ),
-        ),
-      ),
-    )
-        .animate()
-        .fadeIn(duration: 700.ms, delay: 600.ms)
-        .scale(begin: Offset(0.9, 0.9));
-  }
-
-  Widget _buildResultsSection() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 1),
+          // Results list
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: state.results.length,
+              separatorBuilder: (_, __) => Divider(
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface
+                    .withValues(alpha: 0.1),
+              ),
+              itemBuilder: (context, index) {
+                final item = state.results[index];
+                return Container(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.text,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          height: 1.5,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: context
+                              .read<SettingsCubit>()
+                              .state
+                              .primry
+                              .withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          'من كتاب: ${item.bookName}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: context.read<SettingsCubit>().state.primry,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ],
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withValues(alpha: 0.06),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              Icons.search_rounded,
-              size: 32,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withValues(alpha: 0.4),
-            ),
-          )
-              .animate()
-              .fadeIn(duration: 500.ms, delay: 700.ms)
-              .scale(begin: Offset(0.8, 0.8)),
-          const SizedBox(height: 12),
-          Text(
-            'عدد النتائج: 0',
-            style: TextStyle(
-              fontSize: 15,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withValues(alpha: 0.8),
-              fontWeight: FontWeight.w600,
-            ),
-          ).animate().fadeIn(duration: 600.ms, delay: 800.ms),
-          const SizedBox(height: 6),
-          Text(
-            'ابدأ البحث للعثور على النتائج',
-            style: TextStyle(
-              fontSize: 13,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withValues(alpha: 0.6),
-            ),
-          ).animate().fadeIn(duration: 700.ms, delay: 900.ms),
-        ],
-      ),
-    ).animate().fadeIn(duration: 800.ms, delay: 700.ms).slideY(begin: 0.2);
-  }
-
-  void _performSearch() {
-    // Add search logic here
-    String query = _searchController.text.trim();
-    if (query.isNotEmpty) {
-      // Perform search based on selected options
-      print('Searching for: $query');
-      print('Advanced search: $isAdvancedSearch');
-      print('Search in text: $isTextSelected');
-      print('Search in title: $isTitleSelected');
-      print('Category: $selectedCategory');
-
-      final primaryColor = context.read<SettingsCubit>().state.primry;
-
-      // Show loading or results
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('البحث عن: $query'),
-          backgroundColor: primaryColor,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          margin: const EdgeInsets.all(16),
-        ),
       );
     }
+
+    // Default empty state
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.search,
+            size: 64,
+            color:
+                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'ابدأ البحث',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'اكتب كلمة أو عبارة للبحث عنها',
+            style: TextStyle(
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.7),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

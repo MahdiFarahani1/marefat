@@ -111,7 +111,7 @@ class ModalComment {
                                 '${now.year}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')} - ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
 
                             // Save comment to database
-                            await DatabaseHelper.insertComment(
+                            await DatabaseStorageHelper.insertComment(
                               bookname,
                               idPage.toDouble(),
                               titleController.text.trim().isEmpty

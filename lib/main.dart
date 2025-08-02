@@ -10,6 +10,8 @@ import 'package:bookapp/features/onbording/onbording_view.dart';
 import 'package:bookapp/features/photo_gallery/bloc/gallery_cubit.dart';
 import 'package:bookapp/features/questions/bloc/questionItems/question_cubit.dart';
 import 'package:bookapp/features/questions/bloc/questionSearch/question_search_cubit.dart';
+import 'package:bookapp/features/reading_progress/bloc/cubit/readingbook_cubit.dart';
+import 'package:bookapp/features/search/bloc/search_cubit.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/settings/bloc/settings_state.dart';
 import 'package:bookapp/features/storage/bloc/page_bookmark/page_bookmark_cubit.dart';
@@ -43,6 +45,12 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => DownloadCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ReadingbookCubit(),
+        ),
+        BlocProvider(
+          create: (_) => SearchCubit(),
         ),
         BlocProvider(
           create: (context) => SliderCubit(),

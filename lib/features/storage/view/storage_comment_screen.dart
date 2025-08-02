@@ -24,7 +24,7 @@ class _CommentScreenState extends State<CommentScreen> {
 
   void _loadComments() {
     setState(() {
-      _commentsFuture = DatabaseHelper.getAllcomments();
+      _commentsFuture = DatabaseStorageHelper.getAllcomments();
     });
   }
 
@@ -360,7 +360,7 @@ class _CommentScreenState extends State<CommentScreen> {
               onPressed: () async {
                 try {
                   // Delete from database
-                  await DatabaseHelper.deleteComment(
+                  await DatabaseStorageHelper.deleteComment(
                     bookName,
                     double.tryParse(commentId) ?? 0.0,
                   );
@@ -483,7 +483,7 @@ class _CommentScreenState extends State<CommentScreen> {
                 if (controller.text.trim().isNotEmpty) {
                   try {
                     // Update comment in database
-                    await DatabaseHelper.updateComment(
+                    await DatabaseStorageHelper.updateComment(
                       comment['book_name'] ?? '',
                       comment['page_number']?.toDouble() ?? 0.0,
                       titleController.text.trim().isEmpty
