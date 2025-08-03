@@ -1,4 +1,3 @@
-import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:flutter/material.dart';
 
 class PrivacyPolicyScreen extends StatefulWidget {
@@ -59,9 +58,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen>
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: BoxDecoration(gradient: customGradinet(context)),
-        ),
+        flexibleSpace: Container(),
         title: const Text(
           'سياسة الخصوصية',
           style: TextStyle(
@@ -130,7 +127,6 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: customGradinet(context),
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(

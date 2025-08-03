@@ -1,20 +1,13 @@
-import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/features/mainWrapper/view/navigaion.dart';
-import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
-import 'package:bookapp/features/settings/bloc/settings_state.dart';
 import 'package:bookapp/gen/assets.gen.dart';
-import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomAppbar {
   static AppBar littleAppBar(BuildContext context,
       {required String title, Widget? actions}) {
     return AppBar(
-      flexibleSpace: Container(
-        decoration: BoxDecoration(gradient: customGradinet(context)),
-      ).animate().fadeIn(duration: 500.ms).scale(
+      flexibleSpace: Container().animate().fadeIn(duration: 500.ms).scale(
             duration: 500.ms,
             curve: Curves.easeOut,
           ),
@@ -46,31 +39,20 @@ class CustomAppbar {
                   onTap: () {
                     Scaffold.of(context).openDrawer();
                   },
-                  child: Assets.icons.fiRrMenuBurger
-                      .image(width: 20, height: 20, color: Colors.white));
+                  child: Assets.newicons.barsStaggered.image(
+                    width: 20,
+                    height: 20,
+                  ));
             }),
             SizedBox(width: 6.5),
             Text(
               'المعرفة الدينية',
-              style: TextStyle(color: Colors.white, fontSize: 15),
+              style: TextStyle(fontSize: 15),
             ),
           ],
         ),
       ),
       leadingWidth: 200,
-      flexibleSpace: BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          return Container(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                state.primry,
-                state.unselected,
-              ])));
-        },
-      ),
       actions: [
         Padding(
           padding: const EdgeInsets.only(left: 8),
@@ -84,7 +66,7 @@ class CustomAppbar {
                     MainWrapper.controllerNavBar.jumpToTab(0);
                   },
                   child: Assets.images.logoAppbar
-                      .image(width: 30, height: 30, color: Colors.white))
+                      .image(width: 30, height: 30, color: Colors.black))
             ],
           ),
         ),

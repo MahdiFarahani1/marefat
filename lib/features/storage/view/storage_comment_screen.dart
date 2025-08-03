@@ -1,7 +1,5 @@
-import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/storage/repository/db_helper.dart';
-import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -51,9 +49,7 @@ class _CommentScreenState extends State<CommentScreen> {
         ],
         centerTitle: true,
         elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(gradient: customGradinet(context)),
-        ),
+        flexibleSpace: Container(),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _commentsFuture,
@@ -162,7 +158,6 @@ class _CommentScreenState extends State<CommentScreen> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        gradient: customGradinet(context),
                         borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(

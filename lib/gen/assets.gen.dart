@@ -22,6 +22,9 @@ class $AssetsDatabaseGen {
 class $AssetsFontsGen {
   const $AssetsFontsGen();
 
+  /// File path: assets/fonts/BahijMuna-Bold.woff2
+  String get bahijMunaBold => 'assets/fonts/BahijMuna-Bold.woff2';
+
   /// File path: assets/fonts/IBMPlexSansArabic-Regular.ttf
   String get iBMPlexSansArabicRegular =>
       'assets/fonts/IBMPlexSansArabic-Regular.ttf';
@@ -30,9 +33,40 @@ class $AssetsFontsGen {
   String get iBMPlexSansArabicSemiBold =>
       'assets/fonts/IBMPlexSansArabic-SemiBold.ttf';
 
+  /// File path: assets/fonts/Lotus-Light.woff2
+  String get lotusLight => 'assets/fonts/Lotus-Light.woff2';
+
+  /// File path: assets/fonts/SegoeUI-Semilight.ttf
+  String get segoeUISemilight => 'assets/fonts/SegoeUI-Semilight.ttf';
+
+  /// File path: assets/fonts/SegoeUI.ttf
+  String get segoeUITtf => 'assets/fonts/SegoeUI.ttf';
+
+  /// File path: assets/fonts/SegoeUI.woff2
+  String get segoeUIWoff2 => 'assets/fonts/SegoeUI.woff2';
+
+  /// File path: assets/fonts/abo.ttf
+  String get abo => 'assets/fonts/abo.ttf';
+
+  /// File path: assets/fonts/dijfont-bold.ttf
+  String get dijfontBold => 'assets/fonts/dijfont-bold.ttf';
+
+  /// File path: assets/fonts/dijlah-reg.ttf
+  String get dijlahReg => 'assets/fonts/dijlah-reg.ttf';
+
   /// List of all assets
-  List<String> get values =>
-      [iBMPlexSansArabicRegular, iBMPlexSansArabicSemiBold];
+  List<String> get values => [
+        bahijMunaBold,
+        iBMPlexSansArabicRegular,
+        iBMPlexSansArabicSemiBold,
+        lotusLight,
+        segoeUISemilight,
+        segoeUITtf,
+        segoeUIWoff2,
+        abo,
+        dijfontBold,
+        dijlahReg
+      ];
 }
 
 class $AssetsIconsGen {
@@ -2709,6 +2743,76 @@ class $AssetsLottieGen {
   List<String> get values => [error404];
 }
 
+class $AssetsNewiconsGen {
+  const $AssetsNewiconsGen();
+
+  /// File path: assets/newicons/article.png
+  AssetGenImage get article =>
+      const AssetGenImage('assets/newicons/article.png');
+
+  /// File path: assets/newicons/bars-staggered.png
+  AssetGenImage get barsStaggered =>
+      const AssetGenImage('assets/newicons/bars-staggered.png');
+
+  /// File path: assets/newicons/book-open-cover.png
+  AssetGenImage get bookOpenCover =>
+      const AssetGenImage('assets/newicons/book-open-cover.png');
+
+  /// File path: assets/newicons/bookmark.png
+  AssetGenImage get bookmark =>
+      const AssetGenImage('assets/newicons/bookmark.png');
+
+  /// File path: assets/newicons/comment-info.png
+  AssetGenImage get commentInfo =>
+      const AssetGenImage('assets/newicons/comment-info.png');
+
+  /// File path: assets/newicons/customize.png
+  AssetGenImage get customize =>
+      const AssetGenImage('assets/newicons/customize.png');
+
+  /// File path: assets/newicons/house-chimney.png
+  AssetGenImage get houseChimney =>
+      const AssetGenImage('assets/newicons/house-chimney.png');
+
+  /// File path: assets/newicons/images.png
+  AssetGenImage get images => const AssetGenImage('assets/newicons/images.png');
+
+  /// File path: assets/newicons/messages-question.png
+  AssetGenImage get messagesQuestion =>
+      const AssetGenImage('assets/newicons/messages-question.png');
+
+  /// File path: assets/newicons/moon.png
+  AssetGenImage get moon => const AssetGenImage('assets/newicons/moon.png');
+
+  /// File path: assets/newicons/paper-plane-top.png
+  AssetGenImage get paperPlaneTop =>
+      const AssetGenImage('assets/newicons/paper-plane-top.png');
+
+  /// File path: assets/newicons/search.png
+  AssetGenImage get search => const AssetGenImage('assets/newicons/search.png');
+
+  /// File path: assets/newicons/user-lock.png
+  AssetGenImage get userLock =>
+      const AssetGenImage('assets/newicons/user-lock.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        article,
+        barsStaggered,
+        bookOpenCover,
+        bookmark,
+        commentInfo,
+        customize,
+        houseChimney,
+        images,
+        messagesQuestion,
+        moon,
+        paperPlaneTop,
+        search,
+        userLock
+      ];
+}
+
 class $AssetsWebGen {
   const $AssetsWebGen();
 
@@ -2806,6 +2910,7 @@ class Assets {
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsLottieGen lottie = $AssetsLottieGen();
+  static const $AssetsNewiconsGen newicons = $AssetsNewiconsGen();
   static const $AssetsWebGen web = $AssetsWebGen();
 }
 

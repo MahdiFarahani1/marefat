@@ -37,20 +37,21 @@ class CustomDrawer extends StatelessWidget {
                   const SizedBox(height: 8),
 
                   const Divider(height: 32),
-                  _buildDrawerItem(Assets.icons.fiRrHome.path, 'الرئيسية', () {
+                  _buildDrawerItem(
+                      Assets.newicons.houseChimney.path, 'الرئيسية', () {
                     Navigator.pop(context);
                     MainWrapper.controllerNavBar.jumpToTab(0);
                   }),
 
                   _buildDrawerItem(
-                      Assets.icons.fiRrCommentInfo.path, 'حول التطبيق', () {
+                      Assets.newicons.commentInfo.path, 'حول التطبيق', () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const AboutAppScreen(),
                         ));
                   }),
-                  _buildDrawerItem(Assets.icons.fiRrSettings.path, 'الاعدادات',
+                  _buildDrawerItem(Assets.newicons.customize.path, 'الاعدادات',
                       () {
                     Navigator.push(
                         context,
@@ -59,7 +60,7 @@ class CustomDrawer extends StatelessWidget {
                         ));
                   }),
                   _buildDrawerItem(
-                      Assets.icons.fiRrBook.path, 'سياسية الخصوصية', () {
+                      Assets.newicons.userLock.path, 'سياسية الخصوصية', () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -70,7 +71,7 @@ class CustomDrawer extends StatelessWidget {
                   EsaySize.gap(2), const Divider(),
                   // اشتراک‌گذاری
                   ListTile(
-                    leading: Assets.icons.send
+                    leading: Assets.newicons.paperPlaneTop
                         .image(width: 18, height: 18, color: Colors.black),
                     title: const Text('مشاركة التطبيق'),
                     trailing: Assets.icons.fiRrAngleLeft
@@ -82,7 +83,7 @@ class CustomDrawer extends StatelessWidget {
                   ),
 
                   ListTile(
-                      leading: Assets.icons.fiRrMoon
+                      leading: Assets.newicons.moon
                           .image(width: 18, height: 18, color: Colors.black),
                       title: const Text('الوضع الليلي'),
                       trailing: Transform.scale(

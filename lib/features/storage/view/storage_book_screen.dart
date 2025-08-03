@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/storage/bloc/bookmark/bookmark_cubit.dart';
 import 'package:bookapp/features/storage/bloc/bookmark/bookmark_state.dart';
 import 'package:bookapp/shared/ui_helper/dialog_common.dart';
-import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -70,9 +68,7 @@ class _StorageBookScreenState extends State<StorageBookScreen> {
           ],
           centerTitle: true,
           elevation: 0,
-          flexibleSpace: Container(
-            decoration: BoxDecoration(gradient: customGradinet(context)),
-          ),
+          flexibleSpace: Container(),
         ),
         body: BlocBuilder<BookmarkCubit, BookMarkState>(
             builder: (context, state) {
@@ -137,7 +133,6 @@ class _StorageBookScreenState extends State<StorageBookScreen> {
                             leading: Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                gradient: customGradinet(context),
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: [
                                   BoxShadow(

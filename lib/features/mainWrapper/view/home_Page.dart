@@ -13,7 +13,6 @@ import 'package:bookapp/features/storage/view/storage_comment_screen.dart';
 import 'package:bookapp/features/storage/view/storage_page_screen.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/func/launchURL.dart';
-import 'package:bookapp/shared/utils/images_network.dart';
 import 'package:bookapp/shared/utils/loading.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -133,7 +132,10 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.search, color: Colors.grey),
+                          Assets.newicons.search.image(
+                              width: 20,
+                              height: 20,
+                              color: Theme.of(context).primaryColor),
                           const SizedBox(width: 12),
                           Text(
                             'ابحث عن كتاب أو مؤلف...',

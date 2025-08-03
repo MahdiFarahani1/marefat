@@ -1,6 +1,5 @@
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/esay_size.dart';
-import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
@@ -36,7 +35,6 @@ class QuestionsContent extends StatelessWidget {
                       borderRadius: const BorderRadius.vertical(
                         bottom: Radius.circular(30),
                       ),
-                      gradient: customGradinet(context),
                     ),
                   ),
 

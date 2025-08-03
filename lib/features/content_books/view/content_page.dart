@@ -20,7 +20,6 @@ import 'package:bookapp/features/content_books/bloc/content/content_state.dart';
 import 'package:bookapp/features/storage/bloc/page_bookmark/page_bookmark_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/esay_size.dart';
-import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:bookapp/shared/utils/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -75,9 +74,7 @@ class _ContentPageState extends State<ContentPage> {
         },
         child: Scaffold(
           appBar: AppBar(
-            flexibleSpace: Container(
-              decoration: BoxDecoration(gradient: customGradinet(context)),
-            ),
+            flexibleSpace: Container(),
             elevation: 4,
             title: const Text(
               'عنوان کتاب',

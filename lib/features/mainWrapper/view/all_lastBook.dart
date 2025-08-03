@@ -7,7 +7,6 @@ import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/func/downloaded_book.dart';
 import 'package:bookapp/shared/utils/images_network.dart';
-import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -25,9 +24,7 @@ class AllLastBooks extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         centerTitle: true,
         elevation: 1,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(gradient: customGradinet(context)),
-        ),
+        flexibleSpace: Container(),
       ),
       body: BlocBuilder<SliderCubit, SliderState>(
         builder: (context, state) {
@@ -164,7 +161,8 @@ class AllLastBooks extends StatelessWidget {
                                               : context
                                                   .read<SettingsCubit>()
                                                   .state
-                                                  .unselected,
+                                                  .primry
+                                                  .withOpacity(0.3),
                                           borderRadius:
                                               BorderRadius.circular(12),
                                         ),

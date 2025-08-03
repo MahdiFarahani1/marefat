@@ -2,7 +2,6 @@ import 'package:bookapp/core/constant/const_class.dart';
 import 'package:bookapp/core/extensions/widget_ex.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/error_widget.dart';
-import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -90,9 +89,8 @@ class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
                               child: GestureDetector(
                                 onTap: () {},
                                 child: Container(
-                                    decoration: BoxDecoration(
-                                        gradient: customGradinet(context),
-                                        shape: BoxShape.circle),
+                                    decoration:
+                                        BoxDecoration(shape: BoxShape.circle),
                                     child: Assets.icons.send
                                         .image(
                                             color: Colors.white,

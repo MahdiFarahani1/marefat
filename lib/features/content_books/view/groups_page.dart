@@ -1,7 +1,5 @@
-import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/features/content_books/view/content_page.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
-import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -58,9 +56,7 @@ class _BookGroupsPageState extends State<BookGroupsPage> {
         ),
         centerTitle: true,
         elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(gradient: customGradinet(context)),
-        ),
+        flexibleSpace: Container(),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),

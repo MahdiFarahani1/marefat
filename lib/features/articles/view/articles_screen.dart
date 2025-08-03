@@ -3,7 +3,6 @@ import 'package:bookapp/features/articles/model/artile_model.dart';
 import 'package:bookapp/features/articles/view/article_content_screen.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/error_widget.dart';
-import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:bookapp/shared/utils/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -87,7 +86,6 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                     topRight: Radius.circular(16),
                                     bottomRight: Radius.circular(16),
                                   ),
-                                  gradient: customGradinet(context),
                                 ),
                                 child: Center(
                                     child: Assets.icons.newspaper1

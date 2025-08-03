@@ -9,7 +9,6 @@ import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/error_widget.dart';
 import 'package:bookapp/shared/utils/esay_size.dart';
-import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:bookapp/shared/utils/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,9 +42,9 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
           child: AnimatedStack(
             enableClickToDismiss: true,
             preventForegroundInteractions: true,
-            backgroundColor: context.read<SettingsCubit>().state.unselected,
+            backgroundColor: context.read<SettingsCubit>().state.primry,
             animateButton: true,
-            fabBackgroundColor: context.read<SettingsCubit>().state.unselected,
+            fabBackgroundColor: context.read<SettingsCubit>().state.primry,
             fabIconColor: Colors.white,
             columnWidget: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,9 +99,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                   flexibleSpace: AnimatedContainer(
                     duration: const Duration(milliseconds: 600),
                     curve: Curves.easeInOut,
-                    decoration: BoxDecoration(
-                      gradient: customGradinet(context),
-                    ),
+                    decoration: BoxDecoration(),
                   ),
                   title: Text(
                     status is QuestionsContentLoaded ? 'الأسئلة' : 'التصنيفات',
@@ -208,8 +205,6 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         leading: Container(
-          decoration: BoxDecoration(
-              gradient: customGradinet(context), shape: BoxShape.circle),
           child: const Icon(Icons.question_answer_rounded, color: Colors.white)
               .padAll(14),
         ),

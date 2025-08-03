@@ -159,7 +159,8 @@ class BookItemTile extends StatelessWidget {
                                   : context
                                       .read<SettingsCubit>()
                                       .state
-                                      .unselected,
+                                      .primry
+                                      .withOpacity(0.3),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             padding: EdgeInsets.all(8),

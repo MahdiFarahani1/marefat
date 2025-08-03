@@ -1,4 +1,4 @@
-import 'package:bookapp/shared/utils/linearGradient.dart';
+import 'package:bookapp/shared/utils/without_tag_html.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -87,9 +87,7 @@ class _SearchPageState extends State<SearchPage> {
             color: Colors.white,
           ),
         ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(gradient: customGradinet(context)),
-        ),
+        flexibleSpace: Container(),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
@@ -139,8 +137,7 @@ class _SearchPageState extends State<SearchPage> {
 
             // Results Section
             Container(
-              height:
-                  MediaQuery.of(context).size.height * 0.5, // نصف ارتفاع صفحه
+              // نصف ارتفاع صفحه
               margin: const EdgeInsets.symmetric(horizontal: 20),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
@@ -596,57 +593,59 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
           // Results list
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: state.results.length,
-              separatorBuilder: (_, __) => Divider(
-                color: Theme.of(context)
-                    .colorScheme
-                    .onSurface
-                    .withValues(alpha: 0.1),
-              ),
-              itemBuilder: (context, index) {
-                final item = state.results[index];
-                return Container(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.text,
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Theme.of(context).colorScheme.onSurface,
-                          height: 1.5,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: context
-                              .read<SettingsCubit>()
-                              .state
-                              .primry
-                              .withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          'من كتاب: ${item.bookName}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: context.read<SettingsCubit>().state.primry,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+          ListView.separated(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: state.results.length,
+            separatorBuilder: (_, __) => Divider(
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.1),
             ),
+            itemBuilder: (context, index) {
+              final item = state.results[index];
+              return Container(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      extractPlainText(item.text),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Theme.of(context).colorScheme.onSurface,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: context
+                            .read<SettingsCubit>()
+                            .state
+                            .primry
+                            .withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'من كتاب: ${item.bookName}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: context.read<SettingsCubit>().state.primry,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       );

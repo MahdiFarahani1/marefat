@@ -12,7 +12,6 @@ class SettingsState {
 
   final PageDirection pageDirection;
   final Color primry;
-  final Color unselected;
   Color pageColor;
   bool isApplying;
   SettingsState({
@@ -22,7 +21,6 @@ class SettingsState {
     required this.gradientIndex,
     required this.pageDirection,
     required this.primry,
-    required this.unselected,
     required this.pageColor,
     required this.isApplying,
   });
@@ -36,8 +34,7 @@ class SettingsState {
       fontFamily: 'لوتوس',
       gradientIndex: 0,
       pageDirection: PageDirection.horizontal,
-      primry: SettingsCubit.backgrounds[0][0],
-      unselected: SettingsCubit.backgrounds[0][1],
+      primry: SettingsCubit.backgrounds[0],
     );
   }
 
@@ -60,8 +57,7 @@ class SettingsState {
       fontFamily: fontFamily ?? this.fontFamily,
       gradientIndex: newGradientIndex,
       pageDirection: pageDirection ?? this.pageDirection,
-      primry: SettingsCubit.backgrounds[newGradientIndex][0],
-      unselected: SettingsCubit.backgrounds[newGradientIndex][1],
+      primry: SettingsCubit.backgrounds[newGradientIndex],
     );
   }
 }

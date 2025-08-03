@@ -22,8 +22,7 @@ class SettingsCubit extends Cubit<SettingsState> {
       fontFamily: _box.read('fontFamily') ?? 'لوتوس',
       gradientIndex: _box.read('gradientIndex') ?? 0,
       pageDirection: PageDirection.values[_box.read('pageDirection') ?? 1],
-      primry: SettingsCubit.backgrounds[0][0],
-      unselected: SettingsCubit.backgrounds[0][1],
+      primry: SettingsCubit.backgrounds[0],
     ));
   }
 
@@ -66,29 +65,12 @@ class SettingsCubit extends Cubit<SettingsState> {
     emit(state.copyWith(isApplying: isApply));
   }
 
-  static List<List<Color>> backgrounds = [
-    [
-      Color(0xFF141E30), // آبی نفتی تیره
-      Color(0xFF243B55), // آبی خاکستری
-    ],
-    [
-      Color(0xFF373B44), // شروع: خاکستری تیره
-      Color(0xFF4286F4), // پایان: آبی روشن
-    ],
-    // خاکستری نقره‌ای به سفید
-    [
-      Color(0xFF1F4037), // سبز تیره
-      Color(0xFF99F2C8), // سبز نعنایی روشن
-    ],
+  static List<Color> backgrounds = [
+    Color(0xFF141E30),
+    Color(0xFFEEA849), // طلایی گرم
+    Color(0xFFF46B45), // نارنجی مایل به قرمز
+    Color(0xFF9BC5C3), // سبز آبی ملایم
 
-    [
-      Color(0xFFF46B45), // نارنجی مایل به قرمز
-      Color(0xFFEEA849), // طلایی گرم
-    ],
-    // نارنجی روشن به کرم طلایی
-    [
-      Color(0xFF616161), // خاکستری تیره
-      Color(0xFF9BC5C3), // سبز آبی ملایم
-    ],
+    Color.fromARGB(255, 18, 41, 78), // پایان: آبی روشن
   ];
 }

@@ -1,4 +1,3 @@
-import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:flutter/material.dart';
 
 class AboutAppScreen extends StatefulWidget {
@@ -82,9 +81,7 @@ class _AboutAppScreenState extends State<AboutAppScreen>
             color: Colors.white,
           ),
         ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(gradient: customGradinet(context)),
-        ),
+        flexibleSpace: Container(),
         backgroundColor: Colors.indigo,
         elevation: 0,
         leading: IconButton(
@@ -123,7 +120,6 @@ class _AboutAppScreenState extends State<AboutAppScreen>
           width: 120,
           height: 120,
           decoration: BoxDecoration(
-            gradient: customGradinet(context),
             borderRadius: BorderRadius.circular(30),
             boxShadow: [
               BoxShadow(
@@ -147,7 +143,6 @@ class _AboutAppScreenState extends State<AboutAppScreen>
     return Container(
       padding: const EdgeInsets.all(25),
       decoration: BoxDecoration(
-        gradient: customGradinet(context),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(

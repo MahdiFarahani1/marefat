@@ -3,7 +3,6 @@ import 'package:bookapp/features/articles/model/artile_model.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/ui_helper/dialog_common.dart';
-import 'package:bookapp/shared/utils/linearGradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +21,6 @@ class ArticleDetailScreen extends StatelessWidget {
         floatingActionButton: Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: customGradinet(context),
           ),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -54,9 +52,7 @@ class ArticleDetailScreen extends StatelessWidget {
               ),
             ),
           ],
-          flexibleSpace: Container(
-            decoration: BoxDecoration(gradient: customGradinet(context)),
-          ),
+          flexibleSpace: Container(),
         ),
         body: SafeArea(
           child: Padding(

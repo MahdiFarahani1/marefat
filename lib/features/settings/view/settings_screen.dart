@@ -44,7 +44,7 @@ class SettingsPage extends StatelessWidget {
                     delay: 200,
                   ),
                   _animatedSection(
-                    child: _colorGradientPicker(context, state.gradientIndex),
+                    child: _colorIconsPicker(context, state.gradientIndex),
                     delay: 250,
                   ),
                   const SizedBox(height: 24),
@@ -192,7 +192,7 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _colorGradientPicker(BuildContext context, int gradientIndex) {
+  Widget _colorIconsPicker(BuildContext context, int gradientIndex) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: SizedBox(
@@ -213,16 +213,12 @@ class SettingsPage extends StatelessWidget {
                   duration: const Duration(milliseconds: 250),
                   width: isSelected ? 55 : 50,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: SettingsCubit.backgrounds[index],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
+                    color: SettingsCubit.backgrounds[index],
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
-                              color: SettingsCubit.backgrounds[index][0]
+                              color: SettingsCubit.backgrounds[index]
                                   .withOpacity(0.3),
                               blurRadius: 8,
                               offset: const Offset(0, 4),

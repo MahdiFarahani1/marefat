@@ -10,6 +10,6 @@
 class FontFamily {
   FontFamily._();
 
-  /// Font family: App
-  static const String app = 'App';
+  /// Font family: app
+  static const String app = 'app';
 }

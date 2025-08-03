@@ -1,4 +1,3 @@
-import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/features/articles/view/articles_screen.dart';
 import 'package:bookapp/features/mainWrapper/view/home_Page.dart';
 import 'package:bookapp/features/mainWrapper/bloc/navbar/navigation_cubit.dart';
@@ -40,43 +39,53 @@ class MainWrapper extends StatelessWidget {
                 },
                 tabs: [
                   navItem(
+                      settingsState: settingsState,
                       widthIcon: 20,
                       heightIcon: 20,
-                      itemColor:
-                          state == 0 ? Colors.white : settingsState.unselected,
-                      iconPath: Assets.icons.fiRrBookAlt.path,
+                      itemColor: state == 0
+                          ? settingsState.primry
+                          : settingsState.primry.withOpacity(0.3),
+                      iconPath: Assets.newicons.bookOpenCover.path,
                       title: 'المكتبة',
                       screen: HomePage()),
                   navItem(
+                      settingsState: settingsState,
                       widthIcon: 20,
                       heightIcon: 20,
-                      itemColor:
-                          state == 1 ? Colors.white : settingsState.unselected,
-                      iconPath: Assets.icons.fiRrDuplicate.path,
+                      itemColor: state == 1
+                          ? settingsState.primry
+                          : settingsState.primry.withOpacity(0.3),
+                      iconPath: Assets.newicons.article.path,
                       title: 'المقالات',
                       screen: ArticlesScreen()),
                   navItem(
-                      itemColor:
-                          state == 2 ? Colors.white : settingsState.unselected,
-                      iconPath: Assets.icons.question.path,
+                      settingsState: settingsState,
+                      itemColor: state == 2
+                          ? settingsState.primry
+                          : settingsState.primry.withOpacity(0.3),
+                      iconPath: Assets.newicons.messagesQuestion.path,
                       widthIcon: 22,
                       heightIcon: 22,
                       title: 'الاسئلة',
                       screen: QuestionsScreen()),
                   navItem(
+                      settingsState: settingsState,
                       widthIcon: 20,
                       heightIcon: 20,
-                      itemColor:
-                          state == 3 ? Colors.white : settingsState.unselected,
-                      iconPath: Assets.icons.fiRrGallery.path,
+                      itemColor: state == 3
+                          ? settingsState.primry
+                          : settingsState.primry.withOpacity(0.3),
+                      iconPath: Assets.newicons.images.path,
                       title: 'الصور',
                       screen: PhotoGalleryPage()),
                   navItem(
+                      settingsState: settingsState,
                       widthIcon: 20,
                       heightIcon: 20,
-                      itemColor:
-                          state == 4 ? Colors.white : settingsState.unselected,
-                      iconPath: Assets.icons.fiRrBookmark.path,
+                      itemColor: state == 4
+                          ? settingsState.primry
+                          : settingsState.primry.withOpacity(0.3),
+                      iconPath: Assets.newicons.bookmark.path,
                       title: 'المفضلة',
                       screen: StorageBookScreen(
                         isBack: false,
@@ -86,16 +95,10 @@ class MainWrapper extends StatelessWidget {
                     BlocBuilder<SettingsCubit, SettingsState>(
                   builder: (context, state) {
                     return Style6BottomNavBar(
+                        height: 65,
                         navBarConfig: navBarConfig,
                         navBarDecoration: NavBarDecoration(
                           padding: EdgeInsets.all(9),
-                          gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                context.read<SettingsCubit>().state.primry,
-                                context.read<SettingsCubit>().state.unselected,
-                              ]),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black26,
@@ -122,6 +125,7 @@ class MainWrapper extends StatelessWidget {
       required String title,
       required Widget screen,
       required Color itemColor,
+      required SettingsState settingsState,
       double? widthIcon,
       double? heightIcon}) {
     return PersistentTabConfig(
@@ -138,7 +142,8 @@ class MainWrapper extends StatelessWidget {
           ),
           iconSize: 22,
           title: title,
-          activeForegroundColor: Colors.white,
+          inactiveForegroundColor: settingsState.primry.withOpacity(0.3),
+          activeForegroundColor: settingsState.primry,
           textStyle: TextStyle(fontSize: 11)),
     );
   }

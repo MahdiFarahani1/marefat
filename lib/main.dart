@@ -24,7 +24,6 @@ import 'package:get_storage/get_storage.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize GetStorage
   await GetStorage.init();
 
   await SystemChrome.setPreferredOrientations([
@@ -99,8 +98,7 @@ class MyApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            theme: AppTheme.lightTheme(
-                settingsState.primry, settingsState.unselected),
+            theme: AppTheme.lightTheme(settingsState.primry),
             //darkTheme: AppTheme.darkTheme,
             home: const OnboardingPage(),
           );
