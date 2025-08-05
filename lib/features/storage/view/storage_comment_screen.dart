@@ -249,7 +249,7 @@ class _CommentScreenState extends State<CommentScreen> {
                           comment['book_name'] ?? 'بدون عنوان',
                           index,
                         ),
-                        tooltip: 'حذف کامنت',
+                        tooltip: 'حذف التعليق',
                       ),
                     ),
                   ],
@@ -339,11 +339,11 @@ class _CommentScreenState extends State<CommentScreen> {
             children: [
               Icon(Icons.warning_amber_rounded, color: Colors.orange.shade600),
               const SizedBox(width: 8),
-              const Text('حذف کامنت'),
+              const Text('حذف التعليق'),
             ],
           ),
           content: Text(
-            'آیا مطمئن هستید که می‌خواهید این کامنت از "$bookName" را حذف کنید؟',
+            'هل أنت متأكد أنك تريد حذف هذا التعليق من "$bookName"؟',
             style: const TextStyle(fontSize: 16),
           ),
           actions: [
@@ -379,7 +379,7 @@ class _CommentScreenState extends State<CommentScreen> {
                   Navigator.of(dialogContext).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text('خطا در حذف کامنت'),
+                      content: const Text('خطأ في حذف التعليق'),
                       backgroundColor: Colors.red.withOpacity(0.4),
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(

@@ -82,14 +82,22 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                               Container(
                                 width: 43,
                                 decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .primaryColor
+                                      .withOpacity(0.3),
                                   borderRadius: const BorderRadius.only(
                                     topRight: Radius.circular(16),
                                     bottomRight: Radius.circular(16),
                                   ),
                                 ),
                                 child: Center(
-                                    child: Assets.icons.newspaper1
-                                        .image(color: Colors.white)),
+                                    child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(right: 6, left: 6),
+                                  child: Assets.newicons.newspaper.image(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                )),
                               ),
                               Expanded(
                                 child: Padding(
@@ -120,11 +128,12 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                 ),
                               ),
                               Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 8, left: 8),
-                                child: Icon(Icons.arrow_forward_ios_rounded,
-                                    size: 18),
-                              ),
+                                  padding:
+                                      const EdgeInsets.only(right: 8, left: 8),
+                                  child: Assets.newicons.angleSmallLeft.image(
+                                      width: 20,
+                                      height: 20,
+                                      color: Theme.of(context).primaryColor)),
                             ],
                           ),
                         ),

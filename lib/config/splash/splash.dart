@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:bookapp/features/mainWrapper/view/navigaion.dart';
+import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/esay_size.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -19,6 +21,8 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void initState() {
+    BlocProvider.of<SettingsCubit>(context).loadSettings();
+
     super.initState();
     _controller = AnimationController(
       vsync: this,

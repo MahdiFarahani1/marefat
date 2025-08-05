@@ -2659,6 +2659,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/bg-sp.jpg
   AssetGenImage get bgSp => const AssetGenImage('assets/images/bg-sp.jpg');
 
+  /// File path: assets/images/bookmark.png
+  AssetGenImage get bookmark =>
+      const AssetGenImage('assets/images/bookmark.png');
+
   /// File path: assets/images/bookmark1.png
   AssetGenImage get bookmark1 =>
       const AssetGenImage('assets/images/bookmark1.png');
@@ -2673,6 +2677,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/com-c-2.png
   AssetGenImage get comC2 => const AssetGenImage('assets/images/com-c-2.png');
 
+  /// File path: assets/images/comment.png
+  AssetGenImage get comment => const AssetGenImage('assets/images/comment.png');
+
   /// File path: assets/images/document.png
   AssetGenImage get document =>
       const AssetGenImage('assets/images/document.png');
@@ -2680,6 +2687,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/download.png
   AssetGenImage get download =>
       const AssetGenImage('assets/images/download.png');
+
+  /// File path: assets/images/downloadBook.png
+  AssetGenImage get downloadBook =>
+      const AssetGenImage('assets/images/downloadBook.png');
+
+  /// File path: assets/images/downloadedbook.png
+  AssetGenImage get downloadedbook =>
+      const AssetGenImage('assets/images/downloadedbook.png');
 
   /// File path: assets/images/in-sp-1.png
   AssetGenImage get inSp1 => const AssetGenImage('assets/images/in-sp-1.png');
@@ -2705,8 +2720,15 @@ class $AssetsImagesGen {
   AssetGenImage get logoSp => const AssetGenImage('assets/images/logo-sp.png');
 
   /// File path: assets/images/question.jpg
-  AssetGenImage get question =>
+  AssetGenImage get questionJpg =>
       const AssetGenImage('assets/images/question.jpg');
+
+  /// File path: assets/images/question.png
+  AssetGenImage get questionPng =>
+      const AssetGenImage('assets/images/question.png');
+
+  /// File path: assets/images/share.png
+  AssetGenImage get share => const AssetGenImage('assets/images/share.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
@@ -2716,12 +2738,16 @@ class $AssetsImagesGen {
         b2,
         b3,
         bgSp,
+        bookmark,
         bookmark1,
         bookmark2,
         comC1,
         comC2,
+        comment,
         document,
         download,
+        downloadBook,
+        downloadedbook,
         inSp1,
         inSp2,
         inSp3,
@@ -2729,7 +2755,9 @@ class $AssetsImagesGen {
         logoAppbar,
         logoHeader,
         logoSp,
-        question
+        questionJpg,
+        questionPng,
+        share
       ];
 }
 
@@ -2745,6 +2773,18 @@ class $AssetsLottieGen {
 
 class $AssetsNewiconsGen {
   const $AssetsNewiconsGen();
+
+  /// File path: assets/newicons/angle-small-left.png
+  AssetGenImage get angleSmallLeft =>
+      const AssetGenImage('assets/newicons/angle-small-left.png');
+
+  /// File path: assets/newicons/angle-small-right.png
+  AssetGenImage get angleSmallRight =>
+      const AssetGenImage('assets/newicons/angle-small-right.png');
+
+  /// File path: assets/newicons/arrow-small-right.png
+  AssetGenImage get arrowSmallRight =>
+      const AssetGenImage('assets/newicons/arrow-small-right.png');
 
   /// File path: assets/newicons/article.png
   AssetGenImage get article =>
@@ -2762,6 +2802,18 @@ class $AssetsNewiconsGen {
   AssetGenImage get bookmark =>
       const AssetGenImage('assets/newicons/bookmark.png');
 
+  /// File path: assets/newicons/bookmarkfull.png
+  AssetGenImage get bookmarkfull =>
+      const AssetGenImage('assets/newicons/bookmarkfull.png');
+
+  /// File path: assets/newicons/calendar-lines-pen.png
+  AssetGenImage get calendarLinesPen =>
+      const AssetGenImage('assets/newicons/calendar-lines-pen.png');
+
+  /// File path: assets/newicons/comment-alt-dots.png
+  AssetGenImage get commentAltDots =>
+      const AssetGenImage('assets/newicons/comment-alt-dots.png');
+
   /// File path: assets/newicons/comment-info.png
   AssetGenImage get commentInfo =>
       const AssetGenImage('assets/newicons/comment-info.png');
@@ -2777,12 +2829,40 @@ class $AssetsNewiconsGen {
   /// File path: assets/newicons/images.png
   AssetGenImage get images => const AssetGenImage('assets/newicons/images.png');
 
+  /// File path: assets/newicons/inbox-in.png
+  AssetGenImage get inboxIn =>
+      const AssetGenImage('assets/newicons/inbox-in.png');
+
+  /// File path: assets/newicons/lightbulb-on.png
+  AssetGenImage get lightbulbOn =>
+      const AssetGenImage('assets/newicons/lightbulb-on.png');
+
+  /// File path: assets/newicons/map-marker-check.png
+  AssetGenImage get mapMarkerCheck =>
+      const AssetGenImage('assets/newicons/map-marker-check.png');
+
+  /// File path: assets/newicons/message-circle-refresh.png
+  AssetGenImage get messageCircleRefresh =>
+      const AssetGenImage('assets/newicons/message-circle-refresh.png');
+
   /// File path: assets/newicons/messages-question.png
   AssetGenImage get messagesQuestion =>
       const AssetGenImage('assets/newicons/messages-question.png');
 
+  /// File path: assets/newicons/messages.png
+  AssetGenImage get messages =>
+      const AssetGenImage('assets/newicons/messages.png');
+
   /// File path: assets/newicons/moon.png
   AssetGenImage get moon => const AssetGenImage('assets/newicons/moon.png');
+
+  /// File path: assets/newicons/newspaper.png
+  AssetGenImage get newspaper =>
+      const AssetGenImage('assets/newicons/newspaper.png');
+
+  /// File path: assets/newicons/open-book-lightbulb.png
+  AssetGenImage get openBookLightbulb =>
+      const AssetGenImage('assets/newicons/open-book-lightbulb.png');
 
   /// File path: assets/newicons/paper-plane-top.png
   AssetGenImage get paperPlaneTop =>
@@ -2791,24 +2871,57 @@ class $AssetsNewiconsGen {
   /// File path: assets/newicons/search.png
   AssetGenImage get search => const AssetGenImage('assets/newicons/search.png');
 
+  /// File path: assets/newicons/terms-info.png
+  AssetGenImage get termsInfo =>
+      const AssetGenImage('assets/newicons/terms-info.png');
+
+  /// File path: assets/newicons/time-check.png
+  AssetGenImage get timeCheck =>
+      const AssetGenImage('assets/newicons/time-check.png');
+
+  /// File path: assets/newicons/trash-xmark.png
+  AssetGenImage get trashXmark =>
+      const AssetGenImage('assets/newicons/trash-xmark.png');
+
+  /// File path: assets/newicons/triangle-warning.png
+  AssetGenImage get triangleWarning =>
+      const AssetGenImage('assets/newicons/triangle-warning.png');
+
   /// File path: assets/newicons/user-lock.png
   AssetGenImage get userLock =>
       const AssetGenImage('assets/newicons/user-lock.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
+        angleSmallLeft,
+        angleSmallRight,
+        arrowSmallRight,
         article,
         barsStaggered,
         bookOpenCover,
         bookmark,
+        bookmarkfull,
+        calendarLinesPen,
+        commentAltDots,
         commentInfo,
         customize,
         houseChimney,
         images,
+        inboxIn,
+        lightbulbOn,
+        mapMarkerCheck,
+        messageCircleRefresh,
         messagesQuestion,
+        messages,
         moon,
+        newspaper,
+        openBookLightbulb,
         paperPlaneTop,
         search,
+        termsInfo,
+        timeCheck,
+        trashXmark,
+        triangleWarning,
         userLock
       ];
 }

@@ -42,7 +42,8 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
           child: AnimatedStack(
             enableClickToDismiss: true,
             preventForegroundInteractions: true,
-            backgroundColor: context.read<SettingsCubit>().state.primry,
+            backgroundColor:
+                context.read<SettingsCubit>().state.primry.withOpacity(0.5),
             animateButton: true,
             fabBackgroundColor: context.read<SettingsCubit>().state.primry,
             fabIconColor: Colors.white,
@@ -51,24 +52,23 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
               children: [
                 _buildMenuItem(
                   onTap: () {
-                    print('dsdfasdas');
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => SearchQuestionPage(),
                         ));
                   },
-                  iconPath: Assets.icons.fiRrSearch.path,
+                  iconPath: Assets.newicons.search.path,
                 ),
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   onTap: () {},
-                  iconPath: Assets.icons.send.path,
+                  iconPath: Assets.newicons.paperPlaneTop.path,
                 ),
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   onTap: () {},
-                  iconPath: Assets.icons.question.path,
+                  iconPath: Assets.newicons.messagesQuestion.path,
                 ),
               ],
             ),
@@ -110,27 +110,30 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                     Padding(
                       padding: const EdgeInsets.only(left: 8),
                       child: CircleAvatar(
-                        radius: 25,
-                        backgroundColor: Colors.white.withOpacity(0.2),
+                        radius: 26,
+                        backgroundColor: theme.primaryColor.withOpacity(0.1),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child:
-                              Assets.icons.question.image(color: Colors.yellow),
+                          child: Assets.newicons.lightbulbOn
+                              .image(color: theme.primaryColor),
                         ),
                       ),
                     ).animate().fadeIn(duration: 500.ms).scale(delay: 100.ms),
                   ],
                   leading: status is QuestionsContentLoaded
-                      ? IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
+                      ? InkWell(
+                          onTap: () {
                             BlocProvider.of<QuestionCubit>(context)
                                 .initalCategoryFetch();
                           },
-                        )
+                          child: CircleAvatar(
+                            backgroundColor:
+                                Theme.of(context).primaryColor.withOpacity(0.1),
+                            child: Assets.newicons.angleSmallRight.image(
+                                width: 25,
+                                height: 25,
+                                color: Theme.of(context).primaryColor),
+                          )).padAll(6)
                       : null,
                 ),
                 body: Container(
@@ -202,12 +205,16 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
         ],
       ),
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         leading: Container(
-          child: const Icon(Icons.question_answer_rounded, color: Colors.white)
-              .padAll(14),
-        ),
+            width: 65,
+            height: 65,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: theme.primaryColor.withOpacity(0.1)),
+            child: Assets.newicons.messages
+                .image(color: theme.primaryColor)
+                .padAll(12)),
         title: Text(
           category.title,
           style: theme.textTheme.titleMedium?.copyWith(
@@ -218,7 +225,8 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
           '${category.questionCount} سؤال',
           style: theme.textTheme.bodySmall,
         ),
-        trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 18),
+        trailing: Assets.newicons.angleSmallLeft
+            .image(color: theme.primaryColor, width: 22, height: 22),
         onTap: () {
           BlocProvider.of<QuestionCubit>(context).categoryFetch(category.id);
         },

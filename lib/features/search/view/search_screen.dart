@@ -23,7 +23,7 @@ class _SearchPageState extends State<SearchPage> {
   String selectedBookPath = 'all';
 
   List<Map<String, String>> books = [
-    {'id': 'all', 'name': 'همه کتاب‌ها', 'path': 'all'},
+    {'id': 'all', 'name': 'جميع الكتب', 'path': 'all'},
   ];
 
   @override

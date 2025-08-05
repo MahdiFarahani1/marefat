@@ -8,6 +8,7 @@ class ItemQuestion {
     return Padding(
       padding: EdgeInsets.only(bottom: 40),
       child: ListView.separated(
+          physics: BouncingScrollPhysics(),
           padding: const EdgeInsets.all(16),
           itemCount: questions.length,
           separatorBuilder: (_, __) => const SizedBox(height: 4),
@@ -27,25 +28,19 @@ class ItemQuestion {
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(8)),
                 child: ListTile(
+                  tileColor: Theme.of(context).primaryColor.withOpacity(0.1),
                   title: Text(question.title),
                   leading: Container(
                     width: 36,
                     height: 36,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
+                        shape: BoxShape.circle,
+                        color: Theme.of(context).primaryColor.withOpacity(0.3)),
                     child: Center(
                       child: Text(
                         '${index + 1}',
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

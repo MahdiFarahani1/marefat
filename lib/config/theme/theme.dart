@@ -47,47 +47,103 @@ class AppTheme {
     );
   }
 
-  static ThemeData darkTheme(Color primary, Color unselected) {
+  static ThemeData darkTheme() {
+    const backgroundColor = Color(0xFF121212); // مشکی خالص
+    const surfaceColor = Color(0xFF1E1E1E); // سطح‌ها مثل AppBar، کارت
+    const grey = Color(0xFFB0B0B0); // برای متن غیرفعال
+    const white = Colors.white;
+
     return ThemeData(
-      fontFamily: FontFamily.app,
       useMaterial3: true,
-      scaffoldBackgroundColor: const Color(0xFF121212), // تیره‌تر از بک‌گراند
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xFF1E1E2E),
-        foregroundColor: Colors.white,
-        elevation: 0,
+      brightness: Brightness.dark,
+      fontFamily: FontFamily.app,
+      scaffoldBackgroundColor: backgroundColor,
+      cardColor: surfaceColor,
+      colorScheme: const ColorScheme.dark(
+        primary: white,
+        secondary: grey,
+        surface: surfaceColor,
+        background: backgroundColor,
+        onPrimary: white,
+        onSecondary: grey,
+        onSurface: white,
+        onBackground: white,
+        error: Colors.redAccent,
+        onError: white,
       ),
-      colorScheme: ColorScheme.dark(
-        primary: primary,
-        secondary: const Color(0xFFC9B6E4),
-        surface: const Color(0xFF1E1E2E), // کارت‌ها و AppBar
-        background: const Color(0xFF1E1E2E),
-        onPrimary: Colors.white,
-        onSecondary: Colors.white,
-        onSurface: Colors.white,
-        onBackground: Colors.white,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: surfaceColor,
+        foregroundColor: white,
+        elevation: 0,
+        titleTextStyle: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: white,
+        ),
+        iconTheme: IconThemeData(color: white),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: const Color(0xFF1E1E2E),
-        indicatorColor: primary.withOpacity(0.2),
+        backgroundColor: surfaceColor,
+        indicatorColor: white.withOpacity(0.08),
         labelTextStyle: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
-            return TextStyle(
-              color: primary,
-              fontWeight: FontWeight.bold,
-            );
-          }
           return TextStyle(
-            color: unselected,
+            color: states.contains(MaterialState.selected) ? white : grey,
+            fontWeight: states.contains(MaterialState.selected)
+                ? FontWeight.bold
+                : FontWeight.normal,
           );
         }),
         iconTheme: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
-            return IconThemeData(color: primary);
-          }
-          return IconThemeData(color: unselected);
+          return IconThemeData(
+            color: states.contains(MaterialState.selected) ? white : grey,
+          );
         }),
       ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: surfaceColor,
+        selectedItemColor: white,
+        unselectedItemColor: grey,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+      textTheme: const TextTheme(
+        bodyLarge: TextStyle(color: white, fontSize: 16),
+        bodyMedium: TextStyle(color: Colors.white70, fontSize: 14),
+        titleLarge: TextStyle(color: white, fontWeight: FontWeight.bold),
+        labelLarge: TextStyle(color: white),
+      ),
+      dialogTheme: DialogTheme(
+        backgroundColor: surfaceColor,
+        titleTextStyle: const TextStyle(
+          color: white,
+          fontWeight: FontWeight.bold,
+          fontSize: 18,
+        ),
+        contentTextStyle: const TextStyle(
+          color: Colors.white70,
+          fontSize: 15,
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: white,
+          foregroundColor: backgroundColor,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          textStyle: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: const Color(0xFF2A2A2A),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        hintStyle: TextStyle(color: grey),
+        labelStyle: const TextStyle(color: white),
+      ),
+      iconTheme: const IconThemeData(color: white),
     );
   }
 }

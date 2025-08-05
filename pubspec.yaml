@@ -114,8 +114,8 @@ flutter:
   fonts:
     - family: app
       fonts:
-        - asset: fonts/IBMPlexSansArabic-Regular.ttf
-        - asset: fonts/IBMPlexSansArabic-SemiBold.ttf
+        - asset: assets/fonts/IBMPlexSansArabic-Regular.ttf
+        - asset: assets/fonts/IBMPlexSansArabic-SemiBold.ttf
           weight: 700
   #   - family: App
   #     fonts:

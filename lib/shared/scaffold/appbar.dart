@@ -13,7 +13,7 @@ class CustomAppbar {
           ),
       title: Text(
         title,
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Theme.of(context).primaryColor),
       ),
       centerTitle: true,
       leading: IconButton(
@@ -21,7 +21,7 @@ class CustomAppbar {
           Navigator.pop(context);
         },
         icon: Icon(Icons.arrow_back),
-        color: Colors.white,
+        color: Theme.of(context).primaryColor,
       ),
       actions: [actions ?? SizedBox.shrink()],
     );
@@ -40,14 +40,15 @@ class CustomAppbar {
                     Scaffold.of(context).openDrawer();
                   },
                   child: Assets.newicons.barsStaggered.image(
-                    width: 20,
-                    height: 20,
-                  ));
+                      width: 20,
+                      height: 20,
+                      color: Theme.of(context).primaryColor));
             }),
             SizedBox(width: 6.5),
             Text(
               'المعرفة الدينية',
-              style: TextStyle(fontSize: 15),
+              style: TextStyle(
+                  fontSize: 15, color: Theme.of(context).primaryColor),
             ),
           ],
         ),
@@ -65,8 +66,10 @@ class CustomAppbar {
                   onTap: () {
                     MainWrapper.controllerNavBar.jumpToTab(0);
                   },
-                  child: Assets.images.logoAppbar
-                      .image(width: 30, height: 30, color: Colors.black))
+                  child: Assets.images.logoAppbar.image(
+                      width: 30,
+                      height: 30,
+                      color: Theme.of(context).primaryColor))
             ],
           ),
         ),

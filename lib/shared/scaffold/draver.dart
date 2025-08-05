@@ -1,21 +1,19 @@
 import 'package:bookapp/features/about/view/about_app_screen.dart';
 import 'package:bookapp/features/about/view/privacy_policy_screen.dart';
 import 'package:bookapp/features/mainWrapper/view/navigaion.dart';
+import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
+import 'package:bookapp/features/settings/bloc/settings_state.dart';
 import 'package:bookapp/features/settings/view/settings_screen.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/esay_size.dart';
 import 'package:flutter/material.dart';
 import 'package:bookapp/config/theme/app_colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 
 class CustomDrawer extends StatelessWidget {
-  final Function(bool) onThemeToggle;
-  final bool isDarkMode;
-
   const CustomDrawer({
     super.key,
-    required this.onThemeToggle,
-    required this.isDarkMode,
   });
 
   @override
@@ -82,14 +80,24 @@ class CustomDrawer extends StatelessWidget {
                     },
                   ),
 
-                  ListTile(
-                      leading: Assets.newicons.moon
-                          .image(width: 18, height: 18, color: Colors.black),
-                      title: const Text('الوضع الليلي'),
-                      trailing: Transform.scale(
-                          scale: 0.77,
-                          child: Switch(
-                              value: isDarkMode, onChanged: onThemeToggle))),
+                  BlocBuilder<SettingsCubit, SettingsState>(
+                    builder: (context, state) {
+                      return ListTile(
+                          leading: Assets.newicons.moon.image(
+                              width: 18, height: 18, color: Colors.black),
+                          title: const Text('الوضع الليلي'),
+                          trailing: Transform.scale(
+                              scale: 0.77,
+                              child: Switch(
+                                value: state.darkMode,
+                                onChanged: (value) {
+                                  context
+                                      .read<SettingsCubit>()
+                                      .updateDarkMode(value);
+                                },
+                              )));
+                    },
+                  ),
                   // سوییچ حالت شب
 
                   const SizedBox(height: 12),

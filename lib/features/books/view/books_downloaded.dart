@@ -51,7 +51,7 @@ class _DownloadedBooksPageState extends State<DownloadedBooksPage> {
       create: (_) => DownloadedBooksCubit()..loadDownloadedBooks(),
       child: Scaffold(
         appBar:
-            CustomAppbar.littleAppBar(context, title: 'کتاب‌های دانلود شده'),
+            CustomAppbar.littleAppBar(context, title: 'الكتب التي تم تنزيلها'),
         body: BlocBuilder<DownloadedBooksCubit, DownloadedBooksState>(
           builder: (context, state) {
             if (state is DownloadedBooksLoading) {
@@ -100,7 +100,7 @@ class _DownloadedBooksPageState extends State<DownloadedBooksPage> {
                     child: _filteredBooks.isEmpty
                         ? const Center(
                             child: Text(
-                              'کتابی با این مشخصات پیدا نشد',
+                              'لم يتم العثور على كتاب بهذه المواصفات',
                               style: TextStyle(fontSize: 16),
                             ),
                           )

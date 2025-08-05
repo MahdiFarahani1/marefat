@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:bookapp/core/constant/const_class.dart';
 import 'package:bookapp/core/extensions/widget_ex.dart';
 import 'package:bookapp/gen/assets.gen.dart';
@@ -19,12 +20,14 @@ class PhotoGalleryPage extends StatefulWidget {
 class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
   @override
   void initState() {
-    BlocProvider.of<GalleryCubit>(context).fetchGallery();
     super.initState();
+    context.read<GalleryCubit>().fetchGallery();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       body: BlocBuilder<GalleryCubit, GalleryState>(
         builder: (context, state) {
@@ -33,26 +36,28 @@ class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
           } else if (state is GalleryError) {
             return ApiErrorWidget(
               onRetry: () async {
-                await BlocProvider.of<GalleryCubit>(context).fetchGallery();
+                await context.read<GalleryCubit>().fetchGallery();
               },
             );
           } else if (state is GalleryLoaded) {
             final photos = state.photos;
+
             return RefreshIndicator(
-              onRefresh: () async {
-                await BlocProvider.of<GalleryCubit>(context).fetchGallery();
-              },
+              onRefresh: () => context.read<GalleryCubit>().fetchGallery(),
               child: GridView.builder(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(16),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
                   childAspectRatio: 0.8,
                 ),
                 itemCount: photos.length,
                 itemBuilder: (context, index) {
                   final photo = photos[index];
+                  final imageUrl =
+                      '${ConstantApp.baseUrlGalleryContent}${photo.img}';
+
                   return GestureDetector(
                     onTap: () => showDialog(
                       context: context,
@@ -89,9 +94,10 @@ class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
                               child: GestureDetector(
                                 onTap: () {},
                                 child: Container(
-                                    decoration:
-                                        BoxDecoration(shape: BoxShape.circle),
-                                    child: Assets.icons.send
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: theme.primaryColor),
+                                    child: Assets.newicons.paperPlaneTop
                                         .image(
                                             color: Colors.white,
                                             width: 20,
@@ -103,29 +109,16 @@ class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
                         ),
                       ),
                     ),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 500),
-                      child: Hero(
-                        tag: photo.id,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: CachedNetworkImage(
-                            key: ValueKey(photo.img),
-                            imageUrl:
-                                '${ConstantApp.baseUrlGalleryContent}${photo.img}',
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => Shimmer.fromColors(
-                              baseColor: Colors.grey[300]!,
-                              highlightColor: Colors.grey[100]!,
-                              child: Container(
-                                color: Colors.white,
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => const Icon(
-                                Icons.broken_image,
-                                size: 40,
-                                color: Colors.grey),
-                          ),
+                    child: Hero(
+                      tag: photo.id,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: CachedNetworkImage(
+                          imageUrl: imageUrl,
+                          fit: BoxFit.cover,
+                          placeholder: (_, __) => shimmerBox(),
+                          errorWidget: (_, __, ___) =>
+                              const Icon(Icons.broken_image, size: 40),
                         ),
                       ),
                     ),
@@ -136,6 +129,16 @@ class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
           }
           return const SizedBox.shrink();
         },
+      ),
+    );
+  }
+
+  Widget shimmerBox() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade800,
+      highlightColor: Colors.grey.shade700,
+      child: Container(
+        color: Colors.grey.shade900,
       ),
     );
   }

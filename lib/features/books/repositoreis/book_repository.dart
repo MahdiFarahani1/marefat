@@ -10,7 +10,7 @@ class BookRepository {
       final data = json.decode(res.body);
       return (data['books'] as List).map((e) => BookModel.fromJson(e)).toList();
     } else {
-      throw Exception('خطا در دریافت کتاب‌ها');
+      throw Exception('خطأ في جلب الكتب');
     }
   }
 

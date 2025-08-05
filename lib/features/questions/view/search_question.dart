@@ -1,3 +1,4 @@
+import 'package:bookapp/core/extensions/widget_ex.dart';
 import 'package:bookapp/features/questions/bloc/questionSearch/question_search_cubit.dart';
 import 'package:bookapp/features/questions/widgets/item_question.dart';
 import 'package:bookapp/gen/assets.gen.dart';
@@ -45,7 +46,13 @@ class SearchQuestionPage extends StatelessWidget {
                 },
                 decoration: InputDecoration(
                   hintText: 'ابحث عن سؤال أو كلمة مفتاحية...',
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                  hintStyle: TextStyle(color: Colors.grey.shade400),
+                  prefixIcon: Assets.newicons.search
+                      .image(
+                          color: Theme.of(context).primaryColor,
+                          width: 15,
+                          height: 15)
+                      .padAll(12),
                   border: InputBorder.none,
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 14),

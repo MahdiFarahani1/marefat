@@ -10,8 +10,8 @@ class DownloadCubit extends Cubit<Map<String, DownloadState>> {
   DownloadCubit() : super({});
 
   Future<void> checkIfDownloaded(String bookId, String pdf) async {
-    final fileName = pdf?.split('/').last;
-    if (fileName == null) return;
+    final fileName = pdf.split('/').last;
+    if (fileName.isEmpty) return;
 
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/$fileName');
@@ -52,34 +52,54 @@ class DownloadCubit extends Cubit<Map<String, DownloadState>> {
 
   Future<void> startBookDownload(String bookId, String url) async {
     final key = bookId;
+    print('🔄 Starting download for book: $bookId');
+    print('📥 URL: $url');
+
     _updateState(
         key, (s) => s.copyWith(isDownloadingBook: true, progressBook: 0));
 
-    await FileDownloader.downloadFile(
-      url: url,
-      fileName: '$bookId.zip',
-      customDirectoryPath: '/storage/emulated/0/Download/Books',
-      onProgress: (progress) =>
-          _updateState(key, (s) => s.copyWith(progressBook: progress)),
-      onComplete: (_) => _updateState(
+    try {
+      await FileDownloader.downloadFile(
+        url: url,
+        fileName: '$bookId.zip',
+        customDirectoryPath: '/storage/emulated/0/Download/Books',
+        onProgress: (progress) {
+          print('📊 Progress for $bookId: $progress%');
+          _updateState(key, (s) => s.copyWith(progressBook: progress));
+        },
+        onComplete: (filePath) {
+          print('✅ Download completed for $bookId');
+          print('📁 File saved at: $filePath');
+          _updateState(
+            key,
+            (s) => s.copyWith(
+              isDownloadingBook: false,
+              progressBook: 0,
+              isDownloadedBook: true,
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      print('❌ Download error for $bookId: $e');
+      _updateState(
         key,
         (s) => s.copyWith(
           isDownloadingBook: false,
           progressBook: 0,
-          isDownloadedBook: true,
+          isDownloadedBook: false,
         ),
-      ),
-    );
+      );
+    }
   }
 
   Future<void> downloadAll(List<BookModel> books) async {
     for (final book in books) {
-      final key = book.id;
+      final key = book.id.toString(); // Convert to string first
       final current = state[key];
       if (current == null ||
           (!current.isDownloadingBook && !current.isDownloadedBook)) {
-        await startBookDownload(
-            book.id.toString(), '${ConstantApp.downloadBook}$key');
+        await startBookDownload(key, '${ConstantApp.downloadBook}$key');
       }
     }
   }

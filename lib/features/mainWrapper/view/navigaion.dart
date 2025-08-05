@@ -23,10 +23,7 @@ class MainWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      drawer: CustomDrawer(
-        isDarkMode: true,
-        onThemeToggle: (p0) {},
-      ),
+      drawer: CustomDrawer(),
       appBar: CustomAppbar.show(context),
       body: BlocBuilder<NavigationCubit, int>(
         builder: (context, state) {

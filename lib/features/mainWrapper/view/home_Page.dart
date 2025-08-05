@@ -46,12 +46,12 @@ class _HomePageState extends State<HomePage> {
   ];
 
   final List<FeatureModel> features = [
-    FeatureModel(icon: Assets.icons.fiRrBook.path, label: 'مطالعة'),
-    FeatureModel(icon: Assets.icons.fiRrBook.path, label: 'تحميل'),
-    FeatureModel(icon: Assets.icons.fiRrBook.path, label: 'اشارات'),
-    FeatureModel(icon: Assets.icons.fiRrBook.path, label: 'تعليقات'),
-    FeatureModel(icon: Assets.icons.fiRrBook.path, label: 'اسأل'),
-    FeatureModel(icon: Assets.icons.fiRrBook.path, label: 'انشر'),
+    FeatureModel(icon: Assets.images.downloadedbook.path, label: 'مطالعة'),
+    FeatureModel(icon: Assets.images.downloadBook.path, label: 'تحميل'),
+    FeatureModel(icon: Assets.images.bookmark.path, label: 'اشارات'),
+    FeatureModel(icon: Assets.images.comment.path, label: 'تعليقات'),
+    FeatureModel(icon: Assets.images.questionPng.path, label: 'اسأل'),
+    FeatureModel(icon: Assets.images.share.path, label: 'انشر'),
   ];
 
   void _onFeatureTap(int index) {
@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             'ابحث عن كتاب أو مؤلف...',
                             style: TextStyle(
-                              color: Colors.grey[600],
+                              color: Colors.grey[400],
                               fontSize: 16,
                             ),
                           ),
@@ -248,7 +248,6 @@ class _HomePageState extends State<HomePage> {
                     itemBuilder: (context, index) {
                       return FeatureItem(
                         model: features[index],
-                        color: featureColors[index % featureColors.length],
                         onTap: () => _onFeatureTap(index),
                       )
                           .animate(delay: (100 * index).ms)
@@ -312,7 +311,7 @@ class _HomePageState extends State<HomePage> {
                       } else if (state.statusSlider is SliderError) {
                         return const SizedBox(
                           height: 160,
-                          child: Center(child: Text('خطا در بارگذاری کتاب‌ها')),
+                          child: Center(child: Text('خطأ في تحميل الكتب')),
                         );
                       }
                       return const SizedBox();
@@ -329,7 +328,7 @@ class _HomePageState extends State<HomePage> {
 
                       if (state.status == ReadingbookStatus.error) {
                         return const Center(
-                          child: Text('❌ خطا در بارگذاری کتاب‌ها'),
+                          child: Text('خطأ في تحميل الكتب'),
                         );
                       }
 
@@ -546,13 +545,11 @@ class FeatureModel {
 
 class FeatureItem extends StatelessWidget {
   final FeatureModel model;
-  final Color color;
   final VoidCallback onTap;
 
   const FeatureItem({
     super.key,
     required this.model,
-    required this.color,
     required this.onTap,
   });
 
@@ -563,9 +560,12 @@ class FeatureItem extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [color.withOpacity(0.7), color],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: [
+              Theme.of(context).primaryColor.withOpacity(0.3),
+              Theme.of(context).primaryColor.withOpacity(0.1)
+            ],
+            begin: Alignment.centerRight,
+            end: Alignment.centerLeft,
           ),
           borderRadius: BorderRadius.circular(12),
         ),
@@ -576,7 +576,6 @@ class FeatureItem extends StatelessWidget {
               model.icon,
               width: 30,
               height: 30,
-              color: Colors.white,
             )
                 .animate()
                 .fadeIn(duration: 500.ms)
@@ -585,7 +584,8 @@ class FeatureItem extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               model.label,
-              style: const TextStyle(color: Colors.white, fontSize: 13),
+              style: TextStyle(
+                  color: Theme.of(context).primaryColor, fontSize: 13),
               textAlign: TextAlign.center,
             )
                 .animate()

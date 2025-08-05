@@ -1,4 +1,5 @@
 import 'package:bookapp/gen/assets.gen.dart';
+import 'package:bookapp/shared/scaffold/back_btn.dart';
 import 'package:bookapp/shared/utils/esay_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -22,9 +23,9 @@ class QuestionsContent extends StatelessWidget {
           SliverAppBar(
             pinned: true,
             expandedHeight: 220,
+            leading: Back.btn(context),
             backgroundColor: Colors.transparent,
             flexibleSpace: FlexibleSpaceBar(
-              title: const Text('الأسئلة'),
               centerTitle: true,
               background: Stack(
                 fit: StackFit.expand,

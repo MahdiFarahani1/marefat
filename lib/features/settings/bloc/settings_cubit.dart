@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:bookapp/config/theme/theme.dart';
 import 'package:bookapp/features/settings/bloc/settings_state.dart';
 import 'package:bookapp/features/settings/view/settings_screen.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +10,23 @@ import 'package:get_storage/get_storage.dart';
 class SettingsCubit extends Cubit<SettingsState> {
   final GetStorage _box = GetStorage();
 
-  SettingsCubit() : super(SettingsState.initial()) {
-    loadSettings();
-  }
+  SettingsCubit()
+      : super(SettingsState(
+          theme: AppTheme.lightTheme(backgrounds[0]),
+          darkMode: false,
+          isApplying: false,
+          pageColor: Colors.white,
+          fontSize: 18,
+          lineHeight: 1.5,
+          fontFamily: 'لوتوس',
+          primrayIndex: 0,
+          pageDirection: PageDirection.horizontal,
+          primry: backgrounds[0],
+        ));
 
   void loadSettings() {
-    emit(SettingsState(
+    bool isDarkMode = _box.read('darkmode') ?? false;
+    emit(state.copyWith(
       isApplying: false,
       pageColor: Colors.white,
       fontSize: _box.read('fontSize') ?? 18,
@@ -22,8 +34,26 @@ class SettingsCubit extends Cubit<SettingsState> {
       fontFamily: _box.read('fontFamily') ?? 'لوتوس',
       gradientIndex: _box.read('gradientIndex') ?? 0,
       pageDirection: PageDirection.values[_box.read('pageDirection') ?? 1],
-      primry: SettingsCubit.backgrounds[0],
+      primry: backgrounds[state.primrayIndex],
     ));
+    emit(state.copyWith(
+        primry: backgrounds[state.primrayIndex],
+        darkMode: isDarkMode,
+        theme: isDarkMode
+            ? AppTheme.darkTheme()
+            : AppTheme.lightTheme(backgrounds[state.primrayIndex])));
+  }
+
+  updateDarkMode(bool value) {
+    _box.write('darkmode', value);
+
+    emit(state.copyWith(darkMode: value));
+    if (!value) {
+      emit(state.copyWith(
+          theme: AppTheme.lightTheme(backgrounds[state.primrayIndex])));
+    } else {
+      emit(state.copyWith(theme: AppTheme.darkTheme()));
+    }
   }
 
   void updateFontSize(double value) {
@@ -43,7 +73,8 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   void updateGradientIndex(int index) {
     _box.write('gradientIndex', index);
-    emit(state.copyWith(gradientIndex: index));
+
+    emit(state.copyWith(gradientIndex: index, primry: backgrounds[index]));
   }
 
   void updateBgColorIndex(int index) {
@@ -64,13 +95,12 @@ class SettingsCubit extends Cubit<SettingsState> {
   void changeStateApply(bool isApply) {
     emit(state.copyWith(isApplying: isApply));
   }
-
-  static List<Color> backgrounds = [
-    Color(0xFF141E30),
-    Color(0xFFEEA849), // طلایی گرم
-    Color(0xFFF46B45), // نارنجی مایل به قرمز
-    Color(0xFF9BC5C3), // سبز آبی ملایم
-
-    Color.fromARGB(255, 18, 41, 78), // پایان: آبی روشن
-  ];
 }
+
+List<Color> backgrounds = [
+  Color(0xFF141E30),
+  Color(0xFFEEA849),
+  Color(0xFFF46B45),
+  Color(0xFF9BC5C3),
+  Color.fromARGB(255, 18, 41, 78),
+];

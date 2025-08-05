@@ -51,7 +51,7 @@ class _BookGroupsPageState extends State<BookGroupsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'گروه‌های کتاب',
+          'مجموعات الكتاب',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,

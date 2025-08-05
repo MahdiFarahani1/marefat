@@ -77,7 +77,7 @@ class _ContentPageState extends State<ContentPage> {
             flexibleSpace: Container(),
             elevation: 4,
             title: const Text(
-              'عنوان کتاب',
+              'عنوان الكتاب',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,

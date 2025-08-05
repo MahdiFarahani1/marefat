@@ -190,7 +190,7 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
                       pageBookmark['book_name'] ?? 'بدون عنوان',
                       scroll.toInt());
                 },
-                tooltip: 'حذف صفحه',
+                tooltip: 'حذف الصفحة',
               ),
             ),
             onTap: () {
@@ -214,7 +214,7 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
     if (bookId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('خطا: شناسه کتاب معتبر نیست'),
+          content: const Text('خطأ: معرف الكتاب غير صالح'),
           backgroundColor: Colors.red,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
@@ -237,11 +237,11 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
             children: [
               Icon(Icons.warning_amber_rounded, color: Colors.orange.shade600),
               const SizedBox(width: 8),
-              const Text('حذف صفحه'),
+              const Text('حذف الصفحة'),
             ],
           ),
           content: Text(
-            'آیا مطمئن هستید که می‌خواهید این صفحه از "$bookName" را از لیست ذخیره‌شده‌ها حذف کنید؟',
+            'هل أنت متأكد أنك تريد حذف هذه الصفحة من "$bookName" من قائمة المحفوظات؟',
             style: const TextStyle(fontSize: 16),
           ),
           actions: [
@@ -256,7 +256,7 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
                 Navigator.of(dialogContext).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: const Text('صفحه با موفقیت حذف شد'),
+                    content: const Text('تم حذف الصفحة بنجاح'),
                     backgroundColor: Colors.green.withOpacity(0.4),
                     behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(

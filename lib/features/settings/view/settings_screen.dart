@@ -44,7 +44,7 @@ class SettingsPage extends StatelessWidget {
                     delay: 200,
                   ),
                   _animatedSection(
-                    child: _colorIconsPicker(context, state.gradientIndex),
+                    child: _colorIconsPicker(context, state.primrayIndex),
                     delay: 250,
                   ),
                   const SizedBox(height: 24),
@@ -199,7 +199,7 @@ class SettingsPage extends StatelessWidget {
         height: 60,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
-          itemCount: SettingsCubit.backgrounds.length,
+          itemCount: backgrounds.length,
           separatorBuilder: (_, __) => const SizedBox(width: 16),
           itemBuilder: (context, index) {
             final isSelected = gradientIndex == index;
@@ -213,13 +213,12 @@ class SettingsPage extends StatelessWidget {
                   duration: const Duration(milliseconds: 250),
                   width: isSelected ? 55 : 50,
                   decoration: BoxDecoration(
-                    color: SettingsCubit.backgrounds[index],
+                    color: backgrounds[index],
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
-                              color: SettingsCubit.backgrounds[index]
-                                  .withOpacity(0.3),
+                              color: backgrounds[index].withOpacity(0.3),
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),

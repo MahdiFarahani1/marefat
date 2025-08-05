@@ -66,11 +66,10 @@ class _DownloadAllButton extends StatelessWidget {
           final state = context.read<BookCubit>().state;
           if (state is BookLoaded && state.books.isNotEmpty) {
             AppDialog.showConfirmDialog(
-              onDiss: () {},
-              context: context,
+              context,
               title: 'تحميل جميع الكتب',
-              message: 'هل أنت متأكد أنك تريد تحميل جميع الكتب؟',
-              onConfirmed: () {
+              content: 'هل أنت متأكد أنك تريد تحميل جميع الكتب؟',
+              onPress: () {
                 context.read<DownloadCubit>().downloadAll(state.books);
               },
             );

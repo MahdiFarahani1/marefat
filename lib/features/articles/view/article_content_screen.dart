@@ -1,7 +1,7 @@
-import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/features/articles/model/artile_model.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
+import 'package:bookapp/shared/scaffold/back_btn.dart';
 import 'package:bookapp/shared/ui_helper/dialog_common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -16,85 +16,80 @@ class ArticleDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final primaryColor = context.read<SettingsCubit>().state.primry;
 
     return Scaffold(
-        floatingActionButton: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Assets.icons.send
-                .image(color: Colors.white, width: 25, height: 25),
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-        appBar: AppBar(
-          leading: IconButton(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: primaryColor,
+        child: Assets.newicons.paperPlaneTop
+            .image(color: Colors.white, width: 24, height: 24),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Back.btn(context),
+        actions: [
+          IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              AppDialog.showInfoDialog(
+                  context, 'المعلومات', article.summary ?? "غير موجود");
             },
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
+            icon: Assets.newicons.termsInfo.image(
+                width: 25, height: 25, color: Theme.of(context).primaryColor),
           ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(left: 16),
-              child: GestureDetector(
-                onTap: () {
-                  AppDialog.showInfoDialog(
-                      context, 'اطلاعات', article.summary ?? 'موجود نیست');
-                },
-                child: Assets.icons.infoduble
-                    .image(color: Colors.white, width: 30, height: 30),
-              ),
-            ),
-          ],
-          flexibleSpace: Container(),
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
-
-                Text(
-                  article.title ?? '',
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: context.read<SettingsCubit>().state.primry,
-                  ),
-                ).animate().fadeIn(duration: 500.ms).slideY(begin: 0.3),
-
-                const SizedBox(height: 20),
-
-                // Card content
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 4),
-
-                        // Content
-                        HtmlWidget(
-                          article.content!,
-                          textStyle: theme.textTheme.bodyLarge?.copyWith(
-                            fontSize: 16,
-                            height: 1.7,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ).animate().fadeIn().scale(begin: const Offset(0.97, 0.97)),
+          const SizedBox(width: 8),
+        ],
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // عنوان مقاله
+              Text(
+                article.title ?? '',
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: primaryColor,
                 ),
-              ],
-            ),
+              ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.4),
+
+              const SizedBox(height: 16),
+
+              // خط جداکننده ظریف
+              Container(
+                height: 1,
+                color: Colors.grey.withOpacity(0.2),
+              ).animate().fadeIn(duration: 300.ms),
+
+              const SizedBox(height: 16),
+
+              // محتوای مقاله
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: HtmlWidget(
+                    article.content ?? '',
+                    textStyle: theme.textTheme.bodyLarge?.copyWith(
+                      fontSize: 16,
+                      height: 1.75,
+                    ),
+                  ),
+                )
+                    .animate()
+                    .fadeIn(duration: 600.ms)
+                    .scale(begin: const Offset(0.95, 0.95)),
+              ),
+
+              const SizedBox(height: 16),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

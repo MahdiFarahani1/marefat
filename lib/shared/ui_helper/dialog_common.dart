@@ -1,9 +1,5 @@
-import 'package:bookapp/features/books/bloc/download/download_cubit.dart';
-import 'package:bookapp/features/books/bloc/download/download_state.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class AppDialog {
   static Future<void> showInfoDialog(
@@ -23,7 +19,8 @@ class AppDialog {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Assets.icons.infoduble.image(width: 70, height: 70),
+              Assets.newicons.termsInfo.image(
+                  width: 60, height: 60, color: Theme.of(context).primaryColor),
               const SizedBox(height: 16),
               Text(
                 title,
@@ -44,14 +41,15 @@ class AppDialog {
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Theme.of(context).primaryColor),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    backgroundColor: Colors.blueAccent,
                   ),
-                  child: const Text(
+                  child: Text(
                     "باشه",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Theme.of(context).primaryColor),
                   ),
                 ),
               )
@@ -62,88 +60,47 @@ class AppDialog {
     );
   }
 
-  static Future<void> showConfirmDialog({
-    required BuildContext context,
-    required String title,
-    required String message,
-    required VoidCallback onConfirmed,
-    required VoidCallback onDiss,
-    bool? isComplateBack = false,
-  }) async {
+  static Future<void> showConfirmDialog(BuildContext context,
+      {required String title,
+      required String content,
+      required VoidCallback onPress}) async {
     await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) {
-        final theme = Theme.of(ctx);
-        return Dialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          backgroundColor: theme.cardColor,
-          elevation: 10,
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Assets.icons.questionMark.image(width: 75, height: 75),
-                const SizedBox(height: 16),
-                Text(
-                  title,
-                  style: theme.textTheme.titleLarge
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  message,
-                  style: theme.textTheme.bodyMedium,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {
-                          if (isComplateBack! == false) {
-                            Navigator.pop(ctx);
-                          } else {
-                            Navigator.pop(ctx);
-
-                            onDiss();
-                            print('sddfaqerasdasdg');
-                          }
-                        },
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                        child: const Text("لا"),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(ctx);
-                          onConfirmed();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.lightBlue,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                        child: const Text(
-                          "نعم",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
+          title: Row(
+            children: [
+              Assets.newicons.triangleWarning
+                  .image(color: Colors.orange.shade600, width: 20, height: 20),
+              const SizedBox(width: 8),
+              Text(title),
+            ],
+          ),
+          content: Text(
+            content,
+            style: const TextStyle(fontSize: 16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('لا', style: TextStyle(fontSize: 16)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                onPress();
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('نعم', style: TextStyle(fontSize: 16)),
+            ),
+          ],
         );
       },
     );
