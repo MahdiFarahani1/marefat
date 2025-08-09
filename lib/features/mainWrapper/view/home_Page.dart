@@ -4,6 +4,7 @@ import 'package:bookapp/features/books/view/books_downloaded.dart';
 import 'package:bookapp/features/books/view/books_screen.dart';
 import 'package:bookapp/features/mainWrapper/bloc/slider/slider_cubit.dart';
 import 'package:bookapp/features/mainWrapper/view/all_lastBook.dart';
+import 'package:bookapp/features/mainWrapper/view/all_readingbook.dart';
 import 'package:bookapp/features/mainWrapper/widget/bookitem.dart';
 import 'package:bookapp/features/mainWrapper/widget/empty_reading.dart';
 import 'package:bookapp/features/reading_progress/bloc/cubit/readingbook_cubit.dart';
@@ -30,21 +31,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<String> sliderImages = [
-    Assets.images.b1.path,
-    Assets.images.b2.path,
-    Assets.images.b3.path,
-  ];
-
-  final List<Color> featureColors = [
-    Colors.red,
-    Colors.amber,
-    Colors.purple,
-    Colors.cyanAccent,
-    Colors.deepOrange,
-    Colors.brown,
-  ];
-
   final List<FeatureModel> features = [
     FeatureModel(icon: Assets.images.downloadedbook.path, label: 'مطالعة'),
     FeatureModel(icon: Assets.images.downloadBook.path, label: 'تحميل'),
@@ -54,7 +40,7 @@ class _HomePageState extends State<HomePage> {
     FeatureModel(icon: Assets.images.share.path, label: 'انشر'),
   ];
 
-  void _onFeatureTap(int index) {
+  void _onFeatureTap(int index) async {
     switch (index) {
       case 0:
         Navigator.push(
@@ -81,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                     )));
         break;
       case 4:
-        LaunchUrl.launchEmail(LaunchUrl.email);
+        await LaunchUrl.launchEmail();
         break;
       case 5:
         Share.share(
@@ -157,9 +143,10 @@ class _HomePageState extends State<HomePage> {
                   BlocBuilder<SliderCubit, SliderState>(
                     builder: (context, state) {
                       if (state.statusSlider is SliderLoading) {
-                        return const SizedBox(
+                        return SizedBox(
                           height: 160,
-                          child: Center(child: CircularProgressIndicator()),
+                          child: Center(
+                              child: CustomLoading.fadingCircle(context)),
                         );
                       } else if (state.statusSlider is SliderLoaded) {
                         final sliders =
@@ -240,7 +227,7 @@ class _HomePageState extends State<HomePage> {
                     shrinkWrap: true,
                     itemCount: features.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 2,
+                      childAspectRatio: 1.2,
                       crossAxisCount: 3,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 4,
@@ -261,9 +248,10 @@ class _HomePageState extends State<HomePage> {
                   BlocBuilder<SliderCubit, SliderState>(
                     builder: (context, state) {
                       if (state.statusSlider is SliderLoading) {
-                        return const SizedBox(
+                        return SizedBox(
                           height: 160,
-                          child: Center(child: CircularProgressIndicator()),
+                          child: Center(
+                              child: CustomLoading.fadingCircle(context)),
                         );
                       } else if (state.statusSlider is SliderLoaded) {
                         final books =
@@ -291,15 +279,25 @@ class _HomePageState extends State<HomePage> {
                                 scrollDirection: Axis.horizontal,
                                 itemCount: 6,
                                 itemBuilder: (context, index) {
-                                  return BookCard(
-                                    imageUrl: books[index].photoUrl,
-                                    title: books[index].title,
-                                    author: books[index].writer ?? '',
-                                  )
-                                      .animate(delay: (150 * index).ms)
-                                      .fadeIn(duration: 700.ms)
-                                      .slideX(begin: 0.5)
-                                      .scale(begin: Offset(0.8, 0.8));
+                                  return ZoomTapAnimation(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AllLastBooks()),
+                                      );
+                                    },
+                                    child: BookCard(
+                                      imageUrl: books[index].photoUrl,
+                                      title: books[index].title,
+                                      author: books[index].writer ?? '',
+                                    )
+                                        .animate(delay: (150 * index).ms)
+                                        .fadeIn(duration: 700.ms)
+                                        .slideX(begin: 0.5)
+                                        .scale(begin: Offset(0.8, 0.8)),
+                                  );
                                 },
                               ),
                             )
@@ -348,7 +346,9 @@ class _HomePageState extends State<HomePage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                AllLastBooks()),
+                                                ReadingBooksScreen(
+                                                  readingBooks: state.books,
+                                                )),
                                       );
                                     })
                                 .animate(delay: 800.ms)
@@ -402,12 +402,12 @@ class _HomePageState extends State<HomePage> {
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState ==
                                                 ConnectionState.waiting) {
-                                              return const SizedBox(
+                                              return SizedBox(
                                                 width: 100,
                                                 height: 140,
                                                 child: Center(
-                                                    child:
-                                                        CircularProgressIndicator()),
+                                                    child: CustomLoading
+                                                        .fadingCircle(context)),
                                               );
                                             } else if (snapshot.hasData &&
                                                 snapshot.data == true) {
@@ -505,7 +505,9 @@ class _HomePageState extends State<HomePage> {
                                                   fontWeight: FontWeight.w600,
                                                 ),
                                               ),
-                                              progressColor: Colors.green,
+                                              progressColor: percent > 0.7
+                                                  ? Colors.greenAccent.shade400
+                                                  : Colors.amberAccent.shade400,
                                               backgroundColor:
                                                   Colors.grey.shade300,
                                               animation: true,
@@ -559,17 +561,10 @@ class FeatureItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Theme.of(context).primaryColor.withOpacity(0.3),
-              Theme.of(context).primaryColor.withOpacity(0.1)
-            ],
-            begin: Alignment.centerRight,
-            end: Alignment.centerLeft,
-          ),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Row(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Image.asset(
@@ -581,7 +576,6 @@ class FeatureItem extends StatelessWidget {
                 .fadeIn(duration: 500.ms)
                 .scale(begin: Offset(0.5, 0.5))
                 .shimmer(duration: 1000.ms),
-            const SizedBox(height: 8),
             Text(
               model.label,
               style: TextStyle(

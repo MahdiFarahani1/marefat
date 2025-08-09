@@ -1,4 +1,5 @@
 import 'package:bookapp/features/storage/repository/db_helper.dart';
+import 'package:bookapp/shared/ui_helper/snackbar_common.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -123,17 +124,8 @@ class ModalComment {
 
                             Navigator.pop(context);
 
-                            // Show success message
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text('کامنت با موفقیت ذخیره شد'),
-                                backgroundColor: Colors.green.withOpacity(0.4),
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            );
+                            AppSnackBar.showSuccess(
+                                context, "تم حفظ التعليق بنجاح");
                           } catch (e) {
                             // Show error message
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -147,20 +139,7 @@ class ModalComment {
                               ),
                             );
                           }
-                        } else {
-                          // Show validation message
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content:
-                                  const Text('لطفاً متن کامنت را وارد کنید'),
-                              backgroundColor: Colors.orange.withOpacity(0.4),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          );
-                        }
+                        } else {}
                       },
                       style: ElevatedButton.styleFrom(
                         padding:
@@ -169,11 +148,13 @@ class ModalComment {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: Text('ذخیره'),
+                      child: Text('حفظ'),
                     ),
                     OutlinedButton(
                       onPressed: () {
-                        Navigator.pop(context); // Close modal without action
+                        Navigator.pop(context);
+                        AppSnackBar.showWarning(
+                            context, "لم يتم حفظ أي تعليق!");
                       },
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(

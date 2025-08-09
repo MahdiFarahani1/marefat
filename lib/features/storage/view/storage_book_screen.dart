@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'package:bookapp/core/extensions/widget_ex.dart';
-import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
+import 'package:bookapp/features/content_books/view/content_page.dart';
 import 'package:bookapp/features/storage/bloc/bookmark/bookmark_cubit.dart';
 import 'package:bookapp/features/storage/bloc/bookmark/bookmark_state.dart';
+import 'package:bookapp/features/storage/widgets/empty_list.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/scaffold/back_btn.dart';
 import 'package:bookapp/shared/ui_helper/dialog_common.dart';
+import 'package:bookapp/shared/ui_helper/snackbar_common.dart';
+import 'package:bookapp/shared/utils/loading.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 class StorageBookScreen extends StatefulWidget {
   final bool isBack;
@@ -73,7 +76,7 @@ class _StorageBookScreenState extends State<StorageBookScreen> {
         body: BlocBuilder<BookmarkCubit, BookMarkState>(
             builder: (context, state) {
           if (state.status == BookMarkStatus.loading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CustomLoading.fadingCircle(context));
           }
 
           if (state.status == BookMarkStatus.error) {
@@ -83,38 +86,9 @@ class _StorageBookScreenState extends State<StorageBookScreen> {
           }
 
           if (state.bookmarks.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Opacity(
-                    opacity: 0.4,
-                    child: Assets.newicons.bookmark.image(
-                      width: 64,
-                      height: 64,
-                    ),
-                  )
-                      .animate()
-                      .fade(duration: 600.ms)
-                      .slideY(begin: 0.2, duration: 600.ms),
-                  const SizedBox(height: 20),
-                  Text(
-                    'لا يوجد كتاب محفوظ!',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.color
-                          ?.withOpacity(0.6),
-                    ),
-                  )
-                      .animate()
-                      .fade(duration: 800.ms)
-                      .slideY(begin: 0.3, duration: 800.ms),
-                ],
-              ),
-            );
+            return EmptyList.show(context,
+                imagePath: Assets.newicons.bookmark.path,
+                message: 'لَم يتم حفظ أي كتاب');
           }
 
           if (state.status == BookMarkStatus.success) {
@@ -127,117 +101,115 @@ class _StorageBookScreenState extends State<StorageBookScreen> {
                   itemCount: state.bookmarks.length,
                   itemBuilder: (context, index) {
                     final bookmark = state.bookmarks[index];
-                    return Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: Card(
-                        elevation: 8,
-                        shadowColor: Colors.black26,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            gradient: LinearGradient(
-                              begin: Alignment.centerRight,
-                              end: Alignment.centerLeft,
-                              colors: [
-                                Theme.of(context)
-                                    .primaryColor
-                                    .withOpacity(0.25),
-                                Theme.of(context)
-                                    .primaryColor
-                                    .withOpacity(0.01),
-                              ],
+                    return ZoomTapAnimation(
+                      onTap: () {
+                        Navigator.of(context, rootNavigator: true).push(
+                          MaterialPageRoute(
+                            builder: (_) => ContentPage(
+                              bookId: bookmark['book_id'].toString(),
+                              bookName: bookmark['book_name'],
+                              scrollPosetion: 0.0,
                             ),
                           ),
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.all(16),
-                            leading: Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Assets.newicons.bookmarkfull
-                                    .image(
-                                        color: Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.3))
-                                    .padAll(4)),
-                            title: Text(
-                              bookmark['book_name'] ?? 'بدون عنوان',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Row(
-                                children: [
-                                  Assets.newicons.timeCheck
-                                      .image(
-                                          color: Theme.of(context).primaryColor,
-                                          width: 14,
-                                          height: 14)
-                                      .padAll(4),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    'ذخیره شده',
-                                    style: TextStyle(
-                                      color: Colors.grey.shade600,
-                                      fontSize: 12,
-                                    ),
-                                  ),
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: Card(
+                          elevation: 8,
+                          shadowColor: Colors.black26,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              gradient: LinearGradient(
+                                begin: Alignment.centerRight,
+                                end: Alignment.centerLeft,
+                                colors: [
+                                  Theme.of(context)
+                                      .primaryColor
+                                      .withOpacity(0.25),
+                                  Theme.of(context)
+                                      .primaryColor
+                                      .withOpacity(0.01),
                                 ],
                               ),
                             ),
-                            trailing: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.red.shade50,
-                                borderRadius: BorderRadius.circular(8),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.all(16),
+                              leading: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Assets.newicons.circleBookmark.image(
+                                      width: 25,
+                                      height: 25,
+                                      color: Theme.of(context).primaryColor)),
+                              title: Text(
+                                bookmark['book_name'] ?? 'بدون عنوان',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
                               ),
-                              child: IconButton(
-                                icon: Assets.newicons.trashXmark.image(
-                                    color: Colors.red.shade600,
-                                    width: 23,
-                                    height: 23),
-                                onPressed: () async {
-                                  await AppDialog.showConfirmDialog(
-                                    context,
-                                    title: 'الکتاب',
-                                    content:
-                                        bookmark['book_name'] ?? 'بدون عنوان',
-                                    onPress: () {
-                                      BookmarkCubit.instance.removeBookmark(
-                                          bookmark['book_id']?.toString() ??
-                                              '');
-
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content:
-                                              const Text('تم حذف الكتاب بنجاح'),
-                                          backgroundColor:
-                                              Colors.green.withOpacity(0.4),
-                                          behavior: SnackBarBehavior.floating,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Row(
+                                  children: [
+                                    Assets.newicons.calendarClock
+                                        .image(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            width: 14,
+                                            height: 14)
+                                        .padAll(4),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'الملف المحفوظ',
+                                      style: TextStyle(
+                                        color: Colors.grey.shade600,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              trailing: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.red.shade50,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: IconButton(
+                                  icon: Assets.newicons.trashXmark.image(
+                                      color: Colors.red.shade600,
+                                      width: 23,
+                                      height: 23),
+                                  onPressed: () async {
+                                    await AppDialog.showConfirmDialog(
+                                      context,
+                                      title: 'تأكيد الحذف',
+                                      content:
+                                          'هل أنت متأكد من رغبتك في حذف الكتاب «${bookmark['book_name']}»؟' ??
+                                              'بدون عنوان',
+                                      onPress: () async {
+                                        await BookmarkCubit.instance
+                                            .removeBookmark(bookmark['book_id']
+                                                    ?.toString() ??
+                                                '');
+                                        AppSnackBar.showSuccess(
+                                            context, 'تم الحذف بنجاح');
+                                      },
+                                    );
+                                  },
+                                ),
                               ),
                             ),
-                            onTap: () {
-                              // می‌تونی نویگیشن بذاری اینجا
-                            },
                           ),
                         ),
                       ),

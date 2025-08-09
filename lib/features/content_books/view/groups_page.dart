@@ -1,5 +1,10 @@
+import 'package:bookapp/core/extensions/widget_ex.dart';
 import 'package:bookapp/features/content_books/view/content_page.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
+import 'package:bookapp/gen/assets.gen.dart';
+import 'package:bookapp/shared/scaffold/back_btn.dart';
+import 'package:bookapp/shared/utils/esay_size.dart';
+import 'package:bookapp/shared/utils/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -49,24 +54,26 @@ class _BookGroupsPageState extends State<BookGroupsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'مجموعات الكتاب',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         elevation: 0,
         flexibleSpace: Container(),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
+        leading: Back.btn(context),
         actions: [
           IconButton(
-            icon: Icon(
-              _isSearching ? Icons.close : Icons.search,
-              color: Colors.white,
-            ),
+            icon: _isSearching
+                ? Icon(Icons.close)
+                : Assets.newicons.search.image(
+                    color: Theme.of(context).primaryColor,
+                    width: 23,
+                    height: 23),
             onPressed: () {
               setState(() {
                 _isSearching = !_isSearching;
@@ -100,9 +107,13 @@ class _BookGroupsPageState extends State<BookGroupsPage> {
                 controller: _searchController,
                 onChanged: _filterGroups,
                 decoration: InputDecoration(
-                  hintText: 'جستجو در گروه‌ها...',
-                  prefixIcon: Icon(Icons.search,
-                      color: context.read<SettingsCubit>().state.primry),
+                  hintText: 'بحث...',
+                  prefixIcon: Assets.newicons.search
+                      .image(
+                          color: context.read<SettingsCubit>().state.primry,
+                          width: 20,
+                          height: 20)
+                      .padAll(13),
                   suffixIcon: _searchController.text.isNotEmpty
                       ? IconButton(
                           icon: const Icon(Icons.clear),
@@ -127,7 +138,7 @@ class _BookGroupsPageState extends State<BookGroupsPage> {
               future: widget.getBookGroup(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(child: CustomLoading.fadingCircle(context));
                 }
 
                 if (snapshot.hasError) {
@@ -142,7 +153,7 @@ class _BookGroupsPageState extends State<BookGroupsPage> {
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: () => setState(() {}),
-                          child: const Text('تلاش مجدد'),
+                          child: const Text('أعد المحاولة'),
                         ),
                       ],
                     ),
@@ -226,25 +237,33 @@ class _BookGroupsPageState extends State<BookGroupsPage> {
             fontSize: 16,
           ),
         ),
-        subtitle: Text(
-          'صفحه ${group['page'] ?? index + 1}',
-          style: TextStyle(
-            color: Colors.grey.shade600,
-            fontSize: 14,
-          ),
+        subtitle: Row(
+          children: [
+            Assets.newicons.page.image(
+                color: context.read<SettingsCubit>().state.primry,
+                width: 16,
+                height: 16),
+            EsaySize.gap(5),
+            Text(
+              'الصفحة : ${group['page'] ?? index + 1}',
+              style: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 14,
+              ),
+            ),
+          ],
         ),
         trailing: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: context.read<SettingsCubit>().state.primry.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(
-            Icons.arrow_forward_ios,
-            color: context.read<SettingsCubit>().state.primry,
-            size: 16,
-          ),
-        ),
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color:
+                  context.read<SettingsCubit>().state.primry.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Assets.newicons.angleSmallLeft.image(
+                color: context.read<SettingsCubit>().state.primry,
+                width: 21,
+                height: 21)),
         onTap: () {
           double pos = double.parse(group['page']);
           Navigator.pushReplacement(

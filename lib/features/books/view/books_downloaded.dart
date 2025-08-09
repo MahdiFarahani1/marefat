@@ -1,9 +1,12 @@
 import 'dart:typed_data';
+import 'package:bookapp/core/extensions/widget_ex.dart';
 import 'package:bookapp/features/books/bloc/downloaded_page/downloaded_page_cubit.dart';
 import 'package:bookapp/features/books/bloc/downloaded_page/downloaded_page_state.dart';
 import 'package:bookapp/features/books/model/book_item_model.dart';
 import 'package:bookapp/features/content_books/view/content_page.dart';
+import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/error_widget.dart';
+import 'package:bookapp/shared/utils/esay_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bookapp/shared/scaffold/appbar.dart';
@@ -83,8 +86,14 @@ class _DownloadedBooksPageState extends State<DownloadedBooksPage> {
                       controller: _searchController,
                       onChanged: _filterBooks,
                       decoration: InputDecoration(
-                        hintText: 'جستجو در عنوان یا نویسنده...',
-                        prefixIcon: const Icon(Icons.search),
+                        hintText: 'البحث في العنوان أو المؤلف...',
+                        hintStyle: TextStyle(color: Colors.grey.shade400),
+                        prefixIcon: Assets.newicons.search
+                            .image(
+                                width: 20,
+                                height: 20,
+                                color: Theme.of(context).primaryColor)
+                            .padAll(12),
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 16),
                         border: OutlineInputBorder(
@@ -169,22 +178,37 @@ class _DownloadedBooksPageState extends State<DownloadedBooksPage> {
                                                 ),
                                               ),
                                               const SizedBox(height: 8),
-                                              Text(
-                                                'نویسنده: ${book.author}',
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.black87,
-                                                ),
+                                              Row(
+                                                children: [
+                                                  Assets.newicons.userWriter
+                                                      .image(
+                                                          width: 20,
+                                                          height: 20,
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColor),
+                                                  EsaySize.gap(6),
+                                                  Text(
+                                                    '${book.author}',
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.black87,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
                                         ),
                                       ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(left: 8),
-                                        child: Icon(Icons.arrow_forward_ios,
-                                            size: 16),
-                                      ),
+                                      Padding(
+                                          padding: EdgeInsets.only(left: 8),
+                                          child: Assets.newicons.angleSmallLeft
+                                              .image(
+                                                  width: 23,
+                                                  height: 23,
+                                                  color: Theme.of(context)
+                                                      .primaryColor)),
                                     ],
                                   ),
                                 ),

@@ -6,21 +6,21 @@ class CustomLoading {
   static Widget pulse(BuildContext context) {
     return LoadingAnimationWidget.bouncingBall(
       color: Theme.of(context).primaryColor,
-      size: 40,
+      size: 25,
     ).padAll(8);
   }
 
   static Widget loadLine(BuildContext context) {
     return LoadingAnimationWidget.staggeredDotsWave(
       color: Theme.of(context).primaryColor,
-      size: 40,
+      size: 25,
     ).padAll(8);
   }
 
   static Widget fadingCircle(BuildContext context) {
     return LoadingAnimationWidget.threeArchedCircle(
       color: Theme.of(context).primaryColor,
-      size: 50,
+      size: 30,
     ).padAll(8);
   }
 }

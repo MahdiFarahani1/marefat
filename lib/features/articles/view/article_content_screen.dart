@@ -1,12 +1,18 @@
+import 'package:bookapp/features/articles/bloc/cubit/article_cubit_cubit.dart';
+import 'package:bookapp/features/articles/bloc/fontsize/cubit/article_cubit.dart';
 import 'package:bookapp/features/articles/model/artile_model.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/scaffold/back_btn.dart';
 import 'package:bookapp/shared/ui_helper/dialog_common.dart';
+import 'package:bookapp/shared/utils/esay_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 class ArticleDetailScreen extends StatelessWidget {
   final ArticleModel article;
@@ -17,11 +23,12 @@ class ArticleDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final primaryColor = context.read<SettingsCubit>().state.primry;
-
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Share.share('${article.title}\n${article.content}');
+        },
         backgroundColor: primaryColor,
         child: Assets.newicons.paperPlaneTop
             .image(color: Colors.white, width: 24, height: 24),
@@ -57,8 +64,31 @@ class ArticleDetailScreen extends StatelessWidget {
                   color: primaryColor,
                 ),
               ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.4),
+              const SizedBox(height: 8),
 
-              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Builder(builder: (context) {
+                    return ZoomTapAnimation(
+                        onTap: () =>
+                            context.read<ArticleFontSizeCubit>().plusFontSize(),
+                        child: Assets.newicons.squarePlus.image(
+                            width: 35,
+                            height: 35,
+                            color: Theme.of(context).primaryColor));
+                  }),
+                  EsaySize.gap(6),
+                  ZoomTapAnimation(
+                      onTap: () =>
+                          context.read<ArticleFontSizeCubit>().minusFontSize(),
+                      child: Assets.newicons.squareMinus.image(
+                          width: 35,
+                          height: 35,
+                          color: Theme.of(context).primaryColor))
+                ],
+              ).animate().fadeIn(duration: 600.ms),
+
+              const SizedBox(height: 8),
 
               // خط جداکننده ظریف
               Container(
@@ -71,15 +101,21 @@ class ArticleDetailScreen extends StatelessWidget {
               // محتوای مقاله
               Expanded(
                 child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: HtmlWidget(
-                    article.content ?? '',
-                    textStyle: theme.textTheme.bodyLarge?.copyWith(
-                      fontSize: 16,
-                      height: 1.75,
-                    ),
-                  ),
-                )
+                        physics: const BouncingScrollPhysics(),
+                        child: BlocBuilder<ArticleFontSizeCubit, double>(
+                          builder: (context, state) {
+                            return Html(
+                              data: article.content ?? '',
+                              style: {
+                                "*": Style(
+                                  fontSize: FontSize(state),
+                                  lineHeight: const LineHeight(1.75),
+                                  color: theme.textTheme.bodyLarge?.color,
+                                ),
+                              },
+                            );
+                          },
+                        ))
                     .animate()
                     .fadeIn(duration: 600.ms)
                     .scale(begin: const Offset(0.95, 0.95)),

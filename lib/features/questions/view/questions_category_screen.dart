@@ -7,6 +7,7 @@ import 'package:bookapp/features/questions/view/search_question.dart';
 import 'package:bookapp/features/questions/widgets/item_question.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
+import 'package:bookapp/shared/func/launchURL.dart';
 import 'package:bookapp/shared/utils/error_widget.dart';
 import 'package:bookapp/shared/utils/esay_size.dart';
 import 'package:bookapp/shared/utils/loading.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:bookapp/features/questions/models/question_category_model.dart';
+import 'package:share_plus/share_plus.dart';
 
 class QuestionsScreen extends StatefulWidget {
   const QuestionsScreen({super.key});
@@ -62,12 +64,17 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                 ),
                 const SizedBox(height: 16),
                 _buildMenuItem(
-                  onTap: () {},
+                  onTap: () {
+                    Share.share(
+                        'https://play.google.com/store/apps/details?id=com.dijlah.almarifaaldenyah');
+                  },
                   iconPath: Assets.newicons.paperPlaneTop.path,
                 ),
                 const SizedBox(height: 16),
                 _buildMenuItem(
-                  onTap: () {},
+                  onTap: () {
+                    LaunchUrl.launchEmail();
+                  },
                   iconPath: Assets.newicons.messagesQuestion.path,
                 ),
               ],

@@ -50,7 +50,7 @@ class TextSettingsDialog {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const Text(
-                                  "🛠 تنظیمات متن",
+                                  "🛠 إعدادات النص",
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
@@ -62,7 +62,7 @@ class TextSettingsDialog {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text("سایز فونت"),
+                                    const Text("حجم الخط"),
                                     Text(state.fontSize.toStringAsFixed(0)),
                                   ],
                                 ),
@@ -120,7 +120,7 @@ class TextSettingsDialog {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text("فاصله بین خطوط"),
+                                    const Text("تباعد الأسطر"),
                                     Text(state.lineHeight.toStringAsFixed(1)),
                                   ],
                                 ),
@@ -176,7 +176,7 @@ class TextSettingsDialog {
                                 // Font Family
                                 const Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Text("نوع فونت")),
+                                    child: Text('نوع الخط')),
                                 const SizedBox(height: 8),
                                 DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
@@ -237,7 +237,7 @@ class TextSettingsDialog {
                                 // Background Color
                                 const Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Text("رنگ پس‌زمینه")),
+                                    child: Text("لون الخلفیة")),
                                 const SizedBox(height: 8),
                                 Row(
                                   mainAxisAlignment:
@@ -268,7 +268,7 @@ class TextSettingsDialog {
                                             BorderRadius.circular(12)),
                                   ),
                                   child: const Text(
-                                    "بستن",
+                                    "إغلاق",
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),

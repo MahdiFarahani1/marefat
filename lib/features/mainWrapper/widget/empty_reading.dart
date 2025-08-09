@@ -1,3 +1,4 @@
+import 'package:bookapp/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -8,31 +9,27 @@ class EmptyProgressBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        margin: const EdgeInsets.all(32),
-        padding: const EdgeInsets.all(40),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(20),
-        ),
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Simple book icon
             Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primary
-                    .withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(50),
-              ),
-              child: Icon(
-                Icons.menu_book_rounded,
-                size: 48,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ).animate().fadeIn(duration: 600.ms),
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Assets.newicons.bookOpenCover.image(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 40,
+                        height: 40))
+                .animate()
+                .fadeIn(duration: 600.ms),
 
             const SizedBox(height: 24),
 

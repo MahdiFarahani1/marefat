@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:bloc/bloc.dart';
+import 'package:bookapp/features/storage/repository/db_helper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:bookapp/core/constant/const_class.dart';
 import 'package:bookapp/features/books/model/model_books.dart';
@@ -100,6 +101,7 @@ class DownloadCubit extends Cubit<Map<String, DownloadState>> {
       if (current == null ||
           (!current.isDownloadingBook && !current.isDownloadedBook)) {
         await startBookDownload(key, '${ConstantApp.downloadBook}$key');
+        DatabaseStorageHelper.insertBookNames(book.title, book.id);
       }
     }
   }

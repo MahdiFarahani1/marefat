@@ -1,5 +1,10 @@
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/storage/repository/db_helper.dart';
+import 'package:bookapp/features/storage/widgets/empty_list.dart';
+import 'package:bookapp/gen/assets.gen.dart';
+import 'package:bookapp/shared/scaffold/back_btn.dart';
+import 'package:bookapp/shared/ui_helper/snackbar_common.dart';
+import 'package:bookapp/shared/utils/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,20 +35,18 @@ class _CommentScreenState extends State<CommentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'کامنت‌های ذخیره شده',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: Text(
+          'التعليقات المحفوظة',
+          style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold),
         ),
-        leading: widget.isBack
-            ? IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-              )
-            : const SizedBox.shrink(),
+        leading: widget.isBack ? Back.btn(context) : const SizedBox.shrink(),
         actions: [
           IconButton(
             onPressed: _loadComments,
-            icon: const Icon(Icons.refresh, color: Colors.white),
+            icon: Assets.newicons.messageCircleRefresh.image(
+                color: Theme.of(context).primaryColor, width: 25, height: 25),
             tooltip: 'بروزرسانی',
           ),
         ],
@@ -55,7 +58,7 @@ class _CommentScreenState extends State<CommentScreen> {
         future: _commentsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CustomLoading.fadingCircle(context));
           }
 
           if (snapshot.hasError) {
@@ -83,27 +86,13 @@ class _CommentScreenState extends State<CommentScreen> {
           final comments = snapshot.data ?? [];
 
           if (comments.isEmpty) {
-            return _buildEmptyState();
+            return EmptyList.show(context,
+                imagePath: Assets.newicons.commentAltDots.path,
+                message: 'لَم يتم تسجيل أي تعليق بعد');
           }
 
           return _buildCommentsList(comments);
         },
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return const Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.comment_outlined, size: 80, color: Colors.grey),
-          SizedBox(height: 16),
-          Text(
-            'هیچ کامنتی ذخیره نشده است!',
-            style: TextStyle(fontSize: 18, color: Colors.grey),
-          ),
-        ],
       ),
     );
   }
@@ -142,8 +131,8 @@ class _CommentScreenState extends State<CommentScreen> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white,
-                Colors.orange.shade50,
+                Theme.of(context).primaryColor.withOpacity(0.01),
+                Theme.of(context).primaryColor.withOpacity(0.25),
               ],
             ),
           ),
@@ -158,24 +147,13 @@ class _CommentScreenState extends State<CommentScreen> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: context
-                                .read<SettingsCubit>()
-                                .state
-                                .primry
-                                .withOpacity(0.3),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.comment,
                         color: Colors.white,
-                        size: 20,
+                        borderRadius: BorderRadius.circular(8),
                       ),
+                      child: Assets.newicons.commentAltDots.image(
+                          width: 30,
+                          height: 30,
+                          color: Theme.of(context).primaryColor),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -193,14 +171,13 @@ class _CommentScreenState extends State<CommentScreen> {
                           const SizedBox(height: 4),
                           Row(
                             children: [
-                              Icon(
-                                Icons.bookmark_outline,
-                                size: 14,
-                                color: Colors.grey.shade600,
-                              ),
+                              Assets.newicons.page.image(
+                                  width: 13,
+                                  height: 13,
+                                  color: Theme.of(context).primaryColor),
                               const SizedBox(width: 4),
                               Text(
-                                'صفحه ${comment['page_number']?.toString() ?? '0'}',
+                                'الصفحة ${comment['page_number']?.toString() ?? '0'}',
                                 style: TextStyle(
                                   color: Colors.grey.shade600,
                                   fontSize: 12,
@@ -209,11 +186,10 @@ class _CommentScreenState extends State<CommentScreen> {
                               if (comment['title'] != null &&
                                   comment['title'].toString().isNotEmpty) ...[
                                 const SizedBox(width: 8),
-                                Icon(
-                                  Icons.title,
-                                  size: 14,
-                                  color: Colors.grey.shade600,
-                                ),
+                                Assets.newicons.title.image(
+                                    width: 13,
+                                    height: 13,
+                                    color: Theme.of(context).primaryColor),
                                 const SizedBox(width: 4),
                                 Flexible(
                                   child: Text(
@@ -238,11 +214,8 @@ class _CommentScreenState extends State<CommentScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: IconButton(
-                        icon: Icon(
-                          Icons.delete_outline,
-                          color: Colors.red.shade600,
-                          size: 20,
-                        ),
+                        icon: Assets.newicons.trashXmark.image(
+                            width: 20, height: 20, color: Colors.red.shade600),
                         onPressed: () => _showDeleteDialog(
                           context,
                           comment['id'].toString(),
@@ -284,11 +257,10 @@ class _CommentScreenState extends State<CommentScreen> {
                   children: [
                     Row(
                       children: [
-                        Icon(
-                          Icons.access_time,
-                          size: 14,
-                          color: Colors.grey.shade500,
-                        ),
+                        Assets.newicons.calendarClock.image(
+                            width: 13,
+                            height: 13,
+                            color: Theme.of(context).primaryColor),
                         const SizedBox(width: 4),
                         Text(
                           comment['date_time'] ?? 'تاریخ نامشخص',
@@ -308,7 +280,7 @@ class _CommentScreenState extends State<CommentScreen> {
                         color: Colors.blue.shade600,
                       ),
                       label: Text(
-                        'ویرایش',
+                        'تعديل',
                         style: TextStyle(
                           color: Colors.blue.shade600,
                           fontSize: 12,
@@ -365,28 +337,10 @@ class _CommentScreenState extends State<CommentScreen> {
                   // Reload comments
                   _loadComments();
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('کامنت با موفقیت حذف شد'),
-                      backgroundColor: Colors.green.withOpacity(0.4),
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  );
+                  AppSnackBar.showSuccess(context, 'تم تعديل التعليق بنجاح');
                 } catch (e) {
                   Navigator.of(dialogContext).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('خطأ في حذف التعليق'),
-                      backgroundColor: Colors.red.withOpacity(0.4),
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  );
+                  AppSnackBar.showError(context, 'خطأ في حذف التعليق');
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -421,7 +375,7 @@ class _CommentScreenState extends State<CommentScreen> {
             children: [
               Icon(Icons.edit, color: Colors.blue.shade600),
               const SizedBox(width: 8),
-              const Text('ویرایش کامنت'),
+              const Text('تحرير التعليق'),
             ],
           ),
           content: SizedBox(
@@ -433,8 +387,8 @@ class _CommentScreenState extends State<CommentScreen> {
                 TextField(
                   controller: titleController,
                   decoration: InputDecoration(
-                    labelText: 'عنوان کامنت',
-                    hintText: 'عنوان کامنت را وارد کنید...',
+                    labelText: 'عنوان التعليق',
+                    hintText: 'أدخل عنوان التعليق...',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -452,8 +406,8 @@ class _CommentScreenState extends State<CommentScreen> {
                   controller: controller,
                   maxLines: 5,
                   decoration: InputDecoration(
-                    labelText: 'متن کامنت',
-                    hintText: 'کامنت خود را وارد کنید...',
+                    labelText: 'عنوان التعليق',
+                    hintText: 'أدخل عنوان التعليق...',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -471,7 +425,7 @@ class _CommentScreenState extends State<CommentScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('لغو', style: TextStyle(fontSize: 16)),
+              child: const Text('إلغاء', style: TextStyle(fontSize: 16)),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -492,47 +446,20 @@ class _CommentScreenState extends State<CommentScreen> {
                     // Reload comments to show changes
                     _loadComments();
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text('کامنت با موفقیت ویرایش شد'),
-                        backgroundColor: Colors.green.withOpacity(0.4),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    );
+                    AppSnackBar.showSuccess(context, 'تم تعديل التعليق بنجاح');
                   } catch (e) {
                     Navigator.of(dialogContext).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text('خطا در ویرایش کامنت'),
-                        backgroundColor: Colors.red.withOpacity(0.4),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    );
+                    AppSnackBar.showError(context, 'خطأ في حذف التعليق');
                   }
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('لطفاً متن کامنت را وارد کنید'),
-                      backgroundColor: Colors.orange.withOpacity(0.4),
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  );
+                  AppSnackBar.showWarning(context, 'يرجى إدخال نص التعليق');
                 }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
               ),
-              child: const Text('ذخیره', style: TextStyle(fontSize: 16)),
+              child: const Text('حفظ', style: TextStyle(fontSize: 16)),
             ),
           ],
         );

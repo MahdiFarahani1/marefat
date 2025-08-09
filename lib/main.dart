@@ -1,5 +1,6 @@
-import 'package:bookapp/config/theme/theme.dart';
+import 'package:bookapp/config/splash/splash.dart';
 import 'package:bookapp/features/articles/bloc/cubit/article_cubit_cubit.dart';
+import 'package:bookapp/features/articles/bloc/fontsize/cubit/article_cubit.dart';
 import 'package:bookapp/features/books/bloc/book/book_cubit.dart';
 import 'package:bookapp/features/books/bloc/download/download_cubit.dart';
 import 'package:bookapp/features/books/repositoreis/book_repository.dart';
@@ -76,6 +77,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => QuestionSearchCubit(),
         ),
+        BlocProvider(create: (context) => ArticleFontSizeCubit()),
         BlocProvider(
           create: (context) => BookCubit(BookRepository()),
         ),
@@ -85,6 +87,8 @@ class MyApp extends StatelessWidget {
       ],
       child: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, settingsState) {
+          GetStorage box = GetStorage();
+          final onBordingShow = box.read('onbording') ?? false;
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             locale: Locale('ar'),
@@ -98,7 +102,7 @@ class MyApp extends StatelessWidget {
             ],
             theme: settingsState.theme,
             //darkTheme: AppTheme.darkTheme,
-            home: const OnboardingPage(),
+            home: onBordingShow ? SplashScreen() : const OnboardingPage(),
           );
         },
       ),

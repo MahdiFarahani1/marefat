@@ -4,9 +4,12 @@ import 'package:bookapp/features/books/bloc/download/download_state.dart';
 import 'package:bookapp/features/mainWrapper/bloc/slider/slider_cubit.dart';
 import 'package:bookapp/features/mainWrapper/model/slider_model.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
+import 'package:bookapp/features/storage/repository/db_helper.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/func/downloaded_book.dart';
+import 'package:bookapp/shared/scaffold/back_btn.dart';
 import 'package:bookapp/shared/utils/images_network.dart';
+import 'package:bookapp/shared/utils/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -19,9 +22,11 @@ class AllLastBooks extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        title: const Text("کتاب‌های اخیر",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        leading: Back.btn(context),
+        title: Text("الكتب الأخيرة",
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor)),
         centerTitle: true,
         elevation: 1,
         flexibleSpace: Container(),
@@ -31,7 +36,7 @@ class AllLastBooks extends StatelessWidget {
           final status = state.statusSlider;
 
           if (status is SliderLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CustomLoading.fadingCircle(context));
           } else if (status is SliderLoaded) {
             final books = status.books;
 
@@ -95,8 +100,10 @@ class AllLastBooks extends StatelessWidget {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Assets.images.document
-                                        .image(width: 22, height: 22),
+                                    Assets.newicons.filePdf.image(
+                                        width: 22,
+                                        height: 22,
+                                        color: Theme.of(context).primaryColor),
                                     const SizedBox(width: 6),
                                     GestureDetector(
                                       onTap: downloadState.isDownloadingPdf
@@ -148,6 +155,10 @@ class AllLastBooks extends StatelessWidget {
                                                     book.id.toString(),
                                                     '${ConstantApp.downloadBook}${book.id}',
                                                   );
+
+                                              DatabaseStorageHelper
+                                                  .insertBookNames(
+                                                      book.title, book.id);
                                             },
                                           );
                                         }
@@ -162,27 +173,24 @@ class AllLastBooks extends StatelessWidget {
                                                   .read<SettingsCubit>()
                                                   .state
                                                   .primry
-                                                  .withOpacity(0.3),
+                                                  .withOpacity(0.1),
                                           borderRadius:
                                               BorderRadius.circular(12),
                                         ),
                                         padding: EdgeInsets.all(8),
                                         child: downloadState.isDownloadingBook
-                                            ? CircularProgressIndicator(
-                                                color: Colors.blue,
-                                                backgroundColor:
-                                                    Colors.grey[300],
-                                                strokeWidth: 2,
-                                              )
+                                            ? CustomLoading.fadingCircle(
+                                                context)
                                             : downloadState.isDownloadedBook
-                                                ? Assets.icons.check
+                                                ? Assets.newicons.mapMarkerCheck
                                                     .image(color: Colors.green)
                                                     .animate()
                                                     .scale(
                                                         duration: Duration(
                                                             milliseconds: 400))
-                                                : Assets.icons.downBook
-                                                    .image(color: Colors.white),
+                                                : Assets.newicons.inboxIn.image(
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
                                       ),
                                     ),
                                   ],

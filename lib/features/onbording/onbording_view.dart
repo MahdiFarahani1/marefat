@@ -3,6 +3,7 @@ import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/esay_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get_storage/get_storage.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -14,6 +15,7 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage> {
   final PageController _controller = PageController();
   int currentPage = 0;
+  GetStorage box = GetStorage();
 
   final List<_OnboardItem> pages = [
     _OnboardItem(
@@ -40,6 +42,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       _controller.nextPage(
           duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
     } else {
+      box.write('onbording', true);
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(

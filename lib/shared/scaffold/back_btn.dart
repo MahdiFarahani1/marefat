@@ -12,7 +12,7 @@ class Back {
         child: CircleAvatar(
           backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
           child: Assets.newicons.angleSmallRight.image(
-              width: 25, height: 25, color: Theme.of(context).primaryColor),
-        )).padAll(6);
+              width: 20, height: 20, color: Theme.of(context).primaryColor),
+        )).padAll(9);
   }
 }

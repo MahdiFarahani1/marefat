@@ -26,7 +26,6 @@ class ContentCubit extends Cubit<ContentState> {
   }) : super(const ContentState()) {
     _init(context);
 
-    // گوش دادن به تغییرات SettingsCubit
     settingsSubscription = settingsCubit.stream.listen((settingsState) {
       _rebuildHtml(settingsState, context);
     });
@@ -46,7 +45,8 @@ class ContentCubit extends Cubit<ContentState> {
       final html = await buildHtmlContent(loadedPages, context,
           fontSize: settingsState.fontSize,
           lineHeight: settingsState.lineHeight,
-          vertical: settingsState.pageDirection == PageDirection.vertical,
+          vertical: context.read<SettingsCubit>().state.pageDirection ==
+              PageDirection.vertical,
           backgroundColor: settingsState.pageColor);
 
       emit(state.copyWith(
@@ -67,7 +67,8 @@ class ContentCubit extends Cubit<ContentState> {
     final html = await buildHtmlContent(state.pages, context,
         fontSize: settingsState.fontSize,
         lineHeight: settingsState.lineHeight,
-        vertical: settingsState.pageDirection == PageDirection.vertical,
+        vertical: context.read<SettingsCubit>().state.pageDirection ==
+            PageDirection.vertical,
         backgroundColor: settingsState.pageColor);
 
     emit(state.copyWith(htmlContent: html));

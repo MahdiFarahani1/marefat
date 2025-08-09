@@ -1,4 +1,5 @@
 import 'package:bookapp/gen/assets.gen.dart';
+import 'package:bookapp/shared/utils/loading.dart';
 import 'package:flutter/material.dart';
 
 class AppDialog {
@@ -16,44 +17,57 @@ class AppDialog {
         backgroundColor: theme.cardColor,
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Assets.newicons.termsInfo.image(
-                  width: 60, height: 60, color: Theme.of(context).primaryColor),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 400, // محدودیت ارتفاع دیالوگ
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Assets.newicons.termsInfo.image(
+                  width: 60,
+                  height: 60,
+                  color: theme.primaryColor,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                message,
-                style: theme.textTheme.bodyMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Theme.of(context).primaryColor),
-                      borderRadius: BorderRadius.circular(12),
+                const SizedBox(height: 16),
+                Text(
+                  title,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
+                    child: Text(
+                      message,
+                      style: theme.textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                  child: Text(
-                    "باشه",
-                    style: TextStyle(color: Theme.of(context).primaryColor),
-                  ),
                 ),
-              )
-            ],
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: theme.primaryColor),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      "موافق",
+                      style: TextStyle(color: theme.primaryColor),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -63,7 +77,7 @@ class AppDialog {
   static Future<void> showConfirmDialog(BuildContext context,
       {required String title,
       required String content,
-      required VoidCallback onPress}) async {
+      required Future<void> Function() onPress}) async {
     await showDialog(
       context: context,
       barrierDismissible: false,
@@ -90,9 +104,9 @@ class AppDialog {
               child: const Text('لا', style: TextStyle(fontSize: 16)),
             ),
             ElevatedButton(
-              onPressed: () {
-                onPress();
-                Navigator.pop(context);
+              onPressed: () async {
+                await onPress();
+                Navigator.of(dialogContext).pop();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
@@ -122,7 +136,7 @@ class AppDialog {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const CircularProgressIndicator(strokeWidth: 3),
+              CustomLoading.fadingCircle(context),
               if (message != null) ...[
                 const SizedBox(height: 20),
                 Text(

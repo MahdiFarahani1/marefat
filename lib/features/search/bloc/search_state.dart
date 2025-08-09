@@ -19,6 +19,11 @@ class SearchError extends SearchState {
 class SearchResultItem {
   final String text;
   final String bookName;
-
-  SearchResultItem({required this.text, required this.bookName});
+  final String pageNumber;
+  final String bookId;
+  SearchResultItem(
+      {required this.text,
+      required this.bookName,
+      required this.pageNumber,
+      required this.bookId});
 }

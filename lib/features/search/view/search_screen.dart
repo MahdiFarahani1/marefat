@@ -1,3 +1,10 @@
+import 'package:bookapp/core/extensions/widget_ex.dart';
+import 'package:bookapp/features/content_books/view/content_page.dart';
+import 'package:bookapp/features/storage/repository/db_helper.dart';
+import 'package:bookapp/gen/assets.gen.dart';
+import 'package:bookapp/shared/scaffold/back_btn.dart';
+import 'package:bookapp/shared/utils/esay_size.dart';
+import 'package:bookapp/shared/utils/loading.dart';
 import 'package:bookapp/shared/utils/without_tag_html.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -6,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bookapp/features/search/bloc/search_cubit.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:path/path.dart' as path;
+import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -19,11 +27,11 @@ class _SearchPageState extends State<SearchPage> {
 
   bool searchText = true;
   bool searchTitle = false;
-  String selectedBookId = 'all';
+  String selectedBookId = '0';
   String selectedBookPath = 'all';
 
   List<Map<String, String>> books = [
-    {'id': 'all', 'name': 'جميع الكتب', 'path': 'all'},
+    {'book_id': '0', 'book_name': 'جميع الكتب', 'path': 'all'},
   ];
 
   @override
@@ -45,7 +53,7 @@ class _SearchPageState extends State<SearchPage> {
             entities.whereType<Directory>().toList();
 
         List<Map<String, String>> foundBooks = [
-          {'id': 'all', 'name': 'همه کتاب‌ها', 'path': 'all'},
+          {'book_id': '0', 'book_name': 'جميع الكتب', 'path': 'all'},
         ];
 
         for (Directory bookDir in bookDirectories) {
@@ -55,8 +63,8 @@ class _SearchPageState extends State<SearchPage> {
           final File sqliteFile = File(sqlitePath);
           if (await sqliteFile.exists()) {
             foundBooks.add({
-              'id': bookId,
-              'name': bookId,
+              'book_id': bookId,
+              'book_name': bookId,
               'path': sqlitePath,
             });
           }
@@ -80,19 +88,16 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'البحث',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: primaryColor,
           ),
         ),
         flexibleSpace: Container(),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
+        leading: Back.btn(context),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -119,7 +124,9 @@ class _SearchPageState extends State<SearchPage> {
                   const SizedBox(height: 20),
 
                   // Book Selection Dropdown
-                  _buildBookDropdown(primaryColor)
+                  _buildBookDropdown(
+                    primaryColor,
+                  )
                       .animate()
                       .fadeIn(duration: 700.ms, delay: 400.ms)
                       .slideY(begin: 0.2),
@@ -181,11 +188,9 @@ class _SearchPageState extends State<SearchPage> {
                 Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
             fontSize: 15,
           ),
-          prefixIcon: Icon(
-            Icons.search_rounded,
-            color: primaryColor,
-            size: 22,
-          ),
+          prefixIcon: Assets.newicons.search
+              .image(color: primaryColor, width: 20, height: 20)
+              .padAll(14),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide.none,
@@ -353,44 +358,54 @@ class _SearchPageState extends State<SearchPage> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.2)),
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface
+                    .withValues(alpha: 0.2),
+              ),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: selectedBookId,
                 isExpanded: true,
-                icon: Icon(Icons.keyboard_arrow_down_rounded,
-                    color: primaryColor, size: 24),
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontWeight: FontWeight.w500,
-                ),
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() {
+                    selectedBookId = value;
+                    final selected = books.firstWhere(
+                      (b) => b['book_id'] == value,
+                      orElse: () => {
+                        'book_id': '0',
+                        'book_name': 'جميع الكتب',
+                        'path': 'all'
+                      },
+                    );
+                    selectedBookPath = selected['path'] ?? 'all';
+                  });
+                },
                 items: books.map((book) {
+                  final idStr = book['book_id'] ?? '0';
+                  if (idStr == '0') {
+                    return const DropdownMenuItem<String>(
+                      value: '0',
+                      child: Text('جميع الكتب'),
+                    );
+                  }
+
+                  final idInt = int.tryParse(idStr) ?? 0;
+                  final futureName =
+                      DatabaseStorageHelper.getBookNameWithId(idInt);
                   return DropdownMenuItem<String>(
-                    value: book['id'],
-                    child: Text(
-                      book['name']!,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface),
+                    value: idStr,
+                    child: FutureBuilder<String>(
+                      future: futureName,
+                      builder: (context, snapshot) {
+                        return Text(
+                            snapshot.data ?? (book['book_name'] ?? '...'));
+                      },
                     ),
                   );
                 }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedBookId = newValue!;
-                    // Find the selected book and update the path
-                    final selectedBook = books.firstWhere(
-                      (book) => book['id'] == newValue,
-                      orElse: () =>
-                          {'id': 'all', 'name': 'همه کتاب‌ها', 'path': 'all'},
-                    );
-                    selectedBookPath = selectedBook['path']!;
-                  });
-                },
               ),
             ),
           ),
@@ -415,9 +430,12 @@ class _SearchPageState extends State<SearchPage> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
                 onTap: () {
-                  context
-                      .read<SearchCubit>()
-                      .quickSearch(_queryController.text);
+                  context.read<SearchCubit>().advancedSearch(
+                        query: _queryController.text,
+                        searchText: searchText,
+                        searchTitle: searchTitle,
+                        selectedBookPath: selectedBookPath,
+                      );
                 },
                 child: Center(
                   child: Text(
@@ -453,7 +471,7 @@ class _SearchPageState extends State<SearchPage> {
                         selectedBookPath: selectedBookPath,
                       );
                 },
-                child: const Center(
+                child: Center(
                   child: Text(
                     'بحث متقدم',
                     style: TextStyle(
@@ -477,8 +495,7 @@ class _SearchPageState extends State<SearchPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(
-                color: context.read<SettingsCubit>().state.primry),
+            CustomLoading.fadingCircle(context),
             const SizedBox(height: 16),
             Text(
               'جاري البحث...',
@@ -535,14 +552,7 @@ class _SearchPageState extends State<SearchPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.search_off,
-                size: 64,
-                color: Theme.of(context)
-                    .colorScheme
-                    .onSurface
-                    .withValues(alpha: 0.3),
-              ),
+              Icon(Icons.search_off, size: 64, color: Colors.red),
               const SizedBox(height: 16),
               Text(
                 'لا توجد نتائج',
@@ -575,11 +585,10 @@ class _SearchPageState extends State<SearchPage> {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                Icon(
-                  Icons.search,
-                  color: context.read<SettingsCubit>().state.primry,
-                  size: 20,
-                ),
+                Assets.newicons.search.image(
+                    color: Theme.of(context).primaryColor,
+                    width: 20,
+                    height: 20),
                 const SizedBox(width: 8),
                 Text(
                   'النتائج (${state.results.length})',
@@ -606,43 +615,94 @@ class _SearchPageState extends State<SearchPage> {
             ),
             itemBuilder: (context, index) {
               final item = state.results[index];
-              return Container(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      extractPlainText(item.text),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Theme.of(context).colorScheme.onSurface,
-                        height: 1.5,
+
+              return ZoomTapAnimation(
+                onTap: () async {
+                  String bookName =
+                      await DatabaseStorageHelper.getBookNameWithId(
+                          int.parse(item.bookId));
+                  Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                      builder: (_) => ContentPage(
+                        bookId: item.bookId,
+                        bookName: bookName,
+                        scrollPosetion: double.parse(item.pageNumber) - 1,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: context
-                            .read<SettingsCubit>()
-                            .state
-                            .primry
-                            .withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        'من كتاب: ${item.bookName}',
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        extractPlainText(item.text),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 12,
-                          color: context.read<SettingsCubit>().state.primry,
-                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          height: 1.5,
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: context
+                                  .read<SettingsCubit>()
+                                  .state
+                                  .primry
+                                  .withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: FutureBuilder<String>(
+                                future: DatabaseStorageHelper.getBookNameWithId(
+                                    int.parse(item.bookId)),
+                                builder: (context, snapshot) {
+                                  return Text(
+                                    'من كتاب: ${snapshot.data}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: context
+                                          .read<SettingsCubit>()
+                                          .state
+                                          .primry,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  );
+                                }),
+                          ),
+                          EsaySize.gap(8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: context
+                                  .read<SettingsCubit>()
+                                  .state
+                                  .primry
+                                  .withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              'الصفحة: ${item.pageNumber}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color:
+                                    context.read<SettingsCubit>().state.primry,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
@@ -656,12 +716,9 @@ class _SearchPageState extends State<SearchPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.search,
-            size: 64,
-            color:
-                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-          ),
+          EsaySize.gap(8),
+          Assets.newicons.search
+              .image(color: Colors.grey, width: 60, height: 60),
           const SizedBox(height: 16),
           Text(
             'ابدأ البحث',

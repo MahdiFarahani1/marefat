@@ -11,68 +11,60 @@ class ApiErrorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        margin: const EdgeInsets.symmetric(horizontal: 24),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // انیمیشن خطا
-              Lottie.asset(
-                Assets.lottie.error404,
-                width: 160,
-                height: 160,
-                fit: BoxFit.contain,
-                repeat: true,
-              ),
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // انیمیشن خطا
+            Lottie.asset(
+              Assets.lottie.error404,
+              width: 160,
+              height: 160,
+              fit: BoxFit.contain,
+              repeat: true,
+            ),
 
-              const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-              // عنوان خطا
-              const Text(
-                'حدث خطأ!',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ).animate().fadeIn(delay: 300.ms),
+            // عنوان خطا
+            const Text(
+              'حدث خطأ!',
+              style: TextStyle(
+                  fontSize: 22, fontWeight: FontWeight.bold, color: Colors.red),
+            ).animate().fadeIn(delay: 300.ms),
 
-              const SizedBox(height: 8),
+            const SizedBox(height: 8),
 
-              // توضیح خطا
-              const Text(
-                'فشل الاتصال بالخادم. حاول مرة أخرى من فضلك.',
-                style: TextStyle(color: Colors.grey),
-                textAlign: TextAlign.center,
-              ).animate().fadeIn(delay: 500.ms),
+            // توضیح خطا
+            const Text(
+              'فشل الاتصال بالخادم. حاول مرة أخرى من فضلك.',
+              style: TextStyle(color: Colors.grey),
+              textAlign: TextAlign.center,
+            ).animate().fadeIn(delay: 500.ms),
 
-              const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-              // دکمه تلاش مجدد
-              Directionality(
-                textDirection: TextDirection.ltr,
-                child: ElevatedButton.icon(
-                  onPressed: onRetry,
-                  icon: const Icon(Icons.refresh, color: Colors.white),
-                  label: const Text('حاول مرة أخرى'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+            // دکمه تلاش مجدد
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: ElevatedButton.icon(
+                onPressed: onRetry,
+                icon: Assets.newicons.messageCircleRefresh
+                    .image(width: 20, height: 20, color: Colors.white),
+                label: const Text('حاول مرة أخرى'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                ).animate().fadeIn(delay: 700.ms).slideY(begin: 0.3),
-              ),
-            ],
-          ),
+                ),
+              ).animate().fadeIn(delay: 700.ms).slideY(begin: 0.3),
+            ),
+          ],
         ),
       )
           .animate()

@@ -1,5 +1,6 @@
 import 'package:bookapp/features/mainWrapper/view/navigaion.dart';
 import 'package:bookapp/gen/assets.gen.dart';
+import 'package:bookapp/shared/scaffold/back_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -13,16 +14,10 @@ class CustomAppbar {
           ),
       title: Text(
         title,
-        style: TextStyle(color: Theme.of(context).primaryColor),
+        style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 16),
       ),
       centerTitle: true,
-      leading: IconButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        icon: Icon(Icons.arrow_back),
-        color: Theme.of(context).primaryColor,
-      ),
+      leading: Back.btn(context),
       actions: [actions ?? SizedBox.shrink()],
     );
   }

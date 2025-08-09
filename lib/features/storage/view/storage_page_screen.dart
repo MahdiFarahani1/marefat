@@ -3,6 +3,10 @@ import 'package:bookapp/features/content_books/view/content_page.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/storage/bloc/page_bookmark/page_bookmark_cubit.dart';
 import 'package:bookapp/features/storage/bloc/page_bookmark/page_bookmark_state.dart';
+import 'package:bookapp/features/storage/widgets/empty_list.dart';
+import 'package:bookapp/gen/assets.gen.dart';
+import 'package:bookapp/shared/scaffold/back_btn.dart';
+import 'package:bookapp/shared/utils/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -42,20 +46,18 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
       value: PageBookmarkCubit.instance,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'صفحات ذخیره شده',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          title: Text(
+            "الصفحات المحفوظة",
+            style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontWeight: FontWeight.bold),
           ),
-          leading: widget.isBack
-              ? IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
-                )
-              : const SizedBox.shrink(),
+          leading: widget.isBack ? Back.btn(context) : const SizedBox.shrink(),
           actions: [
             IconButton(
               onPressed: () => PageBookmarkCubit.instance.loadPageBookmarks(),
-              icon: const Icon(Icons.refresh, color: Colors.white),
+              icon: Assets.newicons.messageCircleRefresh.image(
+                  width: 25, height: 25, color: Theme.of(context).primaryColor),
               tooltip: 'بروزرسانی',
             ),
           ],
@@ -66,7 +68,7 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
         body: BlocBuilder<PageBookmarkCubit, PageBookmarkState>(
           builder: (context, state) {
             if (state.status == PageBookmarkStatus.loading) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(child: CustomLoading.fadingCircle(context));
             }
 
             if (state.status == PageBookmarkStatus.error) {
@@ -74,19 +76,9 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
             }
 
             if (state.pageBookmarks.isEmpty) {
-              return const Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.bookmark_border, size: 80, color: Colors.grey),
-                    SizedBox(height: 16),
-                    Text(
-                      'هیچ صفحه‌ای ذخیره نشده است!',
-                      style: TextStyle(fontSize: 18, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              );
+              return EmptyList.show(context,
+                  imagePath: Assets.newicons.page.path,
+                  message: 'لَم يتم حفظ أي صفحة');
             }
 
             return RefreshIndicator(
@@ -122,8 +114,8 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white,
-                Colors.green.shade50,
+                Theme.of(context).primaryColor.withOpacity(0.01),
+                Theme.of(context).primaryColor.withOpacity(0.25),
               ],
             ),
           ),
@@ -132,24 +124,9 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
             leading: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: context
-                        .read<SettingsCubit>()
-                        .state
-                        .primry
-                        .withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.bookmark_added,
-                color: Colors.white,
-                size: 24,
-              ),
+                  borderRadius: BorderRadius.circular(12), color: Colors.white),
+              child: Assets.newicons.circleBookmark.image(
+                  width: 25, height: 25, color: Theme.of(context).primaryColor),
             ),
             title: Text(
               pageBookmark['book_name'] ?? 'بدون عنوان',
@@ -163,10 +140,13 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
               padding: const EdgeInsets.only(top: 8),
               child: Row(
                 children: [
-                  Icon(Icons.pages, size: 16, color: Colors.grey.shade600),
+                  Assets.newicons.marker.image(
+                      width: 15,
+                      height: 15,
+                      color: Theme.of(context).primaryColor),
                   const SizedBox(width: 4),
                   Text(
-                    'موقعیت: ${pageBookmark['scrollposition']?.toStringAsFixed(1) ?? '0.0'}',
+                    'موضع: ${pageBookmark['scrollposition']?.toStringAsFixed(0) ?? '0.0'}',
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 12,
@@ -181,7 +161,8 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: IconButton(
-                icon: Icon(Icons.delete_outline, color: Colors.red.shade600),
+                icon: Assets.newicons.trashXmark
+                    .image(width: 20, height: 20, color: Colors.red.shade600),
                 onPressed: () {
                   final double scroll = pageBookmark['scrollposition'];
                   _showDeletePageDialog(
@@ -194,14 +175,14 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
               ),
             ),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ContentPage(
-                        bookId: pageBookmark['book_id'].toString(),
-                        bookName: pageBookmark['book_name'],
-                        scrollPosetion: pageBookmark['scrollposition'] - 1),
-                  ));
+              Navigator.of(context, rootNavigator: true).push(
+                MaterialPageRoute(
+                  builder: (_) => ContentPage(
+                      bookId: pageBookmark['book_id'].toString(),
+                      bookName: pageBookmark['book_name'],
+                      scrollPosetion: pageBookmark['scrollposition'] - 1),
+                ),
+              );
             },
           ),
         ),

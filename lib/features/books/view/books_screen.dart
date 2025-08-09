@@ -69,7 +69,7 @@ class _DownloadAllButton extends StatelessWidget {
               context,
               title: 'تحميل جميع الكتب',
               content: 'هل أنت متأكد أنك تريد تحميل جميع الكتب؟',
-              onPress: () {
+              onPress: () async {
                 context.read<DownloadCubit>().downloadAll(state.books);
               },
             );
@@ -78,7 +78,7 @@ class _DownloadAllButton extends StatelessWidget {
         child: Assets.icons.downloadAll.image(
           width: 30,
           height: 30,
-          color: Colors.white,
+          color: Theme.of(context).primaryColor,
         ),
       ),
     );

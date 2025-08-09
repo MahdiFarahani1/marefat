@@ -6,6 +6,7 @@ import 'package:bookapp/shared/utils/error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../shared/utils/loading.dart';
 import '../bloc/gallery_cubit.dart';
@@ -92,7 +93,9 @@ class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
                               top: -15,
                               right: -5,
                               child: GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  Share.share('$imageUrl}');
+                                },
                                 child: Container(
                                     decoration: BoxDecoration(
                                         shape: BoxShape.circle,
@@ -133,12 +136,17 @@ class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
     );
   }
 
-  Widget shimmerBox() {
+  Widget shimmerBox({double width = double.infinity, double height = 100}) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey.shade800,
-      highlightColor: Colors.grey.shade700,
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
       child: Container(
-        color: Colors.grey.shade900,
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade300,
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
     );
   }

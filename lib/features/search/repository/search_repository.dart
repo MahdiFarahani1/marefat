@@ -25,16 +25,20 @@ class SearchRepository {
 
     for (var file in dbFiles) {
       final db = await databaseFactory.openDatabase(file.path);
+      String rawName = p.basenameWithoutExtension(file.path);
+
+      String bookId = rawName.startsWith('b') ? rawName.substring(1) : rawName;
       final res = await db.rawQuery(
-        "SELECT _text FROM bpages WHERE _text LIKE ?",
+        "SELECT page, _text FROM bpages WHERE _text LIKE ?",
         ['%$query%'],
       );
 
       for (var row in res) {
         results.add(SearchResultItem(
-          text: row['_text'] as String,
-          bookName: p.basenameWithoutExtension(file.path),
-        ));
+            pageNumber: row['page'] as dynamic,
+            text: row['_text'] as String,
+            bookName: bookId,
+            bookId: bookId));
       }
 
       await db.close();
@@ -61,30 +65,35 @@ class SearchRepository {
 
     for (var file in dbFiles) {
       final db = await databaseFactory.openDatabase(file.path);
+      String rawName = p.basenameWithoutExtension(file.path);
 
+      String bookId = rawName.startsWith('b') ? rawName.substring(1) : rawName;
       if (searchText) {
         final res = await db.rawQuery(
-          "SELECT _text FROM bpages WHERE _text LIKE ?",
+          "SELECT page, _text FROM bpages WHERE _text LIKE ?",
           ['%$query%'],
         );
+
         for (var row in res) {
           results.add(SearchResultItem(
-            text: row['_text'] as String,
-            bookName: p.basenameWithoutExtension(file.path),
-          ));
+              pageNumber: row['page'] as dynamic,
+              text: row['_text'] as String,
+              bookName: bookId,
+              bookId: bookId));
         }
       }
 
       if (searchTitle) {
         final res = await db.rawQuery(
-          "SELECT title FROM bgroups WHERE title LIKE ?",
+          "SELECT page, title FROM bgroups WHERE title LIKE ?",
           ['%$query%'],
         );
         for (var row in res) {
           results.add(SearchResultItem(
-            text: row['title'] as String,
-            bookName: p.basenameWithoutExtension(file.path),
-          ));
+              pageNumber: row['page'] as dynamic,
+              text: row['title'] as String,
+              bookName: bookId,
+              bookId: bookId));
         }
       }
 

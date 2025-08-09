@@ -1,3 +1,4 @@
+import 'package:bookapp/features/content_books/bloc/content/content_cubit.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/settings/bloc/settings_state.dart';
 import 'package:bookapp/gen/assets.gen.dart';
@@ -53,7 +54,8 @@ class SettingsPage extends StatelessWidget {
                     delay: 300,
                   ),
                   _animatedSection(
-                    child: _fontFamilyCardSelector(context, state.fontFamily),
+                    child: _fontFamilyCardSelector(
+                        context, state.fontFamily, state),
                     delay: 350,
                   ),
                   const SizedBox(height: 24),
@@ -240,39 +242,42 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _fontFamilyCardSelector(BuildContext context, String fontFamily) {
-    final fonts = ['جَزَلة', 'أميري', 'الكوفي', 'Tajawal'];
+  Widget _fontFamilyCardSelector(
+      BuildContext context, String fontFamily, SettingsState state) {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton<String>(
+        value: state.fontFamily,
+        isExpanded: true,
+        items: const [
+          DropdownMenuItem(value: 'لوتوس', child: Text("لوتوس")),
+          DropdownMenuItem(value: 'البهيج', child: Text("البهيج")),
+          DropdownMenuItem(value: 'دجلة', child: Text("دجلة")),
+        ],
+        onChanged: (value) async {
+          context.read<SettingsCubit>().updateFontFamily(value!);
 
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 12),
-            ...fonts.map((font) {
-              return RadioListTile<String>(
-                value: font,
-                groupValue: fontFamily,
-                onChanged: (value) {
-                  if (value != null) {
-                    context.read<SettingsCubit>().updateFontFamily(value);
-                  }
-                },
-                title: Text(
-                  font,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(fontFamily: font),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                activeColor: Colors.blueAccent,
-                controlAffinity: ListTileControlAffinity.trailing,
-              );
-            }),
-          ],
-        ),
+          // final css =
+          //     await context.read<ContentCubit>().loadFont(state.fontFamily);
+
+          Future.delayed(Duration(milliseconds: 500), () async {
+            // await inAppWebViewController
+            //     .evaluateJavascript(
+            //   source: """
+            //                           var style = document.getElementById('customFontStyle');
+            //                           if (!style) {
+            //                             style = document.createElement('style');
+            //                             style.id = 'customFontStyle';
+            //                             document.head.appendChild(style);
+            //                           }
+            //                           style.innerHTML = `$css`;
+
+            //                           document.querySelectorAll('.text_style').forEach(function(el) {
+            //                             el.style.setProperty('font-family', '$value', 'important');
+            //                           });
+            //                         """,
+            // );
+          });
+        },
       ),
     );
   }

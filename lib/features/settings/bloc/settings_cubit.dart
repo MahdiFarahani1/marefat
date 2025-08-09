@@ -20,7 +20,7 @@ class SettingsCubit extends Cubit<SettingsState> {
           lineHeight: 1.5,
           fontFamily: 'لوتوس',
           primrayIndex: 0,
-          pageDirection: PageDirection.horizontal,
+          pageDirection: PageDirection.vertical,
           primry: backgrounds[0],
         ));
 
@@ -98,9 +98,10 @@ class SettingsCubit extends Cubit<SettingsState> {
 }
 
 List<Color> backgrounds = [
-  Color(0xFF141E30),
-  Color(0xFFEEA849),
+  Color.fromARGB(255, 12, 85, 138), // آبی تیره
+  Color.fromARGB(255, 0, 196, 231), // آبی روشن
+  Color.fromARGB(255, 166, 138, 88), // قهوه‌ای/طلایی ملایم
+  Color.fromARGB(255, 135, 140, 162), // خاکستری مایل به آبی
+
   Color(0xFFF46B45),
-  Color(0xFF9BC5C3),
-  Color.fromARGB(255, 18, 41, 78),
 ];

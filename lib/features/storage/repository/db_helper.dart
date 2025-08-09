@@ -135,6 +135,30 @@ class DatabaseStorageHelper {
     );
   }
 
+  static Future<int> insertBookNames(String bookName, int bookID) async {
+    final db = await database;
+    return await db.insert(
+      'downloadedbook',
+      {'book_name': bookName, 'book_id': bookID},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> getaaaaaa() async {
+    final db = await database;
+    return await db.query('downloadedbook');
+  }
+
+  static Future<String> getBookNameWithId(int bookId) async {
+    final db = await database;
+    var list = await db.query(
+      'downloadedbook',
+      where: 'book_id = ?',
+      whereArgs: [bookId],
+    );
+    return list[0]['book_name'].toString();
+  }
+
   static Future<int> deleteBook(int bookId) async {
     final db = await database;
     return await db.delete(
@@ -188,5 +212,10 @@ class DatabaseStorageHelper {
       where: 'book_name = ? AND page_number = ?',
       whereArgs: [bookName, pageNumber],
     );
+  }
+
+  static Future<List<Map<String, dynamic>>> getBookName() async {
+    final db = await database;
+    return await db.query('book');
   }
 }

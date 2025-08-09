@@ -19,6 +19,7 @@ import 'package:bookapp/features/content_books/bloc/content/content_cubit.dart';
 import 'package:bookapp/features/content_books/bloc/content/content_state.dart';
 import 'package:bookapp/features/storage/bloc/page_bookmark/page_bookmark_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
+import 'package:bookapp/shared/ui_helper/snackbar_common.dart';
 import 'package:bookapp/shared/utils/esay_size.dart';
 import 'package:bookapp/shared/utils/loading.dart';
 import 'package:flutter/material.dart';
@@ -91,12 +92,27 @@ class _ContentPageState extends State<ContentPage> {
                   return Row(
                     children: [
                       ZoomTapAnimation(
-                        onTap: () => bookmarkCubit.toggleBookmark(
-                            widget.bookName, widget.bookId),
+                        onTap: () {
+                          bookmarkCubit
+                              .toggleBookmark(widget.bookName, widget.bookId)
+                              .then(
+                            (value) {
+                              if (state.isSaved) {
+                                AppSnackBar.showSuccess(
+                                    context, "تم الحفظ بنجاح");
+                              } else {
+                                AppSnackBar.showSuccess(
+                                    context, "تم الحذف بنجاح");
+                              }
+                            },
+                          );
+                        },
                         child: Assets.icons.bookstar.image(
-                          color: state.isSaved ? Colors.yellow : Colors.white,
-                          width: 28,
-                          height: 28,
+                          color: state.isSaved
+                              ? Colors.yellow
+                              : Theme.of(context).primaryColor,
+                          width: 24,
+                          height: 24,
                         ),
                       ),
                     ],
@@ -106,8 +122,12 @@ class _ContentPageState extends State<ContentPage> {
               ZoomTapAnimation(
                 onTap: () async => await TextSettingsDialog()
                     .show(context, webViewController!),
-                child: Assets.icons.settingstow
-                    .image(color: Colors.white, width: 28, height: 28)
+                child: Assets.newicons.customize
+                    .image(
+                      color: Theme.of(context).primaryColor,
+                      width: 24,
+                      height: 24,
+                    )
                     .padAll(8),
               )
             ],
@@ -116,9 +136,15 @@ class _ContentPageState extends State<ContentPage> {
               return Row(
                 children: [
                   IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
+                      icon: CircleAvatar(
+                        radius: 20,
+                        backgroundColor:
+                            Theme.of(context).primaryColor.withOpacity(0.1),
+                        child: Assets.newicons.angleSmallRight.image(
+                          width: 24,
+                          height: 24,
+                          color: Theme.of(context).primaryColor,
+                        ),
                       ),
                       onPressed: () {
                         readBookDialog(context, widget.bookName, widget.bookId);
@@ -136,8 +162,10 @@ class _ContentPageState extends State<ContentPage> {
                         ),
                       );
                     },
-                    child: Assets.icons.fiRrList
-                        .image(width: 20, height: 20, color: Colors.white),
+                    child: Assets.newicons.barsStaggered.image(
+                        width: 20,
+                        height: 20,
+                        color: Theme.of(context).primaryColor),
                   ),
                 ],
               );
@@ -341,7 +369,13 @@ class _ContentPageState extends State<ContentPage> {
                                                 .togglePageBookmark(
                                                     widget.bookName,
                                                     widget.bookId,
-                                                    pageNumber);
+                                                    pageNumber)
+                                                .then(
+                                              (value) {
+                                                AppSnackBar.showSuccess(
+                                                    context, "تم الحفظ بنجاح");
+                                              },
+                                            );
                                             var bookmarkData = {
                                               'bookId': widget.bookId,
                                               'pageNumber': pageNumber,
@@ -390,7 +424,7 @@ class _ContentPageState extends State<ContentPage> {
                                                                   window.scrollTo(0, y);
                                                                 };
                                                                 ''');
-                                          controller
+                                          await controller
                                               .evaluateJavascript(source: r"""
                                                                                                                         $(window).on('scroll', function() {
                                                                                                                     var currentTop = $(window).scrollTop();
@@ -415,7 +449,7 @@ class _ContentPageState extends State<ContentPage> {
                                                                                                   }
                                                                                                 ''');
                                         } else {
-                                          controller
+                                          await controller
                                               .evaluateJavascript(source: r"""
                                                                                                             $(document).ready(function () {
                                                                                                               var container = $('.book-container-horizontal');

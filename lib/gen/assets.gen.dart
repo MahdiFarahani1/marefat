@@ -2806,9 +2806,25 @@ class $AssetsNewiconsGen {
   AssetGenImage get bookmarkfull =>
       const AssetGenImage('assets/newicons/bookmarkfull.png');
 
+  /// File path: assets/newicons/calendar-clock.png
+  AssetGenImage get calendarClock =>
+      const AssetGenImage('assets/newicons/calendar-clock.png');
+
   /// File path: assets/newicons/calendar-lines-pen.png
   AssetGenImage get calendarLinesPen =>
       const AssetGenImage('assets/newicons/calendar-lines-pen.png');
+
+  /// File path: assets/newicons/circle-bookmark.png
+  AssetGenImage get circleBookmark =>
+      const AssetGenImage('assets/newicons/circle-bookmark.png');
+
+  /// File path: assets/newicons/circle-t.png
+  AssetGenImage get circleT =>
+      const AssetGenImage('assets/newicons/circle-t.png');
+
+  /// File path: assets/newicons/comment-alt-check.png
+  AssetGenImage get commentAltCheck =>
+      const AssetGenImage('assets/newicons/comment-alt-check.png');
 
   /// File path: assets/newicons/comment-alt-dots.png
   AssetGenImage get commentAltDots =>
@@ -2821,6 +2837,10 @@ class $AssetsNewiconsGen {
   /// File path: assets/newicons/customize.png
   AssetGenImage get customize =>
       const AssetGenImage('assets/newicons/customize.png');
+
+  /// File path: assets/newicons/file-pdf.png
+  AssetGenImage get filePdf =>
+      const AssetGenImage('assets/newicons/file-pdf.png');
 
   /// File path: assets/newicons/house-chimney.png
   AssetGenImage get houseChimney =>
@@ -2840,6 +2860,9 @@ class $AssetsNewiconsGen {
   /// File path: assets/newicons/map-marker-check.png
   AssetGenImage get mapMarkerCheck =>
       const AssetGenImage('assets/newicons/map-marker-check.png');
+
+  /// File path: assets/newicons/marker.png
+  AssetGenImage get marker => const AssetGenImage('assets/newicons/marker.png');
 
   /// File path: assets/newicons/message-circle-refresh.png
   AssetGenImage get messageCircleRefresh =>
@@ -2864,12 +2887,31 @@ class $AssetsNewiconsGen {
   AssetGenImage get openBookLightbulb =>
       const AssetGenImage('assets/newicons/open-book-lightbulb.png');
 
+  /// File path: assets/newicons/page.png
+  AssetGenImage get page => const AssetGenImage('assets/newicons/page.png');
+
   /// File path: assets/newicons/paper-plane-top.png
   AssetGenImage get paperPlaneTop =>
       const AssetGenImage('assets/newicons/paper-plane-top.png');
 
   /// File path: assets/newicons/search.png
   AssetGenImage get search => const AssetGenImage('assets/newicons/search.png');
+
+  /// File path: assets/newicons/square-minus.png
+  AssetGenImage get squareMinus =>
+      const AssetGenImage('assets/newicons/square-minus.png');
+
+  /// File path: assets/newicons/square-plus.png
+  AssetGenImage get squarePlus =>
+      const AssetGenImage('assets/newicons/square-plus.png');
+
+  /// File path: assets/newicons/starEmpty.png
+  AssetGenImage get starEmpty =>
+      const AssetGenImage('assets/newicons/starEmpty.png');
+
+  /// File path: assets/newicons/starfull.png
+  AssetGenImage get starfull =>
+      const AssetGenImage('assets/newicons/starfull.png');
 
   /// File path: assets/newicons/terms-info.png
   AssetGenImage get termsInfo =>
@@ -2878,6 +2920,9 @@ class $AssetsNewiconsGen {
   /// File path: assets/newicons/time-check.png
   AssetGenImage get timeCheck =>
       const AssetGenImage('assets/newicons/time-check.png');
+
+  /// File path: assets/newicons/title.png
+  AssetGenImage get title => const AssetGenImage('assets/newicons/title.png');
 
   /// File path: assets/newicons/trash-xmark.png
   AssetGenImage get trashXmark =>
@@ -2891,6 +2936,10 @@ class $AssetsNewiconsGen {
   AssetGenImage get userLock =>
       const AssetGenImage('assets/newicons/user-lock.png');
 
+  /// File path: assets/newicons/user-writer.png
+  AssetGenImage get userWriter =>
+      const AssetGenImage('assets/newicons/user-writer.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
         angleSmallLeft,
@@ -2901,28 +2950,41 @@ class $AssetsNewiconsGen {
         bookOpenCover,
         bookmark,
         bookmarkfull,
+        calendarClock,
         calendarLinesPen,
+        circleBookmark,
+        circleT,
+        commentAltCheck,
         commentAltDots,
         commentInfo,
         customize,
+        filePdf,
         houseChimney,
         images,
         inboxIn,
         lightbulbOn,
         mapMarkerCheck,
+        marker,
         messageCircleRefresh,
         messagesQuestion,
         messages,
         moon,
         newspaper,
         openBookLightbulb,
+        page,
         paperPlaneTop,
         search,
+        squareMinus,
+        squarePlus,
+        starEmpty,
+        starfull,
         termsInfo,
         timeCheck,
+        title,
         trashXmark,
         triangleWarning,
-        userLock
+        userLock,
+        userWriter
       ];
 }
 
