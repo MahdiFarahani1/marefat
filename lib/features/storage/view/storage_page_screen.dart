@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'package:bookapp/core/extensions/widget_ex.dart';
 import 'package:bookapp/features/content_books/view/content_page.dart';
-import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/storage/bloc/page_bookmark/page_bookmark_cubit.dart';
 import 'package:bookapp/features/storage/bloc/page_bookmark/page_bookmark_state.dart';
 import 'package:bookapp/features/storage/widgets/empty_list.dart';
@@ -49,6 +49,7 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
           title: Text(
             "الصفحات المحفوظة",
             style: TextStyle(
+                fontSize: 16,
                 color: Theme.of(context).primaryColor,
                 fontWeight: FontWeight.bold),
           ),
@@ -56,8 +57,9 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
           actions: [
             IconButton(
               onPressed: () => PageBookmarkCubit.instance.loadPageBookmarks(),
-              icon: Assets.newicons.messageCircleRefresh.image(
-                  width: 25, height: 25, color: Theme.of(context).primaryColor),
+              icon: Assets.newicons.messageCircleRefresh
+                  .image(color: Theme.of(context).colorScheme.tertiary)
+                  .padAll(8),
               tooltip: 'بروزرسانی',
             ),
           ],
@@ -124,9 +126,13 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
             leading: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12), color: Colors.white),
+                  borderRadius: BorderRadius.circular(12),
+                  color: Theme.of(context).colorScheme.primaryContainer),
               child: Assets.newicons.circleBookmark.image(
-                  width: 25, height: 25, color: Theme.of(context).primaryColor),
+                width: 25,
+                height: 25,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
             title: Text(
               pageBookmark['book_name'] ?? 'بدون عنوان',
@@ -141,9 +147,10 @@ class _StoragePageScreenState extends State<StoragePageScreen> {
               child: Row(
                 children: [
                   Assets.newicons.marker.image(
-                      width: 15,
-                      height: 15,
-                      color: Theme.of(context).primaryColor),
+                    width: 15,
+                    height: 15,
+                    color: Theme.of(context).primaryColor,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     'موضع: ${pageBookmark['scrollposition']?.toStringAsFixed(0) ?? '0.0'}',

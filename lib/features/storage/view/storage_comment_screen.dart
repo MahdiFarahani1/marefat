@@ -1,3 +1,4 @@
+import 'package:bookapp/core/extensions/widget_ex.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/storage/repository/db_helper.dart';
 import 'package:bookapp/features/storage/widgets/empty_list.dart';
@@ -38,6 +39,7 @@ class _CommentScreenState extends State<CommentScreen> {
         title: Text(
           'التعليقات المحفوظة',
           style: TextStyle(
+              fontSize: 16,
               color: Theme.of(context).primaryColor,
               fontWeight: FontWeight.bold),
         ),
@@ -45,8 +47,11 @@ class _CommentScreenState extends State<CommentScreen> {
         actions: [
           IconButton(
             onPressed: _loadComments,
-            icon: Assets.newicons.messageCircleRefresh.image(
-                color: Theme.of(context).primaryColor, width: 25, height: 25),
+            icon: Assets.newicons.messageCircleRefresh
+                .image(
+                  color: Theme.of(context).primaryColor,
+                )
+                .padAll(8),
             tooltip: 'بروزرسانی',
           ),
         ],
@@ -147,13 +152,14 @@ class _CommentScreenState extends State<CommentScreen> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.primaryContainer,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Assets.newicons.commentAltDots.image(
-                          width: 30,
-                          height: 30,
-                          color: Theme.of(context).primaryColor),
+                        width: 30,
+                        height: 30,
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -172,9 +178,10 @@ class _CommentScreenState extends State<CommentScreen> {
                           Row(
                             children: [
                               Assets.newicons.page.image(
-                                  width: 13,
-                                  height: 13,
-                                  color: Theme.of(context).primaryColor),
+                                width: 13,
+                                height: 13,
+                                color: Theme.of(context).primaryColor,
+                              ),
                               const SizedBox(width: 4),
                               Text(
                                 'الصفحة ${comment['page_number']?.toString() ?? '0'}',
@@ -187,9 +194,10 @@ class _CommentScreenState extends State<CommentScreen> {
                                   comment['title'].toString().isNotEmpty) ...[
                                 const SizedBox(width: 8),
                                 Assets.newicons.title.image(
-                                    width: 13,
-                                    height: 13,
-                                    color: Theme.of(context).primaryColor),
+                                  width: 13,
+                                  height: 13,
+                                  color: Theme.of(context).primaryColor,
+                                ),
                                 const SizedBox(width: 4),
                                 Flexible(
                                   child: Text(
@@ -258,9 +266,10 @@ class _CommentScreenState extends State<CommentScreen> {
                     Row(
                       children: [
                         Assets.newicons.calendarClock.image(
-                            width: 13,
-                            height: 13,
-                            color: Theme.of(context).primaryColor),
+                          width: 13,
+                          height: 13,
+                          color: Theme.of(context).primaryColor,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           comment['date_time'] ?? 'تاریخ نامشخص',
@@ -395,7 +404,7 @@ class _CommentScreenState extends State<CommentScreen> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(
-                        color: context.read<SettingsCubit>().state.primry,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
                   ),
@@ -414,7 +423,7 @@ class _CommentScreenState extends State<CommentScreen> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(
-                        color: context.read<SettingsCubit>().state.primry,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
                   ),

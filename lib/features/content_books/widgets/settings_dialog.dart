@@ -13,7 +13,7 @@ class TextSettingsDialog {
       InAppWebViewController inAppWebViewController) async {
     await showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -41,7 +41,10 @@ class TextSettingsDialog {
                               height: 4,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
-                                  color: Theme.of(context).primaryColor),
+                                  color: context
+                                      .read<SettingsCubit>()
+                                      .state
+                                      .primry),
                             ),
                           ),
                           Padding(
@@ -260,16 +263,18 @@ class TextSettingsDialog {
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor:
-                                        Theme.of(context).primaryColor,
+                                        Theme.of(context).colorScheme.tertiary,
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 32, vertical: 12),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(12)),
                                   ),
-                                  child: const Text(
+                                  child: Text(
                                     "إغلاق",
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .scaffoldBackgroundColor),
                                   ),
                                 ),
                                 EsaySize.gap(10),

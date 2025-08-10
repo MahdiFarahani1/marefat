@@ -110,7 +110,7 @@ class _BookGroupsPageState extends State<BookGroupsPage> {
                   hintText: 'بحث...',
                   prefixIcon: Assets.newicons.search
                       .image(
-                          color: context.read<SettingsCubit>().state.primry,
+                          color: Theme.of(context).primaryColor,
                           width: 20,
                           height: 20)
                       .padAll(13),
@@ -200,7 +200,7 @@ class _BookGroupsPageState extends State<BookGroupsPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -216,14 +216,14 @@ class _BookGroupsPageState extends State<BookGroupsPage> {
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-            color: context.read<SettingsCubit>().state.primry.withOpacity(0.1),
+            color: Theme.of(context).primaryColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Center(
             child: Text(
               '${index + 1}',
               style: TextStyle(
-                color: context.read<SettingsCubit>().state.primry,
+                color: Theme.of(context).primaryColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
@@ -240,9 +240,7 @@ class _BookGroupsPageState extends State<BookGroupsPage> {
         subtitle: Row(
           children: [
             Assets.newicons.page.image(
-                color: context.read<SettingsCubit>().state.primry,
-                width: 16,
-                height: 16),
+                color: Theme.of(context).primaryColor, width: 16, height: 16),
             EsaySize.gap(5),
             Text(
               'الصفحة : ${group['page'] ?? index + 1}',
@@ -256,14 +254,11 @@ class _BookGroupsPageState extends State<BookGroupsPage> {
         trailing: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color:
-                  context.read<SettingsCubit>().state.primry.withOpacity(0.1),
+              color: Theme.of(context).primaryColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Assets.newicons.angleSmallLeft.image(
-                color: context.read<SettingsCubit>().state.primry,
-                width: 21,
-                height: 21)),
+                color: Theme.of(context).primaryColor, width: 21, height: 21)),
         onTap: () {
           double pos = double.parse(group['page']);
           Navigator.pushReplacement(

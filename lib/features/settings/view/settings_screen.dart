@@ -1,4 +1,3 @@
-import 'package:bookapp/features/content_books/bloc/content/content_cubit.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/settings/bloc/settings_state.dart';
 import 'package:bookapp/gen/assets.gen.dart';
@@ -16,7 +15,6 @@ class SettingsPage extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: CustomAppbar.littleAppBar(context, title: 'الإعدادات'),
-          backgroundColor: const Color(0xFFF5F7FA),
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -111,7 +109,6 @@ class SettingsPage extends StatelessWidget {
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
-            color: Colors.black87,
             fontFamily: 'Tajawal',
             letterSpacing: 0.5,
           ),
@@ -120,6 +117,7 @@ class SettingsPage extends StatelessWidget {
 
   Widget _fontSizeSlider(BuildContext context, double fontSize) {
     return Card(
+      color: Theme.of(context).colorScheme.primaryContainer,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -128,6 +126,12 @@ class SettingsPage extends StatelessWidget {
             Expanded(
               child: SliderTheme(
                 data: SliderThemeData(
+                    trackHeight: 2,
+                    thumbShape:
+                        const RoundSliderThumbShape(enabledThumbRadius: 7),
+                    activeTrackColor: Theme.of(context).primaryColor,
+                    thumbColor: Theme.of(context).primaryColor,
+                    valueIndicatorColor: Theme.of(context).primaryColor,
                     valueIndicatorTextStyle: TextStyle(color: Colors.white)),
                 child: Slider(
                   value: fontSize,
@@ -158,6 +162,7 @@ class SettingsPage extends StatelessWidget {
 
   Widget _lineHeightSlider(BuildContext context, double lineHeight) {
     return Card(
+      color: Theme.of(context).colorScheme.primaryContainer,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -166,6 +171,12 @@ class SettingsPage extends StatelessWidget {
             Expanded(
               child: SliderTheme(
                 data: SliderThemeData(
+                    trackHeight: 2,
+                    thumbShape:
+                        const RoundSliderThumbShape(enabledThumbRadius: 7),
+                    activeTrackColor: Theme.of(context).primaryColor,
+                    thumbColor: Theme.of(context).primaryColor,
+                    valueIndicatorColor: Theme.of(context).primaryColor,
                     valueIndicatorTextStyle: TextStyle(color: Colors.white)),
                 child: Slider(
                   value: lineHeight,
@@ -196,6 +207,7 @@ class SettingsPage extends StatelessWidget {
 
   Widget _colorIconsPicker(BuildContext context, int gradientIndex) {
     return Card(
+      color: Theme.of(context).colorScheme.primaryContainer,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: SizedBox(
         height: 60,
@@ -208,6 +220,7 @@ class SettingsPage extends StatelessWidget {
             return GestureDetector(
               onTap: () {
                 context.read<SettingsCubit>().updateGradientIndex(index);
+                context.read<SettingsCubit>().updateDarkMode(false);
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
@@ -286,6 +299,7 @@ class SettingsPage extends StatelessWidget {
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
         return Card(
+          color: Theme.of(context).colorScheme.primaryContainer,
           margin: const EdgeInsets.all(8),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -323,16 +337,12 @@ class SettingsPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 decoration: BoxDecoration(
                   color: pageDirection == PageDirection.vertical
-                      ? context
-                          .read<SettingsCubit>()
-                          .state
-                          .primry
-                          .withOpacity(0.1)
-                      : Colors.white,
+                      ? Theme.of(context).primaryColor.withOpacity(0.1)
+                      : Theme.of(context).colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: pageDirection == PageDirection.vertical
-                        ? context.read<SettingsCubit>().state.primry
+                        ? Theme.of(context).primaryColor
                         : Colors.transparent,
                     width: 1.5,
                   ),
@@ -341,7 +351,9 @@ class SettingsPage extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Assets.icons.upAndDownArrows.image(width: 24),
+                      Assets.icons.upAndDownArrows.image(
+                          width: 24,
+                          color: Theme.of(context).textTheme.bodyLarge!.color),
                       const SizedBox(width: 6),
                       const Text('عمودي'),
                     ],
@@ -363,16 +375,12 @@ class SettingsPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 decoration: BoxDecoration(
                   color: pageDirection == PageDirection.horizontal
-                      ? context
-                          .read<SettingsCubit>()
-                          .state
-                          .primry
-                          .withOpacity(0.1)
-                      : Colors.white,
+                      ? Theme.of(context).primaryColor.withOpacity(0.1)
+                      : Theme.of(context).colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: pageDirection == PageDirection.horizontal
-                        ? context.read<SettingsCubit>().state.primry
+                        ? Theme.of(context).primaryColor
                         : Colors.transparent,
                     width: 1.5,
                   ),
@@ -383,7 +391,10 @@ class SettingsPage extends StatelessWidget {
                     children: [
                       Transform.rotate(
                         angle: 1.5708,
-                        child: Assets.icons.upAndDownArrows.image(width: 24),
+                        child: Assets.icons.upAndDownArrows.image(
+                            width: 24,
+                            color:
+                                Theme.of(context).textTheme.bodyLarge!.color),
                       ),
                       const SizedBox(width: 6),
                       const Text('أفقي'),

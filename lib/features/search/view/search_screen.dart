@@ -83,7 +83,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = context.read<SettingsCubit>().state.primry;
+    final primaryColor = Theme.of(context).primaryColor;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -91,6 +91,7 @@ class _SearchPageState extends State<SearchPage> {
         title: Text(
           'البحث',
           style: TextStyle(
+            fontSize: 18,
             fontWeight: FontWeight.bold,
             color: primaryColor,
           ),
@@ -430,12 +431,9 @@ class _SearchPageState extends State<SearchPage> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
                 onTap: () {
-                  context.read<SearchCubit>().advancedSearch(
-                        query: _queryController.text,
-                        searchText: searchText,
-                        searchTitle: searchTitle,
-                        selectedBookPath: selectedBookPath,
-                      );
+                  context
+                      .read<SearchCubit>()
+                      .quickSearch(_queryController.text);
                 },
                 child: Center(
                   child: Text(
@@ -618,6 +616,7 @@ class _SearchPageState extends State<SearchPage> {
 
               return ZoomTapAnimation(
                 onTap: () async {
+                  print('haj mehdi');
                   String bookName =
                       await DatabaseStorageHelper.getBookNameWithId(
                           int.parse(item.bookId));
@@ -693,8 +692,7 @@ class _SearchPageState extends State<SearchPage> {
                               'الصفحة: ${item.pageNumber}',
                               style: TextStyle(
                                 fontSize: 12,
-                                color:
-                                    context.read<SettingsCubit>().state.primry,
+                                color: Theme.of(context).primaryColor,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),

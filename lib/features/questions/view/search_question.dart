@@ -3,11 +3,11 @@ import 'package:bookapp/features/questions/bloc/questionSearch/question_search_c
 import 'package:bookapp/features/questions/widgets/item_question.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/scaffold/appbar.dart';
-import 'package:bookapp/shared/utils/error_widget.dart';
 import 'package:bookapp/shared/utils/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 
 class SearchQuestionPage extends StatelessWidget {
   const SearchQuestionPage({super.key});

@@ -102,7 +102,8 @@ class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
                                         color: theme.primaryColor),
                                     child: Assets.newicons.paperPlaneTop
                                         .image(
-                                            color: Colors.white,
+                                            color:
+                                                theme.scaffoldBackgroundColor,
                                             width: 20,
                                             height: 20)
                                         .padAll(10)),

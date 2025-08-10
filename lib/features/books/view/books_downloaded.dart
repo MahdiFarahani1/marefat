@@ -92,7 +92,7 @@ class _DownloadedBooksPageState extends State<DownloadedBooksPage> {
                             .image(
                                 width: 20,
                                 height: 20,
-                                color: Theme.of(context).primaryColor)
+                                color: Colors.grey.shade400)
                             .padAll(12),
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 16),
@@ -123,7 +123,9 @@ class _DownloadedBooksPageState extends State<DownloadedBooksPage> {
                               return Container(
                                 margin: const EdgeInsets.only(bottom: 16),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
                                   borderRadius: BorderRadius.circular(20),
                                   boxShadow: const [
                                     BoxShadow(
@@ -184,15 +186,16 @@ class _DownloadedBooksPageState extends State<DownloadedBooksPage> {
                                                       .image(
                                                           width: 20,
                                                           height: 20,
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .primaryColor),
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodyLarge!
+                                                                  .color),
                                                   EsaySize.gap(6),
                                                   Text(
                                                     '${book.author}',
                                                     style: const TextStyle(
                                                       fontSize: 14,
-                                                      color: Colors.black87,
                                                     ),
                                                   ),
                                                 ],

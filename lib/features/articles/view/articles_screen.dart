@@ -7,6 +7,7 @@ import 'package:bookapp/shared/utils/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 
 class ArticlesScreen extends StatefulWidget {
   const ArticlesScreen({super.key});
@@ -66,7 +67,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 12),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.primaryContainer,
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
@@ -95,7 +96,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                   padding:
                                       const EdgeInsets.only(right: 6, left: 6),
                                   child: Assets.newicons.newspaper.image(
-                                    color: Theme.of(context).primaryColor,
+                                    color: theme.colorScheme.tertiary,
                                   ),
                                 )),
                               ),
@@ -133,7 +134,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                   child: Assets.newicons.angleSmallLeft.image(
                                       width: 20,
                                       height: 20,
-                                      color: Theme.of(context).primaryColor)),
+                                      color: theme.colorScheme.tertiary)),
                             ],
                           ),
                         ),

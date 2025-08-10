@@ -16,6 +16,9 @@ class AppTheme {
       ),
 
       colorScheme: ColorScheme.light(
+        tertiary: primary,
+
+        primaryContainer: Colors.white,
         primary: primary,
         secondary: const Color(0xFFC9B6E4),
         surface: Colors.white, // کارت‌ها، AppBar و...
@@ -48,18 +51,19 @@ class AppTheme {
   }
 
   static ThemeData darkTheme() {
-    const backgroundColor = Color(0xFF121212); // مشکی خالص
+    const backgroundColor = Color.fromARGB(255, 46, 46, 46); // مشکی خالص
     const surfaceColor = Color(0xFF1E1E1E); // سطح‌ها مثل AppBar، کارت
     const grey = Color(0xFFB0B0B0); // برای متن غیرفعال
     const white = Colors.white;
 
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
       fontFamily: FontFamily.app,
-      scaffoldBackgroundColor: backgroundColor,
       cardColor: surfaceColor,
-      colorScheme: const ColorScheme.dark(
+      primaryColor: Colors.white,
+      colorScheme: ColorScheme.dark(
+        primaryContainer: Colors.grey.shade900,
+        tertiary: Colors.white,
         primary: white,
         secondary: grey,
         surface: surfaceColor,
@@ -72,6 +76,7 @@ class AppTheme {
         onError: white,
       ),
       appBarTheme: const AppBarTheme(
+        surfaceTintColor: Colors.transparent,
         backgroundColor: surfaceColor,
         foregroundColor: white,
         elevation: 0,

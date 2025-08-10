@@ -10,9 +10,12 @@ class Back {
           Navigator.pop(context);
         },
         child: CircleAvatar(
-          backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+          backgroundColor:
+              Theme.of(context).colorScheme.tertiary.withOpacity(0.1),
           child: Assets.newicons.angleSmallRight.image(
-              width: 20, height: 20, color: Theme.of(context).primaryColor),
+              width: 20,
+              height: 20,
+              color: Theme.of(context).colorScheme.tertiary),
         )).padAll(9);
   }
 }

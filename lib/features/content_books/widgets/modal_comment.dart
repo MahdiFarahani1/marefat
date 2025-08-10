@@ -18,7 +18,7 @@ class ModalComment {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       builder: (BuildContext context) {
         TextEditingController controller = TextEditingController();
         TextEditingController titleController = TextEditingController();
@@ -40,7 +40,6 @@ class ModalComment {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -50,7 +49,6 @@ class ModalComment {
                   controller: titleController,
                   decoration: InputDecoration(
                     labelText: 'عنوان التعليق',
-                    labelStyle: TextStyle(color: Colors.black45),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(
@@ -76,7 +74,6 @@ class ModalComment {
                   maxLines: 5,
                   decoration: InputDecoration(
                     labelText: 'التعليق',
-                    labelStyle: TextStyle(color: Colors.black45),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(
@@ -148,7 +145,9 @@ class ModalComment {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: Text('حفظ'),
+                      child: Text(
+                        'حفظ',
+                      ),
                     ),
                     OutlinedButton(
                       onPressed: () {

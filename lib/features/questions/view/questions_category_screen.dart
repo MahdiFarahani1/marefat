@@ -1,11 +1,9 @@
 import 'package:animated_stack/animated_stack.dart';
-import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:bookapp/core/extensions/widget_ex.dart';
 import 'package:bookapp/features/questions/bloc/questionItems/question_cubit.dart';
 import 'package:bookapp/features/questions/bloc/questionItems/status_question.dart';
 import 'package:bookapp/features/questions/view/search_question.dart';
 import 'package:bookapp/features/questions/widgets/item_question.dart';
-import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/func/launchURL.dart';
 import 'package:bookapp/shared/utils/error_widget.dart';
@@ -45,10 +43,10 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
             enableClickToDismiss: true,
             preventForegroundInteractions: true,
             backgroundColor:
-                context.read<SettingsCubit>().state.primry.withOpacity(0.5),
+                Theme.of(context).colorScheme.tertiary.withOpacity(0.5),
             animateButton: true,
-            fabBackgroundColor: context.read<SettingsCubit>().state.primry,
-            fabIconColor: Colors.white,
+            fabBackgroundColor: Theme.of(context).primaryColor,
+            fabIconColor: Theme.of(context).scaffoldBackgroundColor,
             columnWidget: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -117,12 +115,12 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                     Padding(
                       padding: const EdgeInsets.only(left: 8),
                       child: CircleAvatar(
-                        radius: 26,
+                        radius: 20,
                         backgroundColor: theme.primaryColor.withOpacity(0.1),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Assets.newicons.lightbulbOn
-                              .image(color: theme.primaryColor),
+                          child: Assets.newicons.lightbulbOn.image(
+                              color: theme.primaryColor, width: 30, height: 30),
                         ),
                       ),
                     ).animate().fadeIn(duration: 500.ms).scale(delay: 100.ms),
@@ -134,13 +132,15 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                                 .initalCategoryFetch();
                           },
                           child: CircleAvatar(
-                            backgroundColor:
-                                Theme.of(context).primaryColor.withOpacity(0.1),
+                            backgroundColor: Theme.of(context)
+                                .colorScheme
+                                .tertiary
+                                .withOpacity(0.1),
                             child: Assets.newicons.angleSmallRight.image(
-                                width: 25,
-                                height: 25,
-                                color: Theme.of(context).primaryColor),
-                          )).padAll(6)
+                                width: 20,
+                                height: 20,
+                                color: Theme.of(context).colorScheme.tertiary),
+                          )).padAll(8)
                       : null,
                 ),
                 body: Container(
@@ -201,7 +201,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: theme.cardColor,
+        color: Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(

@@ -6,7 +6,7 @@ import 'package:another_xlider/models/handler.dart';
 import 'package:another_xlider/models/tooltip/tooltip.dart';
 import 'package:another_xlider/models/trackbar.dart';
 import 'package:bookapp/core/extensions/widget_ex.dart';
-import 'package:bookapp/features/content_books/repository/modal_comment.dart';
+import 'package:bookapp/features/content_books/widgets/modal_comment.dart';
 import 'package:bookapp/features/content_books/utils/reading_book_func.dart';
 import 'package:bookapp/features/content_books/view/groups_page.dart';
 import 'package:bookapp/features/content_books/widgets/settings_dialog.dart';
@@ -163,9 +163,10 @@ class _ContentPageState extends State<ContentPage> {
                       );
                     },
                     child: Assets.newicons.barsStaggered.image(
-                        width: 20,
-                        height: 20,
-                        color: Theme.of(context).primaryColor),
+                      width: 20,
+                      height: 20,
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
                 ],
               );
@@ -569,14 +570,16 @@ class _ContentPageState extends State<ContentPage> {
                                             ),
                                           ),
                                           color: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary,
+                                              .scaffoldBackgroundColor,
                                           child: Padding(
                                             padding: const EdgeInsets.all(4.0),
                                             child: Text(
                                               value.toStringAsFixed(0),
-                                              style: const TextStyle(
-                                                  color: Colors.white,
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge!
+                                                      .color,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                           ),

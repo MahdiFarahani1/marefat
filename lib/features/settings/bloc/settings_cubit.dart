@@ -74,7 +74,10 @@ class SettingsCubit extends Cubit<SettingsState> {
   void updateGradientIndex(int index) {
     _box.write('gradientIndex', index);
 
-    emit(state.copyWith(gradientIndex: index, primry: backgrounds[index]));
+    emit(state.copyWith(
+        gradientIndex: index,
+        primry: backgrounds[index],
+        theme: AppTheme.lightTheme(backgrounds[index])));
   }
 
   void updateBgColorIndex(int index) {

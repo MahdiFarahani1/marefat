@@ -36,52 +36,57 @@ class MainWrapper extends StatelessWidget {
                 },
                 tabs: [
                   navItem(
+                      context: context,
                       settingsState: settingsState,
                       widthIcon: 20,
                       heightIcon: 20,
                       itemColor: state == 0
-                          ? settingsState.primry
-                          : settingsState.primry.withOpacity(0.3),
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).primaryColor.withOpacity(0.3),
                       iconPath: Assets.newicons.bookOpenCover.path,
                       title: 'المكتبة',
                       screen: HomePage()),
                   navItem(
+                      context: context,
                       settingsState: settingsState,
                       widthIcon: 20,
                       heightIcon: 20,
                       itemColor: state == 1
-                          ? settingsState.primry
-                          : settingsState.primry.withOpacity(0.3),
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).primaryColor.withOpacity(0.3),
                       iconPath: Assets.newicons.article.path,
                       title: 'المقالات',
                       screen: ArticlesScreen()),
                   navItem(
+                      context: context,
                       settingsState: settingsState,
                       itemColor: state == 2
-                          ? settingsState.primry
-                          : settingsState.primry.withOpacity(0.3),
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).primaryColor.withOpacity(0.3),
                       iconPath: Assets.newicons.messagesQuestion.path,
                       widthIcon: 22,
                       heightIcon: 22,
                       title: 'الاسئلة',
                       screen: QuestionsScreen()),
                   navItem(
+                      context: context,
                       settingsState: settingsState,
                       widthIcon: 20,
                       heightIcon: 20,
                       itemColor: state == 3
-                          ? settingsState.primry
-                          : settingsState.primry.withOpacity(0.3),
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).primaryColor.withOpacity(0.3),
                       iconPath: Assets.newicons.images.path,
                       title: 'الصور',
                       screen: PhotoGalleryPage()),
                   navItem(
+                      context: context,
                       settingsState: settingsState,
                       widthIcon: 20,
                       heightIcon: 20,
                       itemColor: state == 4
-                          ? settingsState.primry
-                          : settingsState.primry.withOpacity(0.3),
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).primaryColor.withOpacity(0.3),
                       iconPath: Assets.newicons.bookmark.path,
                       title: 'المفضلة',
                       screen: StorageBookScreen(
@@ -95,6 +100,7 @@ class MainWrapper extends StatelessWidget {
                         height: 65,
                         navBarConfig: navBarConfig,
                         navBarDecoration: NavBarDecoration(
+                          color: Theme.of(context).appBarTheme.backgroundColor,
                           padding: EdgeInsets.all(9),
                           boxShadow: [
                             BoxShadow(
@@ -123,6 +129,7 @@ class MainWrapper extends StatelessWidget {
       required Widget screen,
       required Color itemColor,
       required SettingsState settingsState,
+      required BuildContext context,
       double? widthIcon,
       double? heightIcon}) {
     return PersistentTabConfig(
@@ -139,8 +146,9 @@ class MainWrapper extends StatelessWidget {
           ),
           iconSize: 22,
           title: title,
-          inactiveForegroundColor: settingsState.primry.withOpacity(0.3),
-          activeForegroundColor: settingsState.primry,
+          inactiveForegroundColor:
+              Theme.of(context).primaryColor.withOpacity(0.3),
+          activeForegroundColor: Theme.of(context).primaryColor,
           textStyle: TextStyle(fontSize: 11)),
     );
   }

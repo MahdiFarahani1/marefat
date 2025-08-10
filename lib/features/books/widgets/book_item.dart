@@ -46,7 +46,7 @@ class BookItemTile extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 16),
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.primaryContainer,
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
@@ -163,10 +163,8 @@ class BookItemTile extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: downloadState.isDownloadedBook
                                   ? Colors.transparent
-                                  : context
-                                      .read<SettingsCubit>()
-                                      .state
-                                      .primry
+                                  : Theme.of(context)
+                                      .primaryColor
                                       .withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),

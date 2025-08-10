@@ -25,8 +25,9 @@ class AllLastBooks extends StatelessWidget {
         leading: Back.btn(context),
         title: Text("الكتب الأخيرة",
             style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor)),
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).primaryColor,
+            )),
         centerTitle: true,
         elevation: 1,
         flexibleSpace: Container(),
@@ -103,7 +104,10 @@ class AllLastBooks extends StatelessWidget {
                                     Assets.newicons.filePdf.image(
                                         width: 22,
                                         height: 22,
-                                        color: Theme.of(context).primaryColor),
+                                        color: context
+                                            .read<SettingsCubit>()
+                                            .state
+                                            .primry),
                                     const SizedBox(width: 6),
                                     GestureDetector(
                                       onTap: downloadState.isDownloadingPdf

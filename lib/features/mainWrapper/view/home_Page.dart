@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bookapp/config/theme/theme.dart';
 import 'package:bookapp/features/books/view/books_downloaded.dart';
 import 'package:bookapp/features/books/view/books_screen.dart';
 import 'package:bookapp/features/mainWrapper/bloc/slider/slider_cubit.dart';
@@ -88,7 +89,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: RefreshIndicator(
         onRefresh: () async {
           await context.read<SliderCubit>().loadHomeApi();
@@ -118,10 +119,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: Row(
                         children: [
-                          Assets.newicons.search.image(
-                              width: 20,
-                              height: 20,
-                              color: Theme.of(context).primaryColor),
+                          Assets.newicons.search
+                              .image(width: 20, height: 20, color: Colors.grey),
                           const SizedBox(width: 12),
                           Text(
                             'ابحث عن كتاب أو مؤلف...',
@@ -382,7 +381,9 @@ class _HomePageState extends State<HomePage> {
                                     margin: const EdgeInsets.only(right: 15.0),
                                     padding: const EdgeInsets.all(8.0),
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
                                       borderRadius: BorderRadius.circular(14.0),
                                       boxShadow: [
                                         BoxShadow(
@@ -470,7 +471,6 @@ class _HomePageState extends State<HomePage> {
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w700,
                                             fontSize: 14,
-                                            color: Color(0xFF333333),
                                           ),
                                         )
                                             .animate()
@@ -561,7 +561,7 @@ class FeatureItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -606,7 +606,9 @@ class SectionHeader extends StatelessWidget {
         Text(
           title,
           style: const TextStyle(
-              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ).animate().fadeIn(duration: 600.ms).slideX(begin: -0.3),
         TextButton(
           onPressed: () {

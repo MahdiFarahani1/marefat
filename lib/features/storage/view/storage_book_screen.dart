@@ -12,6 +12,7 @@ import 'package:bookapp/shared/utils/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
+import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 
 class StorageBookScreen extends StatefulWidget {
   final bool isBack;
@@ -52,6 +53,7 @@ class _StorageBookScreenState extends State<StorageBookScreen> {
           title: Text(
             "الكتب المحفوظة",
             style: TextStyle(
+                fontSize: 16,
                 color: Theme.of(context).primaryColor,
                 fontWeight: FontWeight.bold),
           ),
@@ -65,7 +67,7 @@ class _StorageBookScreenState extends State<StorageBookScreen> {
                   .image(
                     color: Theme.of(context).primaryColor,
                   )
-                  .padAll(5.5),
+                  .padAll(8),
               tooltip: 'بروزرسانی',
             ),
           ],
@@ -143,7 +145,9 @@ class _StorageBookScreenState extends State<StorageBookScreen> {
                               leading: Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Assets.newicons.circleBookmark.image(

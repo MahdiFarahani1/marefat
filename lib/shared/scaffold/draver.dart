@@ -7,7 +7,6 @@ import 'package:bookapp/features/settings/view/settings_screen.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/esay_size.dart';
 import 'package:flutter/material.dart';
-import 'package:bookapp/config/theme/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -31,6 +30,7 @@ class CustomDrawer extends StatelessWidget {
                     Assets.images.logoHeader.path,
                     height: 120,
                     width: 120,
+                    color: Theme.of(context).colorScheme.tertiary,
                   ),
                   const SizedBox(height: 8),
 
@@ -69,11 +69,17 @@ class CustomDrawer extends StatelessWidget {
                   EsaySize.gap(2), const Divider(),
                   // اشتراک‌گذاری
                   ListTile(
-                    leading: Assets.newicons.paperPlaneTop
-                        .image(width: 18, height: 18, color: Colors.black),
+                    leading: Assets.newicons.paperPlaneTop.image(
+                      width: 18,
+                      height: 18,
+                      color: Theme.of(context).textTheme.bodyLarge!.color,
+                    ),
                     title: const Text('مشاركة التطبيق'),
-                    trailing: Assets.icons.fiRrAngleLeft
-                        .image(width: 12, height: 12, color: Colors.black),
+                    trailing: Assets.icons.fiRrAngleLeft.image(
+                      width: 12,
+                      height: 12,
+                      color: Theme.of(context).textTheme.bodyLarge!.color,
+                    ),
                     onTap: () {
                       Share.share(
                           'https://play.google.com/store/apps/details?id=com.dijlah.almarifaaldenyah');
@@ -84,11 +90,19 @@ class CustomDrawer extends StatelessWidget {
                     builder: (context, state) {
                       return ListTile(
                           leading: Assets.newicons.moon.image(
-                              width: 18, height: 18, color: Colors.black),
+                            width: 18,
+                            height: 18,
+                            color: Theme.of(context).textTheme.bodyLarge!.color,
+                          ),
                           title: const Text('الوضع الليلي'),
                           trailing: Transform.scale(
                               scale: 0.77,
                               child: Switch(
+                                activeColor: Colors.black,
+                                inactiveTrackColor:
+                                    Theme.of(context).primaryColor,
+                                inactiveThumbColor: Colors.white,
+                                activeTrackColor: Colors.grey.shade800,
                                 value: state.darkMode,
                                 onChanged: (value) {
                                   context
@@ -117,7 +131,6 @@ class CustomDrawer extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
-                      color: Colors.black54,
                     ),
                   ),
                 ],
@@ -129,20 +142,29 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildDrawerItem(String pathIcon, String title, Function ontab) {
-    return ListTile(
-      leading: Image.asset(
-        pathIcon,
-        width: 18,
-        height: 18,
-        color: Colors.black,
-      ),
-      title: Text(title, style: const TextStyle(fontSize: 16)),
-      trailing: Assets.icons.fiRrAngleLeft
-          .image(width: 12, height: 12, color: Colors.black),
-      onTap: () {
-        ontab();
-      },
-    );
+  Widget _buildDrawerItem(
+    String pathIcon,
+    String title,
+    Function ontab,
+  ) {
+    return Builder(builder: (context) {
+      return ListTile(
+        leading: Image.asset(
+          pathIcon,
+          width: 18,
+          height: 18,
+          color: Theme.of(context).textTheme.bodyLarge!.color,
+        ),
+        title: Text(title, style: const TextStyle(fontSize: 16)),
+        trailing: Assets.icons.fiRrAngleLeft.image(
+          width: 12,
+          height: 12,
+          color: Theme.of(context).textTheme.bodyLarge!.color,
+        ),
+        onTap: () {
+          ontab();
+        },
+      );
+    });
   }
 }

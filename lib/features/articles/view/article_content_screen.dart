@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
@@ -22,7 +21,7 @@ class ArticleDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final primaryColor = context.read<SettingsCubit>().state.primry;
+    final primaryColor = theme.colorScheme.tertiary;
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       floatingActionButton: FloatingActionButton(
@@ -31,7 +30,7 @@ class ArticleDetailScreen extends StatelessWidget {
         },
         backgroundColor: primaryColor,
         child: Assets.newicons.paperPlaneTop
-            .image(color: Colors.white, width: 24, height: 24),
+            .image(color: theme.scaffoldBackgroundColor, width: 24, height: 24),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       appBar: AppBar(
@@ -45,7 +44,9 @@ class ArticleDetailScreen extends StatelessWidget {
                   context, 'المعلومات', article.summary ?? "غير موجود");
             },
             icon: Assets.newicons.termsInfo.image(
-                width: 25, height: 25, color: Theme.of(context).primaryColor),
+                width: 25,
+                height: 25,
+                color: Theme.of(context).colorScheme.tertiary),
           ),
           const SizedBox(width: 8),
         ],
@@ -75,7 +76,7 @@ class ArticleDetailScreen extends StatelessWidget {
                         child: Assets.newicons.squarePlus.image(
                             width: 35,
                             height: 35,
-                            color: Theme.of(context).primaryColor));
+                            color: theme.colorScheme.tertiary));
                   }),
                   EsaySize.gap(6),
                   ZoomTapAnimation(
@@ -84,7 +85,7 @@ class ArticleDetailScreen extends StatelessWidget {
                       child: Assets.newicons.squareMinus.image(
                           width: 35,
                           height: 35,
-                          color: Theme.of(context).primaryColor))
+                          color: theme.colorScheme.tertiary))
                 ],
               ).animate().fadeIn(duration: 600.ms),
 

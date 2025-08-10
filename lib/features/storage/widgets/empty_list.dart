@@ -14,6 +14,7 @@ class EmptyList {
                     imagePath,
                     width: 64,
                     height: 64,
+                    color: Theme.of(context).textTheme.bodyLarge!.color,
                   ))
               .animate()
               .fade(duration: 600.ms)
