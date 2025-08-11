@@ -33,7 +33,7 @@ class SettingsCubit extends Cubit<SettingsState> {
       lineHeight: _box.read('lineHeight') ?? 1.5,
       fontFamily: _box.read('fontFamily') ?? 'لوتوس',
       gradientIndex: _box.read('gradientIndex') ?? 0,
-      pageDirection: PageDirection.values[_box.read('pageDirection') ?? 1],
+      pageDirection: PageDirection.values[_box.read('pageDirection') ?? 0],
       primry: backgrounds[state.primrayIndex],
     ));
     emit(state.copyWith(
@@ -85,8 +85,8 @@ class SettingsCubit extends Cubit<SettingsState> {
     emit(state.copyWith(bgColorIndex: index));
   }
 
-  void updateBgColor(Color color) {
-    // _box.write('bgColorIndex', index);
+  void updateBgColor(Color color, String hexColor) {
+    _box.write('hexColor', hexColor);
     emit(state.copyWith(pageColor: color));
   }
 
@@ -102,9 +102,11 @@ class SettingsCubit extends Cubit<SettingsState> {
 
 List<Color> backgrounds = [
   Color.fromARGB(255, 12, 85, 138), // آبی تیره
-  Color.fromARGB(255, 0, 196, 231), // آبی روشن
+  Color(0xFF2D6A4F),
+
   Color.fromARGB(255, 166, 138, 88), // قهوه‌ای/طلایی ملایم
   Color.fromARGB(255, 135, 140, 162), // خاکستری مایل به آبی
+  Color(0xFF720026),
 
   Color(0xFFF46B45),
 ];

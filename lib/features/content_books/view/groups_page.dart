@@ -265,9 +265,11 @@ class _BookGroupsPageState extends State<BookGroupsPage> {
               context,
               MaterialPageRoute(
                 builder: (context) => ContentPage(
-                    bookId: widget.bookId,
-                    bookName: widget.bookName,
-                    scrollPosetion: pos - 1.0),
+                  bookId: widget.bookId,
+                  bookName: widget.bookName,
+                  scrollPosetion: pos - 1.0,
+                  sw: '',
+                ),
               ));
         },
       ),

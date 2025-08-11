@@ -40,6 +40,11 @@ class AllLastBooks extends StatelessWidget {
             return Center(child: CustomLoading.fadingCircle(context));
           } else if (status is SliderLoaded) {
             final books = status.books;
+            final downloadCubit = context.read<DownloadCubit>();
+            for (var book in books) {
+              downloadCubit.checkIfDownloaded(book.id.toString(), book.pdf!);
+              downloadCubit.checkIfBookDownloaded(book.id.toString());
+            }
 
             return ListView.builder(
               itemCount: books.length,
@@ -226,83 +231,6 @@ class AllLastBooks extends StatelessWidget {
           }
         },
       ),
-    );
-  }
-}
-
-class _BookCard extends StatelessWidget {
-  final LastBookModel book;
-  const _BookCard({required this.book});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorShadow = Colors.grey.shade200;
-
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: colorShadow.withOpacity(0.5),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Stack(
-          children: [
-            AspectRatio(
-              aspectRatio: 0.65,
-              child: Image.network(
-                book.photoUrl,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.black87, Colors.transparent],
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                  ),
-                ),
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      book.title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      book.writer ?? '',
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 11,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ).animate().fadeIn(duration: 500.ms).scaleXY(begin: 0.95),
     );
   }
 }

@@ -11,10 +11,14 @@ class SearchCubit extends Cubit<SearchState> {
   Future<void> quickSearch(String query) async {
     emit(SearchLoading());
     try {
+      print('SearchCubit: Starting quick search for: $query');
       final results = await SearchRepository.searchInAllBooks(query);
+      print(
+          'SearchCubit: Quick search completed with ${results.length} results');
       emit(SearchSuccess(results));
     } catch (e) {
-      emit(SearchError(e.toString()));
+      print('SearchCubit: Quick search error: $e');
+      emit(SearchError('خطأ في البحث: $e'));
     }
   }
 
@@ -26,15 +30,34 @@ class SearchCubit extends Cubit<SearchState> {
   }) async {
     emit(SearchLoading());
     try {
+      print('SearchCubit: Starting advanced search for: $query');
       final results = await SearchRepository.advancedSearch(
         query: query,
         searchText: searchText,
         searchTitle: searchTitle,
         bookPath: selectedBookPath,
       );
+      print(
+          'SearchCubit: Advanced search completed with ${results.length} results');
       emit(SearchSuccess(results));
     } catch (e) {
-      emit(SearchError(e.toString()));
+      print('SearchCubit: Advanced search error: $e');
+      emit(SearchError('خطأ في البحث المتقدم: $e'));
     }
+  }
+
+  // Close all open database connections
+  Future<void> closeDatabases() async {
+    try {
+      await SearchRepository.closeAllDatabases();
+    } catch (e) {
+      print('Error closing databases: $e');
+    }
+  }
+
+  @override
+  Future<void> close() {
+    closeDatabases();
+    return super.close();
   }
 }

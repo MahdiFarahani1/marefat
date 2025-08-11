@@ -55,23 +55,9 @@ class DatabaseStorageHelper {
     return await db.query('reading', where: 'book_id = ?', whereArgs: [bookId]);
   }
 
-  static Future<List<Map<String, dynamic>>> getAllpages() async {
-    final db = await database;
-    return await db.query('page');
-  }
-
   static Future<List<Map<String, dynamic>>> getAllcomments() async {
     final db = await database;
     return await db.query('comment');
-  }
-
-  static Future<int> insertPage(
-      String bookName, int bookID, double scrollPos) async {
-    final db = await database;
-    return await db.insert(
-      'page',
-      {'book_name': bookName, 'book_id': bookID, 'scrollposition': scrollPos},
-    );
   }
 
   static Future<int> insertReading(
@@ -168,15 +154,6 @@ class DatabaseStorageHelper {
     );
   }
 
-  static Future<void> deletePage(int bookId, double pageNumber) async {
-    final db = await database;
-    await db.delete(
-      'page',
-      where: 'book_id = ? AND scrollposition = ?',
-      whereArgs: [bookId, pageNumber],
-    );
-  }
-
   static Future<void> deleteReading(int bookId, double pageNumber) async {
     final db = await database;
     await db.delete(
@@ -186,7 +163,7 @@ class DatabaseStorageHelper {
     );
   }
 
-  static Future<void> deleteComment(String bookName, double pageNumber) async {
+  static Future<void> deleteComment(String bookName, int pageNumber) async {
     final db = await database;
     await db.delete(
       'comment',
@@ -195,8 +172,8 @@ class DatabaseStorageHelper {
     );
   }
 
-  static Future<int> updateComment(String bookName, double pageNumber,
-      String newTitle, String newText) async {
+  static Future<int> updateComment(
+      String bookName, int pageNumber, String newTitle, String newText) async {
     final db = await database;
     final now = DateTime.now();
     final dateTime =

@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:bookapp/features/content_books/repository/dataBase.dart';
 import 'package:bookapp/features/settings/bloc/settings_state.dart';
 import 'package:bookapp/features/settings/view/settings_screen.dart';
+import 'package:bookapp/features/storage/repository/db_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart'; // یادت نره مسیرتو تنظیم کنی
+import 'package:get_storage/get_storage.dart';
 import 'content_state.dart';
 
 class ContentCubit extends Cubit<ContentState> {
@@ -89,10 +91,10 @@ class ContentCubit extends Cubit<ContentState> {
       required double lineHeight,
       required bool vertical,
       required Color backgroundColor}) async {
+    GetStorage box = GetStorage();
     final StringBuffer buffer = StringBuffer();
-    String bgColorHex =
+    String bgColorHex = box.read('hexColor') ??
         '#${backgroundColor.value.toRadixString(16).substring(2)}';
-
     final String bookText =
         vertical ? 'book_text_vertical' : 'book_text_horizontal';
     final String bookContainer =
@@ -101,10 +103,25 @@ class ContentCubit extends Cubit<ContentState> {
         ? 'BookPage-vertical book-page-vertical'
         : 'BookPage-horizontal book-page-horizontal';
 
+    List<dynamic> bookmarks = [];
+
+    GetStorage getStorage = GetStorage();
+
+    final String? savedBookmarks = getStorage.read('bookmark');
+
+    DatabaseStorageHelper db = DatabaseStorageHelper();
+    if (savedBookmarks != null) {
+      final decoded = jsonDecode(savedBookmarks);
+      bookmarks = decoded is List ? decoded : [decoded];
+    }
+
     for (int i = 0; i < pages.length; i++) {
+      bool isBookmarked = bookmarks.any(
+        (b) => b['bookId'] == bookId && b['pageNumber'] == i,
+      );
       buffer.write("""
         <div class='$bookPage book_page' data-page='$i' style='color: black !important; background-color: $bgColorHex !important;' id='page_$i'>
-          <div class='book-mark' id='book-mark_$i'></div>
+         ${isBookmarked ? "<div class='book-mark add_fav' id='book-mark_$i'></div>" : "<div class='book-mark' id='book-mark_$i'></div>"}
           <div class='comment-button'></div>
           <span class='page-number'>${i + 1}</span>
           <br>

@@ -333,8 +333,8 @@ class TextSettingsDialog {
     return GestureDetector(
       onTap: () {
         context.read<SettingsCubit>().changeStateApply(true);
-        context.read<SettingsCubit>().updateBgColor(color);
         final hexColor = '#${color.value.toRadixString(16).substring(2)}';
+        context.read<SettingsCubit>().updateBgColor(color, hexColor);
 
         Future.delayed(Duration(milliseconds: 300), () {
           inAppWebViewController.evaluateJavascript(

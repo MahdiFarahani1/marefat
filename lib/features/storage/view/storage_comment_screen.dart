@@ -1,5 +1,4 @@
 import 'package:bookapp/core/extensions/widget_ex.dart';
-import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/storage/repository/db_helper.dart';
 import 'package:bookapp/features/storage/widgets/empty_list.dart';
 import 'package:bookapp/gen/assets.gen.dart';
@@ -7,7 +6,6 @@ import 'package:bookapp/shared/scaffold/back_btn.dart';
 import 'package:bookapp/shared/ui_helper/snackbar_common.dart';
 import 'package:bookapp/shared/utils/loading.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CommentScreen extends StatefulWidget {
   final bool isBack;
@@ -225,11 +223,11 @@ class _CommentScreenState extends State<CommentScreen> {
                         icon: Assets.newicons.trashXmark.image(
                             width: 20, height: 20, color: Colors.red.shade600),
                         onPressed: () => _showDeleteDialog(
-                          context,
-                          comment['id'].toString(),
-                          comment['book_name'] ?? 'بدون عنوان',
-                          index,
-                        ),
+                            context,
+                            comment['id'].toString(),
+                            comment['book_name'] ?? 'بدون عنوان',
+                            index,
+                            comment['page_number']),
                         tooltip: 'حذف التعليق',
                       ),
                     ),
@@ -306,8 +304,8 @@ class _CommentScreenState extends State<CommentScreen> {
     );
   }
 
-  void _showDeleteDialog(
-      BuildContext context, String commentId, String bookName, int index) {
+  void _showDeleteDialog(BuildContext context, String commentId,
+      String bookName, int index, int pageNumber) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -338,7 +336,7 @@ class _CommentScreenState extends State<CommentScreen> {
                   // Delete from database
                   await DatabaseStorageHelper.deleteComment(
                     bookName,
-                    double.tryParse(commentId) ?? 0.0,
+                    pageNumber ?? 0,
                   );
 
                   Navigator.of(dialogContext).pop();
@@ -443,7 +441,7 @@ class _CommentScreenState extends State<CommentScreen> {
                     // Update comment in database
                     await DatabaseStorageHelper.updateComment(
                       comment['book_name'] ?? '',
-                      comment['page_number']?.toDouble() ?? 0.0,
+                      comment['page_number'] ?? 0,
                       titleController.text.trim().isEmpty
                           ? 'بدون عنوان'
                           : titleController.text.trim(),

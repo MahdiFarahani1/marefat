@@ -4,6 +4,7 @@ import 'package:bookapp/features/books/bloc/downloaded_page/downloaded_page_cubi
 import 'package:bookapp/features/books/bloc/downloaded_page/downloaded_page_state.dart';
 import 'package:bookapp/features/books/model/book_item_model.dart';
 import 'package:bookapp/features/content_books/view/content_page.dart';
+import 'package:bookapp/features/storage/widgets/empty_list.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/utils/error_widget.dart';
 import 'package:bookapp/shared/utils/esay_size.dart';
@@ -107,12 +108,12 @@ class _DownloadedBooksPageState extends State<DownloadedBooksPage> {
                   // 📚 لیست کتاب‌ها
                   Expanded(
                     child: _filteredBooks.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'لم يتم العثور على كتاب بهذه المواصفات',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          )
+                        ? Center(
+                            child: EmptyList.show(
+                            context,
+                            imagePath: Assets.newicons.bookoff.path,
+                            message: 'لم يتم العثور على كتاب بهذه المواصفات',
+                          ))
                         : ListView.builder(
                             controller: controller,
                             padding: const EdgeInsets.all(16),

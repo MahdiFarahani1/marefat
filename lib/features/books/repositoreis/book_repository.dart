@@ -8,7 +8,13 @@ class BookRepository {
     final res = await http.get(Uri.parse(ConstantApp.booksAPi));
     if (res.statusCode == 200) {
       final data = json.decode(res.body);
-      return (data['books'] as List).map((e) => BookModel.fromJson(e)).toList();
+      final books =
+          (data['books'] as List).map((e) => BookModel.fromJson(e)).toList();
+
+      // مرتب‌سازی بر اساس idShow به صورت صعودی
+      books.sort((a, b) => a.idShow.compareTo(b.idShow));
+
+      return books;
     } else {
       throw Exception('خطأ في جلب الكتب');
     }

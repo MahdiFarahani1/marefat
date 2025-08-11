@@ -1,5 +1,4 @@
 import 'package:bookapp/features/about/view/about_app_screen.dart';
-import 'package:bookapp/features/about/view/privacy_policy_screen.dart';
 import 'package:bookapp/features/mainWrapper/view/navigaion.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/settings/bloc/settings_state.dart';
@@ -9,6 +8,7 @@ import 'package:bookapp/shared/utils/esay_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
@@ -59,11 +59,10 @@ class CustomDrawer extends StatelessWidget {
                   }),
                   _buildDrawerItem(
                       Assets.newicons.userLock.path, 'سياسية الخصوصية', () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const PrivacyPolicyScreen(),
-                        ));
+                    final Uri url = Uri.parse(
+                        'https://maarifadeen.com/privacy_policy_almaerifa.html');
+
+                    launchUrl(url);
                   }),
 
                   EsaySize.gap(2), const Divider(),

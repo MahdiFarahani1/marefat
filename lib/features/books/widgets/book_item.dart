@@ -3,7 +3,7 @@ import 'package:bookapp/features/books/bloc/download/download_cubit.dart';
 import 'package:bookapp/features/books/bloc/download/download_state.dart';
 import 'package:bookapp/features/books/model/model_books.dart';
 import 'package:bookapp/features/books/repositoreis/book_repository.dart';
-import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
+import 'package:bookapp/features/content_books/view/content_page.dart';
 import 'package:bookapp/features/storage/repository/db_helper.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/func/downloaded_book.dart';
@@ -42,162 +42,178 @@ class BookItemTile extends StatelessWidget {
         final downloadState =
             downloadStates[book.id.toString()] ?? DownloadState();
 
-        return Container(
-          margin: const EdgeInsets.only(bottom: 16),
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            borderRadius: BorderRadius.circular(14),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.08),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              )
-            ],
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: ImageNetworkCommon(
-                  imageurl: imageUrl,
-                  width: 75,
-                  height: 105,
+        return GestureDetector(
+          onTap: () {
+            if (downloadState.isDownloadedBook) {
+              print(
+                book.id.toString(),
+              );
+              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                builder: (context) => ContentPage(
+                    bookId: book.id.toString(),
+                    bookName: book.title,
+                    scrollPosetion: 0),
+              ));
+            }
+          },
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.08),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                )
+              ],
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: ImageNetworkCommon(
+                    imageurl: imageUrl,
+                    width: 75,
+                    height: 105,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      book.title,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      book.writer,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    if (book.dateTime != null)
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text(
-                        'التاریخ: ${DateFormat('yyyy/MM/dd').format(DateTime.fromMillisecondsSinceEpoch(book.dateTime! * 1000))}',
+                        book.title,
                         style: const TextStyle(
-                          fontSize: 10,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        book.writer,
+                        style: const TextStyle(
+                          fontSize: 13,
                           color: Colors.grey,
                         ),
                       ),
-                    const SizedBox(height: 10),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Assets.newicons.filePdf.image(
-                            width: 22,
-                            height: 22,
-                            color: Theme.of(context).primaryColor),
-                        const SizedBox(width: 6),
-                        GestureDetector(
-                          onTap: downloadState.isDownloadingPdf
-                              ? null
-                              : () => handleDownloadOrOpen(
-                                      context,
-                                      downloadState,
-                                      ConstantApp.upload + book.pdf!,
-                                      book.pdf!.split('/').last, () {
-                                    context
+                      const SizedBox(height: 6),
+                      if (book.dateTime != null)
+                        Text(
+                          'التاریخ: ${DateFormat('yyyy/MM/dd').format(DateTime.fromMillisecondsSinceEpoch(book.dateTime! * 1000))}',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      const SizedBox(height: 10),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Assets.newicons.filePdf.image(
+                              width: 22,
+                              height: 22,
+                              color: Theme.of(context).primaryColor),
+                          const SizedBox(width: 6),
+                          GestureDetector(
+                            onTap: downloadState.isDownloadingPdf
+                                ? null
+                                : () => handleDownloadOrOpen(
+                                        context,
+                                        downloadState,
+                                        ConstantApp.upload + book.pdf!,
+                                        book.pdf!.split('/').last, () {
+                                      context
+                                          .read<DownloadCubit>()
+                                          .startPdfDownload(book.id.toString(),
+                                              ConstantApp.upload + book.pdf!);
+                                    }),
+                            child: Text(
+                              downloadState.isDownloadingPdf
+                                  ? 'جاري التحميل..'
+                                  : downloadState.isDownloadedPdf
+                                      ? 'تصفح ملف PDF'
+                                      : 'تحميل pdf',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: downloadState.isDownloadingPdf
+                                    ? Colors.grey
+                                    : const Color(0xFF2196F3),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          ZoomTapAnimation(
+                            onTap: () async {
+                              if (downloadState.isDownloadedBook == false) {
+                                handleBookDownload(
+                                  context,
+                                  downloadState,
+                                  ConstantApp.downloadBook + book.id.toString(),
+                                  'b${book.id.toString()}.zip',
+                                  () async {
+                                    await context
                                         .read<DownloadCubit>()
-                                        .startPdfDownload(book.id.toString(),
-                                            ConstantApp.upload + book.pdf!);
-                                  }),
-                          child: Text(
-                            downloadState.isDownloadingPdf
-                                ? 'جاري التحميل..'
-                                : downloadState.isDownloadedPdf
-                                    ? 'تصفح ملف PDF'
-                                    : 'تحميل pdf',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: downloadState.isDownloadingPdf
-                                  ? Colors.grey
-                                  : const Color(0xFF2196F3),
-                              fontWeight: FontWeight.w500,
+                                        .startBookDownload(
+                                          book.id.toString(),
+                                          '${ConstantApp.downloadBook}${book.id}',
+                                        );
+                                    DatabaseStorageHelper.insertBookNames(
+                                        book.title, book.id);
+                                  },
+                                );
+                              }
+                            },
+                            child: Container(
+                              width: 45,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                color: downloadState.isDownloadedBook
+                                    ? Colors.transparent
+                                    : Theme.of(context)
+                                        .primaryColor
+                                        .withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: EdgeInsets.all(8),
+                              child: downloadState.isDownloadingBook
+                                  ? CustomLoading.fadingCircle(context)
+                                  : downloadState.isDownloadedBook
+                                      ? Assets.newicons.mapMarkerCheck
+                                          .image(color: Colors.green)
+                                          .animate()
+                                          .scale(
+                                              duration:
+                                                  Duration(milliseconds: 400))
+                                      : Assets.newicons.inboxIn.image(
+                                          color:
+                                              Theme.of(context).primaryColor),
                             ),
                           ),
-                        ),
-                        const Spacer(),
-                        ZoomTapAnimation(
-                          onTap: () async {
-                            if (downloadState.isDownloadedBook == false) {
-                              handleBookDownload(
-                                context,
-                                downloadState,
-                                ConstantApp.downloadBook + book.id.toString(),
-                                'b${book.id.toString()}.zip',
-                                () async {
-                                  await context
-                                      .read<DownloadCubit>()
-                                      .startBookDownload(
-                                        book.id.toString(),
-                                        '${ConstantApp.downloadBook}${book.id}',
-                                      );
-                                  DatabaseStorageHelper.insertBookNames(
-                                      book.title, book.id);
-                                },
-                              );
-                            }
-                          },
-                          child: Container(
-                            width: 45,
-                            height: 45,
-                            decoration: BoxDecoration(
-                              color: downloadState.isDownloadedBook
-                                  ? Colors.transparent
-                                  : Theme.of(context)
-                                      .primaryColor
-                                      .withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            padding: EdgeInsets.all(8),
-                            child: downloadState.isDownloadingBook
-                                ? CustomLoading.fadingCircle(context)
-                                : downloadState.isDownloadedBook
-                                    ? Assets.newicons.mapMarkerCheck
-                                        .image(color: Colors.green)
-                                        .animate()
-                                        .scale(
-                                            duration:
-                                                Duration(milliseconds: 400))
-                                    : Assets.newicons.inboxIn.image(
-                                        color: Theme.of(context).primaryColor),
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (downloadState.isDownloadingPdf)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: LinearProgressIndicator(
-                          value: downloadState.progressPdf,
-                          minHeight: 6,
-                          backgroundColor: Colors.grey[300],
-                          color: Colors.blue,
-                        ),
+                        ],
                       ),
-                  ],
-                ),
-              )
-            ],
+                      if (downloadState.isDownloadingPdf)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: LinearProgressIndicator(
+                            value: downloadState.progressPdf,
+                            minHeight: 6,
+                            backgroundColor: Colors.grey[300],
+                            color: Colors.blue,
+                          ),
+                        ),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         );
       },

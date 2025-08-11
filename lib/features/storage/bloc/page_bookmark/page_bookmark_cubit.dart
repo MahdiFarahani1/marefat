@@ -1,97 +1,121 @@
-import 'package:bookapp/features/storage/bloc/page_bookmark/page_bookmark_state.dart';
-import 'package:bookapp/features/storage/repository/db_helper.dart';
+import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_storage/get_storage.dart';
+import 'page_bookmark_state.dart';
 
 class PageBookmarkCubit extends Cubit<PageBookmarkState> {
-  static const String pageSaveKey = 'pagesave';
-  final GetStorage _box = GetStorage();
+  final GetStorage _box;
+  static const _bookmarkKey = 'bookmark';
+  static const _pageSaveKey = 'pagesave';
 
-  // Singleton pattern for global state management
-  static PageBookmarkCubit? _instance;
-  static PageBookmarkCubit get instance {
-    _instance ??= PageBookmarkCubit._internal();
-    return _instance!;
-  }
+  PageBookmarkCubit(this._box) : super(const PageBookmarkState());
 
-  PageBookmarkCubit._internal() : super(const PageBookmarkState());
-
-  // Factory constructor for normal usage
-  factory PageBookmarkCubit() => instance;
-
-  Future<void> loadPageBookmarks() async {
+  /// Load all bookmarks from storage
+  void loadBookmarks() {
     try {
       emit(state.copyWith(status: PageBookmarkStatus.loading));
-      final pageBookmarks = await DatabaseStorageHelper.getAllpages();
+
+      final bookmarks = _readBookmarks();
+
       emit(state.copyWith(
-        pageBookmarks: pageBookmarks,
+        pageBookmarks: bookmarks,
         status: PageBookmarkStatus.success,
       ));
     } catch (e) {
+      print('❌ loadBookmarks error: $e');
       emit(state.copyWith(status: PageBookmarkStatus.error));
     }
   }
 
-  void loadInitialState(String bookId, int pageNumber) {
-    final savedFlag = _box.read('$pageSaveKey$bookId$pageNumber') ?? false;
-    emit(state.copyWith(isSaved: savedFlag));
+  /// Check if a page is bookmarked
+  void checkBookmark(String bookId, int pageNumber) {
+    final saved = _box.read('$_pageSaveKey$bookId$pageNumber') ?? false;
+    emit(state.copyWith(isSaved: saved));
   }
 
-  Future<void> togglePageBookmark(
-      String bookName, String bookId, int pageNumber) async {
-    try {
-      final current = _box.read('$pageSaveKey$bookId$pageNumber') ?? false;
-
-      if (current) {
-        await _removePageBookmark(bookId, pageNumber);
-      } else {
-        await _addPageBookmark(bookName, bookId, pageNumber);
-      }
-
-      // Reload the list after toggle
-      await loadPageBookmarks();
-    } catch (e) {
-      emit(state.copyWith(status: PageBookmarkStatus.error));
+  /// Toggle bookmark state for a page
+  void toggleBookmark(String bookName, String bookId, int pageNumber) {
+    final saved = _box.read('$_pageSaveKey$bookId$pageNumber') ?? false;
+    if (saved) {
+      _remove(bookId, pageNumber);
+    } else {
+      _add(bookName, bookId, pageNumber);
     }
+    loadBookmarks();
   }
 
-  Future<void> removePageBookmark(String bookId, int pageNumber) async {
-    await _removePageBookmark(bookId, pageNumber);
+  /// Remove a bookmark for a page
+  void removeBookmark(String bookId, int pageNumber) {
+    _remove(bookId, pageNumber);
+    loadBookmarks();
   }
 
-  Future<void> _addPageBookmark(
-      String bookName, String bookId, int pageNumber) async {
-    await _box.write('$pageSaveKey$bookId$pageNumber', true);
-    await DatabaseStorageHelper.insertPage(
-        bookName, int.parse(bookId), pageNumber.toDouble());
+  void _add(String bookName, String bookId, int pageNumber) {
+    final bookmarks = _readBookmarks();
 
-    final updatedPageBookmarks = await DatabaseStorageHelper.getAllpages();
+    bookmarks.add({
+      'bookName': bookName,
+      'bookId': bookId,
+      'pageNumber': pageNumber,
+    });
+
+    _box.write(_bookmarkKey, jsonEncode(bookmarks));
+    _box.write('$_pageSaveKey$bookId$pageNumber', true);
+
     emit(state.copyWith(
       isSaved: true,
-      pageBookmarks: updatedPageBookmarks,
+      pageBookmarks: bookmarks,
       status: PageBookmarkStatus.success,
     ));
   }
 
-  Future<void> _removePageBookmark(String bookId, int pageNumber) async {
+  void _remove(String bookId, int pageNumber) {
+    _box.remove('$_pageSaveKey$bookId$pageNumber');
+
+    final bookmarks = _readBookmarks();
+    bookmarks.removeWhere(
+      (b) => b['bookId'] == bookId && b['pageNumber'] == pageNumber,
+    );
+
+    _box.write(_bookmarkKey, jsonEncode(bookmarks));
+
+    emit(state.copyWith(
+      isSaved: false,
+      pageBookmarks: bookmarks,
+      status: PageBookmarkStatus.success,
+    ));
+  }
+
+  List<Map<String, dynamic>> _readBookmarks() {
+    final dynamic raw = _box.read(_bookmarkKey);
+
     try {
-      if (bookId.isEmpty) {
-        emit(state.copyWith(status: PageBookmarkStatus.error));
-        return;
+      if (raw == null) return <Map<String, dynamic>>[];
+
+      if (raw is String) {
+        final decoded = jsonDecode(raw);
+        if (decoded is List) {
+          return List<Map<String, dynamic>>.from(
+              decoded.map((e) => Map<String, dynamic>.from(e as Map)));
+        }
+        if (decoded is Map) {
+          return [Map<String, dynamic>.from(decoded)];
+        }
+        return <Map<String, dynamic>>[];
       }
 
-      await _box.remove('$pageSaveKey$bookId$pageNumber');
-      await DatabaseStorageHelper.deletePage(
-          int.parse(bookId), pageNumber.toDouble());
+      if (raw is List) {
+        return List<Map<String, dynamic>>.from(
+          raw.map((e) => Map<String, dynamic>.from(e as Map)),
+        );
+      }
 
-      final updatedPageBookmarks = await DatabaseStorageHelper.getAllpages();
-      emit(state.copyWith(
-        isSaved: false,
-        pageBookmarks: updatedPageBookmarks,
-        status: PageBookmarkStatus.success,
-      ));
+      if (raw is Map) {
+        return [Map<String, dynamic>.from(raw)];
+      }
     } catch (e) {
-      emit(state.copyWith(status: PageBookmarkStatus.error));
+      print('❌ _readBookmarks decode error: $e');
     }
+    return <Map<String, dynamic>>[];
   }
 }

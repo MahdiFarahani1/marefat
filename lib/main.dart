@@ -56,8 +56,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => BookmarkCubit(),
         ),
-        BlocProvider.value(
-          value: PageBookmarkCubit.instance,
+        BlocProvider(
+          create: (_) => PageBookmarkCubit(GetStorage())..loadBookmarks(),
         ),
         BlocProvider(
           create: (context) => SettingsCubit(),

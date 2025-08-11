@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:bookapp/config/theme/theme.dart';
 import 'package:bookapp/features/books/view/books_downloaded.dart';
 import 'package:bookapp/features/books/view/books_screen.dart';
 import 'package:bookapp/features/mainWrapper/bloc/slider/slider_cubit.dart';
@@ -114,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 15),
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: Theme.of(context).colorScheme.primaryContainer,
                         borderRadius: BorderRadius.circular(15.0),
                       ),
                       child: Row(
@@ -199,10 +198,7 @@ class _HomePageState extends State<HomePage> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: state.currentIndex == index
-                                        ? context
-                                            .read<SettingsCubit>()
-                                            .state
-                                            .primry
+                                        ? Theme.of(context).primaryColor
                                         : Colors.grey,
                                   ),
                                 ),
@@ -229,7 +225,7 @@ class _HomePageState extends State<HomePage> {
                       childAspectRatio: 1.2,
                       crossAxisCount: 3,
                       crossAxisSpacing: 12,
-                      mainAxisSpacing: 4,
+                      mainAxisSpacing: 12,
                     ),
                     itemBuilder: (context, index) {
                       return FeatureItem(
@@ -259,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                         return Column(
                           children: [
                             SectionHeader(
-                                    title: 'الكتب الأكثر شهرة',
+                                    title: 'أحدث الكتب',
                                     onPressed: () {
                                       Navigator.push(
                                         context,
@@ -483,7 +479,7 @@ class _HomePageState extends State<HomePage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              'موقع: ${current.toStringAsFixed(0)}',
+                                              'الصفحة: ${current.toStringAsFixed(0)}',
                                               style: const TextStyle(
                                                 fontSize: 12,
                                                 color: Colors.grey,
@@ -569,8 +565,9 @@ class FeatureItem extends StatelessWidget {
           children: [
             Image.asset(
               model.icon,
-              width: 30,
-              height: 30,
+              width: 34,
+              height: 34,
+              color: Theme.of(context).colorScheme.tertiary,
             )
                 .animate()
                 .fadeIn(duration: 500.ms)

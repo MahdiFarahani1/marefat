@@ -2806,6 +2806,10 @@ class $AssetsNewiconsGen {
   AssetGenImage get bookmarkfull =>
       const AssetGenImage('assets/newicons/bookmarkfull.png');
 
+  /// File path: assets/newicons/bookoff.png
+  AssetGenImage get bookoff =>
+      const AssetGenImage('assets/newicons/bookoff.png');
+
   /// File path: assets/newicons/calendar-clock.png
   AssetGenImage get calendarClock =>
       const AssetGenImage('assets/newicons/calendar-clock.png');
@@ -2950,6 +2954,7 @@ class $AssetsNewiconsGen {
         bookOpenCover,
         bookmark,
         bookmarkfull,
+        bookoff,
         calendarClock,
         calendarLinesPen,
         circleBookmark,

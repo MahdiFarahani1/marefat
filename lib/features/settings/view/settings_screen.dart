@@ -108,8 +108,7 @@ class SettingsPage extends StatelessWidget {
           textAlign: TextAlign.right,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 18,
-            fontFamily: 'Tajawal',
+            fontSize: 16,
             letterSpacing: 0.5,
           ),
         ),
@@ -413,7 +412,9 @@ class SettingsPage extends StatelessWidget {
       Color color, SettingsState settingState, BuildContext context) {
     return ZoomTapAnimation(
       onTap: () {
-        context.read<SettingsCubit>().updateBgColor(color);
+        final hexColor = '#${color.value.toRadixString(16).substring(2)}';
+
+        context.read<SettingsCubit>().updateBgColor(color, hexColor);
       },
       child: Container(
         width: 40,

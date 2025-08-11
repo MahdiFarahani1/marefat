@@ -108,16 +108,33 @@ class ModalComment {
                             final dateTime =
                                 '${now.year}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')} - ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
 
+                            final comments =
+                                await DatabaseStorageHelper.getAllcomments();
+                            if (comments.any(
+                              (c) =>
+                                  c['book_name'] == bookname &&
+                                  c['page_number'] == idPage,
+                            )) {
+                              DatabaseStorageHelper.updateComment(
+                                bookname,
+                                idPage,
+                                titleController.text.trim().isEmpty
+                                    ? 'بدون عنوان'
+                                    : titleController.text.trim(),
+                                controller.text.trim(),
+                              );
+                            } else {
+                              await DatabaseStorageHelper.insertComment(
+                                bookname,
+                                idPage.toDouble(),
+                                titleController.text.trim().isEmpty
+                                    ? 'بدون عنوان'
+                                    : titleController.text.trim(),
+                                controller.text.trim(),
+                                dateTime,
+                              );
+                            }
                             // Save comment to database
-                            await DatabaseStorageHelper.insertComment(
-                              bookname,
-                              idPage.toDouble(),
-                              titleController.text.trim().isEmpty
-                                  ? 'بدون عنوان'
-                                  : titleController.text.trim(),
-                              controller.text.trim(),
-                              dateTime,
-                            );
 
                             Navigator.pop(context);
 
