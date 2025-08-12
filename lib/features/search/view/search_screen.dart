@@ -104,7 +104,9 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Row(
+                Wrap(
+                  runSpacing: 6,
+                  spacing: 6,
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -183,42 +185,10 @@ class _SearchPageState extends State<SearchPage> {
           const Spacer(),
           TextButton.icon(
             onPressed: _clearSearch,
-            icon: Icon(
-              Icons.clear,
-              size: 18,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withValues(alpha: 0.7),
-            ),
+            icon: Icon(Icons.clear, size: 18, color: Colors.red.shade600),
             label: Text(
               'مسح',
-              style: TextStyle(
-                color: Theme.of(context)
-                    .colorScheme
-                    .onSurface
-                    .withValues(alpha: 0.7),
-              ),
-            ),
-          ),
-          TextButton.icon(
-            onPressed: _resetSearch,
-            icon: Icon(
-              Icons.refresh,
-              size: 18,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withValues(alpha: 0.7),
-            ),
-            label: Text(
-              'إعادة تعيين',
-              style: TextStyle(
-                color: Theme.of(context)
-                    .colorScheme
-                    .onSurface
-                    .withValues(alpha: 0.7),
-              ),
+              style: TextStyle(color: Colors.red.shade600),
             ),
           ),
         ],
@@ -256,7 +226,9 @@ class _SearchPageState extends State<SearchPage> {
           const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: _resetSearch,
-            icon: Icon(Icons.refresh),
+            icon: Icon(
+              Icons.refresh,
+            ),
             label: Text('إعادة تعيين البحث'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).primaryColor,
@@ -306,11 +278,8 @@ class _SearchPageState extends State<SearchPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.search,
-            size: 64,
-            color: Colors.blue.withValues(alpha: 0.5),
-          ),
+          Assets.newicons.search
+              .image(color: Colors.grey, width: 60, height: 60),
           const SizedBox(height: 16),
           Text(
             'أدخل نص البحث',

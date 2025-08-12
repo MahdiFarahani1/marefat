@@ -372,146 +372,154 @@ class _HomePageState extends State<HomePage> {
                                   final String imagePath =
                                       '/storage/emulated/0/Download/Books/tmp/$bookId/$bookId.jpg';
 
-                                  return Container(
-                                    width: 145,
-                                    margin: const EdgeInsets.only(right: 15.0),
-                                    padding: const EdgeInsets.all(8.0),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryContainer,
-                                      borderRadius: BorderRadius.circular(14.0),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.12),
-                                          spreadRadius: 1,
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        FutureBuilder<bool>(
-                                          future: File(imagePath).exists(),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
-                                              return SizedBox(
-                                                width: 100,
-                                                height: 140,
-                                                child: Center(
-                                                    child: CustomLoading
-                                                        .fadingCircle(context)),
-                                              );
-                                            } else if (snapshot.hasData &&
-                                                snapshot.data == true) {
-                                              return Container(
-                                                width: 150,
-                                                height: 180,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          16.0),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.1),
-                                                      blurRadius: 8,
-                                                      offset:
-                                                          const Offset(0, 4),
-                                                    ),
-                                                  ],
-                                                ),
-                                                clipBehavior: Clip.hardEdge,
-                                                child: Image.file(
-                                                  File(imagePath),
-                                                  fit: BoxFit.cover,
+                                  return ZoomTapAnimation(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ReadingBooksScreen(
+                                                  readingBooks: state.books,
+                                                )),
+                                      );
+                                    },
+                                    child: Container(
+                                      width: 145,
+                                      margin:
+                                          const EdgeInsets.only(right: 15.0),
+                                      padding: const EdgeInsets.all(8.0),
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(14.0),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          FutureBuilder<bool>(
+                                            future: File(imagePath).exists(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
+                                                return SizedBox(
+                                                  width: 100,
+                                                  height: 140,
+                                                  child: Center(
+                                                      child: CustomLoading
+                                                          .fadingCircle(
+                                                              context)),
+                                                );
+                                              } else if (snapshot.hasData &&
+                                                  snapshot.data == true) {
+                                                return Container(
+                                                  width: 150,
+                                                  height: 180,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16.0),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(0.1),
+                                                        blurRadius: 8,
+                                                        offset:
+                                                            const Offset(0, 4),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  clipBehavior: Clip.hardEdge,
+                                                  child: Image.file(
+                                                    File(imagePath),
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                      .animate()
+                                                      .fadeIn(duration: 500.ms)
+                                                      .scale(
+                                                          begin: const Offset(
+                                                              0.95, 0.95))
+                                                      .shimmer(
+                                                          duration: 1000.ms,
+                                                          delay: 300.ms),
+                                                );
+                                              } else {
+                                                return Container(
+                                                  width: 100,
+                                                  height: 140,
+                                                  color: Colors.grey.shade300,
+                                                  child: const Center(
+                                                      child: Icon(Icons
+                                                          .image_not_supported)),
                                                 )
                                                     .animate()
-                                                    .fadeIn(duration: 500.ms)
+                                                    .fadeIn(duration: 600.ms)
                                                     .scale(
                                                         begin: const Offset(
-                                                            0.95, 0.95))
+                                                            0.9, 0.9))
                                                     .shimmer(
-                                                        duration: 1000.ms,
-                                                        delay: 300.ms),
-                                              );
-                                            } else {
-                                              return Container(
-                                                width: 100,
-                                                height: 140,
-                                                color: Colors.grey.shade300,
-                                                child: const Center(
-                                                    child: Icon(Icons
-                                                        .image_not_supported)),
+                                                        duration: 1200.ms,
+                                                        delay: 400.ms);
+                                              }
+                                            },
+                                          ),
+                                          const SizedBox(height: 10.0),
+                                          Text(
+                                            book['book_name'],
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 14,
+                                            ),
+                                          )
+                                              .animate()
+                                              .fadeIn(
+                                                  duration: 500.ms,
+                                                  delay: 300.ms)
+                                              .slideY(begin: 0.3),
+                                          const SizedBox(height: 4.0),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                'الصفحة: ${current.toStringAsFixed(0)}',
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey,
+                                                ),
                                               )
                                                   .animate()
-                                                  .fadeIn(duration: 600.ms)
-                                                  .scale(
-                                                      begin: const Offset(
-                                                          0.9, 0.9))
-                                                  .shimmer(
-                                                      duration: 1200.ms,
-                                                      delay: 400.ms);
-                                            }
-                                          },
-                                        ),
-                                        const SizedBox(height: 10.0),
-                                        Text(
-                                          book['book_name'],
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 14,
-                                          ),
-                                        )
-                                            .animate()
-                                            .fadeIn(
-                                                duration: 500.ms, delay: 300.ms)
-                                            .slideY(begin: 0.3),
-                                        const SizedBox(height: 4.0),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'الصفحة: ${current.toStringAsFixed(0)}',
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey,
-                                              ),
-                                            )
-                                                .animate()
-                                                .fadeIn(
-                                                    duration: 500.ms,
-                                                    delay: 400.ms)
-                                                .slideY(begin: 0.3),
-                                            CircularPercentIndicator(
-                                              radius: 22.0,
-                                              lineWidth: 4.5,
-                                              percent: percent.clamp(0.0, 1.0),
-                                              center: Text(
-                                                percentText,
-                                                style: const TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w600,
+                                                  .fadeIn(
+                                                      duration: 500.ms,
+                                                      delay: 400.ms)
+                                                  .slideY(begin: 0.3),
+                                              CircularPercentIndicator(
+                                                radius: 22.0,
+                                                lineWidth: 4.5,
+                                                percent:
+                                                    percent.clamp(0.0, 1.0),
+                                                center: Text(
+                                                  percentText,
+                                                  style: const TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
                                                 ),
+                                                progressColor: percent > 0.7
+                                                    ? Colors
+                                                        .greenAccent.shade400
+                                                    : Colors
+                                                        .amberAccent.shade400,
+                                                backgroundColor:
+                                                    Colors.grey.shade300,
+                                                animation: true,
+                                                animationDuration: 800,
                                               ),
-                                              progressColor: percent > 0.7
-                                                  ? Colors.greenAccent.shade400
-                                                  : Colors.amberAccent.shade400,
-                                              backgroundColor:
-                                                  Colors.grey.shade300,
-                                              animation: true,
-                                              animationDuration: 800,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   );
                                 },
