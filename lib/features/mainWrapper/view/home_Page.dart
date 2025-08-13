@@ -9,7 +9,6 @@ import 'package:bookapp/features/mainWrapper/widget/bookitem.dart';
 import 'package:bookapp/features/mainWrapper/widget/empty_reading.dart';
 import 'package:bookapp/features/reading_progress/bloc/cubit/readingbook_cubit.dart';
 import 'package:bookapp/features/search/view/search_screen.dart';
-import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/storage/view/storage_comment_screen.dart';
 import 'package:bookapp/features/storage/view/storage_page_screen.dart';
 import 'package:bookapp/gen/assets.gen.dart';
@@ -22,6 +21,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
+import 'package:path/path.dart' as p;
+import 'package:bookapp/shared/func/folder_check.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -149,61 +150,95 @@ class _HomePageState extends State<HomePage> {
                       } else if (state.statusSlider is SliderLoaded) {
                         final sliders =
                             (state.statusSlider as SliderLoaded).sliders;
-
                         return Column(
                           children: [
-                            SizedBox(
-                              height: 160,
-                              child: CarouselSlider(
-                                options: CarouselOptions(
-                                  height: 160,
-                                  autoPlay: true,
-                                  enlargeCenterPage: true,
-                                  viewportFraction: 0.9,
-                                  onPageChanged: (index, reason) {
-                                    context
-                                        .read<SliderCubit>()
-                                        .indicatorChanged(index);
-                                  },
-                                ),
-                                items: sliders.map((slider) {
-                                  return ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Image.network(
-                                      slider.photoUrl,
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                    ),
-                                  )
-                                      .animate()
-                                      .fadeIn(duration: 800.ms)
-                                      .scale(begin: Offset(0.8, 0.8));
-                                }).toList(),
-                              )
-                                  .animate()
-                                  .fadeIn(duration: 700.ms, delay: 200.ms)
-                                  .slideX(begin: 0.3),
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: List.generate(
-                                sliders.length,
-                                (index) => AnimatedContainer(
-                                  duration: Duration(milliseconds: 300),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 4.0),
-                                  width: state.currentIndex == index ? 10 : 6,
-                                  height: state.currentIndex == index ? 10 : 6,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: state.currentIndex == index
-                                        ? Theme.of(context).primaryColor
-                                        : Colors.grey,
+                            LayoutBuilder(builder: (context, constraints) {
+                              final width = constraints.maxWidth;
+                              double sliderHeight = 160;
+                              double viewportFraction = 0.9;
+                              double borderRadius = 15;
+                              double indicatorSize = 6;
+                              double indicatorSpacing = 4;
+
+                              if (width >= 1200) {
+                                // دسکتاپ
+                                sliderHeight = 280;
+                                viewportFraction = 0.7;
+                                borderRadius = 20;
+                                indicatorSize = 10;
+                                indicatorSpacing = 6;
+                              } else if (width >= 800) {
+                                // تبلت
+                                sliderHeight = 220;
+                                viewportFraction = 0.8;
+                                borderRadius = 18;
+                                indicatorSize = 8;
+                                indicatorSpacing = 5;
+                              }
+
+                              return Column(
+                                children: [
+                                  SizedBox(
+                                    height: sliderHeight,
+                                    child: CarouselSlider(
+                                      options: CarouselOptions(
+                                        height: sliderHeight,
+                                        autoPlay: true,
+                                        enlargeCenterPage: true,
+                                        viewportFraction: viewportFraction,
+                                        onPageChanged: (index, reason) {
+                                          context
+                                              .read<SliderCubit>()
+                                              .indicatorChanged(index);
+                                        },
+                                      ),
+                                      items: sliders.map((slider) {
+                                        return ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                              borderRadius),
+                                          child: Image.network(
+                                            slider.photoUrl,
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                          ),
+                                        )
+                                            .animate()
+                                            .fadeIn(duration: 800.ms)
+                                            .scale(begin: Offset(0.8, 0.8));
+                                      }).toList(),
+                                    )
+                                        .animate()
+                                        .fadeIn(duration: 700.ms, delay: 200.ms)
+                                        .slideX(begin: 0.3),
                                   ),
-                                ),
-                              ),
-                            ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: List.generate(
+                                      sliders.length,
+                                      (index) => AnimatedContainer(
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: indicatorSpacing),
+                                        width: state.currentIndex == index
+                                            ? indicatorSize
+                                            : indicatorSize - 2,
+                                        height: state.currentIndex == index
+                                            ? indicatorSize
+                                            : indicatorSize - 2,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: state.currentIndex == index
+                                              ? Theme.of(context).primaryColor
+                                              : Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }),
                           ],
                         );
                       } else if (state.currentIndex is SliderError) {
@@ -217,27 +252,53 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 20.0),
 
                   // 📚 Feature Grid
-                  GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: features.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 1.2,
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
-                    itemBuilder: (context, index) {
-                      return FeatureItem(
-                        model: features[index],
-                        onTap: () => _onFeatureTap(index),
-                      )
-                          .animate(delay: (100 * index).ms)
-                          .fadeIn(duration: 600.ms)
-                          .slideY(begin: 0.3)
-                          .scale(begin: Offset(0.8, 0.8));
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final width = constraints.maxWidth;
+
+                      // تعیین تعداد ستون بر اساس عرض
+                      int crossAxisCount;
+                      double childAspectRatio;
+
+                      if (width >= 1200) {
+                        crossAxisCount = 5;
+                        childAspectRatio = 1.3;
+                      } else if (width >= 800) {
+                        crossAxisCount = 4;
+                        childAspectRatio = 1.2;
+                      } else if (width >= 600) {
+                        crossAxisCount = 3;
+                        childAspectRatio = 1.0;
+                      } else {
+                        crossAxisCount = 3;
+                        childAspectRatio = 0.9;
+                      }
+
+                      return GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: features.length,
+                        padding: const EdgeInsets.all(16),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: childAspectRatio,
+                        ),
+                        itemBuilder: (context, index) {
+                          return FeatureItem(
+                            model: features[index],
+                            onTap: () => _onFeatureTap(index),
+                          )
+                              .animate(delay: (100 * index).ms)
+                              .fadeIn(duration: 600.ms)
+                              .slideY(begin: 0.3)
+                              .scale(begin: Offset(0.8, 0.8));
+                        },
+                      ).animate(delay: 400.ms).fadeIn(duration: 800.ms);
                     },
-                  ).animate(delay: 400.ms).fadeIn(duration: 800.ms),
+                  ),
+
                   const SizedBox(height: 20.0),
 
                   BlocBuilder<SliderCubit, SliderState>(
@@ -352,175 +413,200 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(height: 15.0),
                             SizedBox(
                               height: 280,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                shrinkWrap: true,
-                                itemCount: state.books.length,
-                                itemBuilder: (context, index) {
-                                  final book = state.books[index];
-                                  final double current = book['scrollposition'];
-                                  final int total = book['pagesL'];
+                              child: FutureBuilder<Directory>(
+                                future: getBooksBaseDir(),
+                                builder: (context, baseSnap) {
+                                  if (!baseSnap.hasData) {
+                                    return const SizedBox();
+                                  }
+                                  final baseDir = baseSnap.data!;
+                                  return ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemCount: state.books.length,
+                                    itemBuilder: (context, index) {
+                                      final book = state.books[index];
+                                      final double current =
+                                          book['scrollposition'];
+                                      final int total = book['pagesL'];
 
-                                  final double percent =
-                                      total > 0 ? current / total : 0;
+                                      final double percent =
+                                          total > 0 ? current / total : 0;
 
-                                  final String percentText =
-                                      '${(percent * 100).toStringAsFixed(0)}%';
+                                      final String percentText =
+                                          '${(percent * 100).toStringAsFixed(0)}%';
 
-                                  final String bookId =
-                                      book['book_id'].toString();
-                                  final String imagePath =
-                                      '/storage/emulated/0/Download/Books/tmp/$bookId/$bookId.jpg';
+                                      final String bookId =
+                                          book['book_id'].toString();
+                                      final String imagePath = p.join(
+                                          baseDir.path,
+                                          'tmp',
+                                          bookId,
+                                          '$bookId.jpg');
 
-                                  return ZoomTapAnimation(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ReadingBooksScreen(
-                                                  readingBooks: state.books,
-                                                )),
-                                      );
-                                    },
-                                    child: Container(
-                                      width: 145,
-                                      margin:
-                                          const EdgeInsets.only(right: 15.0),
-                                      padding: const EdgeInsets.all(8.0),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(14.0),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          FutureBuilder<bool>(
-                                            future: File(imagePath).exists(),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.waiting) {
-                                                return SizedBox(
-                                                  width: 100,
-                                                  height: 140,
-                                                  child: Center(
-                                                      child: CustomLoading
-                                                          .fadingCircle(
-                                                              context)),
-                                                );
-                                              } else if (snapshot.hasData &&
-                                                  snapshot.data == true) {
-                                                return Container(
-                                                  width: 150,
-                                                  height: 180,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            16.0),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.black
-                                                            .withOpacity(0.1),
-                                                        blurRadius: 8,
-                                                        offset:
-                                                            const Offset(0, 4),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  clipBehavior: Clip.hardEdge,
-                                                  child: Image.file(
-                                                    File(imagePath),
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                      .animate()
-                                                      .fadeIn(duration: 500.ms)
-                                                      .scale(
-                                                          begin: const Offset(
-                                                              0.95, 0.95))
-                                                      .shimmer(
-                                                          duration: 1000.ms,
-                                                          delay: 300.ms),
-                                                );
-                                              } else {
-                                                return Container(
-                                                  width: 100,
-                                                  height: 140,
-                                                  color: Colors.grey.shade300,
-                                                  child: const Center(
-                                                      child: Icon(Icons
-                                                          .image_not_supported)),
-                                                )
-                                                    .animate()
-                                                    .fadeIn(duration: 600.ms)
-                                                    .scale(
-                                                        begin: const Offset(
-                                                            0.9, 0.9))
-                                                    .shimmer(
-                                                        duration: 1200.ms,
-                                                        delay: 400.ms);
-                                              }
-                                            },
+                                      return ZoomTapAnimation(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ReadingBooksScreen(
+                                                      readingBooks: state.books,
+                                                    )),
+                                          );
+                                        },
+                                        child: Container(
+                                          width: 145,
+                                          margin: const EdgeInsets.only(
+                                              right: 15.0),
+                                          padding: const EdgeInsets.all(8.0),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(14.0),
                                           ),
-                                          const SizedBox(height: 10.0),
-                                          Text(
-                                            book['book_name'],
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 14,
-                                            ),
-                                          )
-                                              .animate()
-                                              .fadeIn(
-                                                  duration: 500.ms,
-                                                  delay: 300.ms)
-                                              .slideY(begin: 0.3),
-                                          const SizedBox(height: 4.0),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
+                                              FutureBuilder<bool>(
+                                                future:
+                                                    File(imagePath).exists(),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.waiting) {
+                                                    return SizedBox(
+                                                      width: 100,
+                                                      height: 140,
+                                                      child: Center(
+                                                          child: CustomLoading
+                                                              .fadingCircle(
+                                                                  context)),
+                                                    );
+                                                  } else if (snapshot.hasData &&
+                                                      snapshot.data == true) {
+                                                    return Container(
+                                                      width: 150,
+                                                      height: 180,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16.0),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.1),
+                                                            blurRadius: 8,
+                                                            offset:
+                                                                const Offset(
+                                                                    0, 4),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      clipBehavior:
+                                                          Clip.hardEdge,
+                                                      child: Image.file(
+                                                        File(imagePath),
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                          .animate()
+                                                          .fadeIn(
+                                                              duration: 500.ms)
+                                                          .scale(
+                                                              begin:
+                                                                  const Offset(
+                                                                      0.95,
+                                                                      0.95))
+                                                          .shimmer(
+                                                              duration: 1000.ms,
+                                                              delay: 300.ms),
+                                                    );
+                                                  } else {
+                                                    return Container(
+                                                      width: 100,
+                                                      height: 140,
+                                                      color:
+                                                          Colors.grey.shade300,
+                                                      child: const Center(
+                                                          child: Icon(Icons
+                                                              .image_not_supported)),
+                                                    )
+                                                        .animate()
+                                                        .fadeIn(
+                                                            duration: 600.ms)
+                                                        .scale(
+                                                            begin: const Offset(
+                                                                0.9, 0.9))
+                                                        .shimmer(
+                                                            duration: 1200.ms,
+                                                            delay: 400.ms);
+                                                  }
+                                                },
+                                              ),
+                                              const SizedBox(height: 10.0),
                                               Text(
-                                                'الصفحة: ${current.toStringAsFixed(0)}',
+                                                book['book_name'],
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.grey,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 14,
                                                 ),
                                               )
                                                   .animate()
                                                   .fadeIn(
                                                       duration: 500.ms,
-                                                      delay: 400.ms)
+                                                      delay: 300.ms)
                                                   .slideY(begin: 0.3),
-                                              CircularPercentIndicator(
-                                                radius: 22.0,
-                                                lineWidth: 4.5,
-                                                percent:
-                                                    percent.clamp(0.0, 1.0),
-                                                center: Text(
-                                                  percentText,
-                                                  style: const TextStyle(
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.w600,
+                                              const SizedBox(height: 4.0),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    'الصفحة: ${current.toStringAsFixed(0)}',
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  )
+                                                      .animate()
+                                                      .fadeIn(
+                                                          duration: 500.ms,
+                                                          delay: 400.ms)
+                                                      .slideY(begin: 0.3),
+                                                  CircularPercentIndicator(
+                                                    radius: 22.0,
+                                                    lineWidth: 4.5,
+                                                    percent:
+                                                        percent.clamp(0.0, 1.0),
+                                                    center: Text(
+                                                      percentText,
+                                                      style: const TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                    progressColor: percent > 0.7
+                                                        ? Colors.greenAccent
+                                                            .shade400
+                                                        : Colors.amberAccent
+                                                            .shade400,
+                                                    backgroundColor:
+                                                        Colors.grey.shade300,
+                                                    animation: true,
+                                                    animationDuration: 800,
                                                   ),
-                                                ),
-                                                progressColor: percent > 0.7
-                                                    ? Colors
-                                                        .greenAccent.shade400
-                                                    : Colors
-                                                        .amberAccent.shade400,
-                                                backgroundColor:
-                                                    Colors.grey.shade300,
-                                                animation: true,
-                                                animationDuration: 800,
+                                                ],
                                               ),
                                             ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
                               ),
@@ -561,9 +647,28 @@ class FeatureItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    double iconSize = 34;
+    double fontSize = 13;
+    double spacing = 8;
+
+    if (width >= 1200) {
+      // دسکتاپ
+      iconSize = 50;
+      fontSize = 16;
+      spacing = 12;
+    } else if (width >= 800) {
+      // تبلت
+      iconSize = 40;
+      fontSize = 14;
+      spacing = 10;
+    }
+
     return ZoomTapAnimation(
       onTap: onTap,
       child: Container(
+        padding: EdgeInsets.all(spacing),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(12),
@@ -573,23 +678,24 @@ class FeatureItem extends StatelessWidget {
           children: [
             Image.asset(
               model.icon,
-              width: 34,
-              height: 34,
+              width: iconSize,
+              height: iconSize,
               color: Theme.of(context).colorScheme.tertiary,
             )
                 .animate()
                 .fadeIn(duration: 500.ms)
                 .scale(begin: Offset(0.5, 0.5))
                 .shimmer(duration: 1000.ms),
+            SizedBox(height: spacing),
             Text(
               model.label,
               style: TextStyle(
-                  color: Theme.of(context).primaryColor, fontSize: 13),
+                  color: Theme.of(context).primaryColor, fontSize: fontSize),
               textAlign: TextAlign.center,
             )
                 .animate()
                 .fadeIn(duration: 600.ms, delay: 200.ms)
-                .slideY(begin: 0.5)
+                .slideY(begin: 0.5),
           ],
         ),
       ),

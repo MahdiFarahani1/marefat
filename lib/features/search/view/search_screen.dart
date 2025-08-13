@@ -15,6 +15,7 @@ import 'package:bookapp/features/search/bloc/search_cubit.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:path/path.dart' as path;
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
+import 'package:bookapp/shared/func/folder_check.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -52,7 +53,7 @@ class _SearchPageState extends State<SearchPage> {
 
   // Clear search results
   void _clearSearch() {
-    context.read<SearchCubit>().emit(SearchInitial());
+    context.read<SearchCubit>().reset();
   }
 
   // Show search results list
@@ -353,18 +354,9 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  // Check if books directory exists
-  Future<bool> _checkBooksDirectory() async {
-    const String baseDirPath = '/storage/emulated/0/Download/Books/tmp';
-    final Directory baseDirectory = Directory(baseDirPath);
-    return await baseDirectory.exists();
-  }
+  // (unused) kept for future – removed to silence lints
 
-  // Handle database connection issues
-  void _handleDatabaseIssue() {
-    AppSnackBar.showError(context,
-        'مشكلة في الاتصال بقاعدة البيانات. يرجى إعادة تشغيل التطبيق أو التحقق من الأذونات.');
-  }
+  // (unused) kept for future – removed to silence lints
 
   // Reset search form
   void _resetSearch() {
@@ -380,7 +372,8 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> _loadBooksFromDirectory() async {
     try {
-      const String baseDirPath = '/storage/emulated/0/Download/Books/tmp';
+      final base = await getBooksBaseDir();
+      final String baseDirPath = path.join(base.path, 'tmp');
       final Directory baseDirectory = Directory(baseDirPath);
 
       if (await baseDirectory.exists()) {

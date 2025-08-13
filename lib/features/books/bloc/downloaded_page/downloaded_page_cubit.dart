@@ -5,6 +5,7 @@ import 'package:archive/archive_io.dart';
 import 'package:bookapp/features/books/bloc/downloaded_page/downloaded_page_state.dart';
 import 'package:bookapp/features/books/model/book_item_model.dart';
 import 'package:bookapp/features/books/model/model_books.dart';
+import 'package:bookapp/shared/func/folder_check.dart';
 import 'package:bookapp/features/books/repositoreis/book_repository.dart';
 
 class DownloadedBooksCubit extends Cubit<DownloadedBooksState> {
@@ -14,7 +15,8 @@ class DownloadedBooksCubit extends Cubit<DownloadedBooksState> {
     try {
       emit(DownloadedBooksLoading());
       final List<BookModel> allBooks = await BookRepository().fetchBooks();
-      final directory = Directory('/storage/emulated/0/Download/Books');
+      final base = await getBooksBaseDir();
+      final directory = base;
       if (!await directory.exists()) {
         emit(const DownloadedBooksLoaded([]));
         return;

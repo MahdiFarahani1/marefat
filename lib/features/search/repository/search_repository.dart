@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:bookapp/features/search/bloc/search_cubit.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart' as ffi;
+import 'package:bookapp/shared/func/folder_check.dart';
 
 class SearchRepository {
   // Keep track of open database connections
@@ -36,6 +38,11 @@ class SearchRepository {
     }
 
     try {
+      // Ensure desktop DB factory on non-mobile
+      if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+        ffi.sqfliteFfiInit();
+        databaseFactory = ffi.databaseFactoryFfi;
+      }
       final db = await databaseFactory.openDatabase(filePath);
       _openDatabases[filePath] = db;
       print('Opened database: $filePath');
@@ -64,7 +71,8 @@ class SearchRepository {
 
   static Future<List<SearchResultItem>> searchInAllBooks(String query) async {
     print('Starting search in all books for query: $query');
-    final dir = Directory('/storage/emulated/0/Download/Books/tmp/');
+    final base = await getBooksBaseDir();
+    final dir = Directory(p.join(base.path, 'tmp'));
 
     if (!await dir.exists()) {
       print('Books directory does not exist: ${dir.path}');
@@ -120,7 +128,8 @@ class SearchRepository {
 
     final List<File> dbFiles;
     if (bookPath == "all") {
-      final rootDir = Directory('/storage/emulated/0/Download/Books/tmp/');
+      final base = await getBooksBaseDir();
+      final rootDir = Directory(p.join(base.path, 'tmp'));
       if (!await rootDir.exists()) {
         print('Books directory does not exist: ${rootDir.path}');
         return [];

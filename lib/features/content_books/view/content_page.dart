@@ -237,9 +237,9 @@ class _ContentPageState extends State<ContentPage> {
                                         onWebViewCreated: (controller) async {
                                           webViewController = controller;
 
-                                          await controller.evaluateJavascript(
-                                              source:
-                                                  "window.flutter_inappwebview.callHandler('onSearchPositionChanged', 3);");
+                                          // await controller.evaluateJavascript(
+                                          //     source:
+                                          //         "window.flutter_inappwebview.callHandler('onSearchPositionChanged', 3);");
                                         },
                                         shouldInterceptRequest:
                                             (controller, request) async {

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:bookapp/features/content_books/repository/dataBase.dart';
 import 'package:bookapp/features/settings/bloc/settings_state.dart';
 import 'package:bookapp/features/settings/view/settings_screen.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart'; // یادت نره مسیرتو تنظیم کنی
 import 'package:get_storage/get_storage.dart';
+import 'package:path/path.dart' as p;
 import 'content_state.dart';
 
 class ContentCubit extends Cubit<ContentState> {
@@ -40,8 +42,18 @@ class ContentCubit extends Cubit<ContentState> {
   Future<void> _init(BuildContext context) async {
     emit(state.copyWith(status: ContentStatus.loading));
     try {
+      print('🔄 Initializing content for book: $bookId');
+
+      // Check if book file exists first
+      final baseDir = await repository.getBaseBooksDir();
+      final zipPath = p.join(baseDir.path, '$bookId.zip');
+      if (!File(zipPath).existsSync()) {
+        throw Exception('📦 فایل کتاب $bookId.zip یافت نشد! مسیر: $zipPath');
+      }
+
       await repository.openDatabaseForBook(bookId);
       final loadedPages = await repository.getBookPages();
+      print('📚 Loaded ${loadedPages.length} pages');
 
       final settingsState = settingsCubit.state;
       final html = await buildHtmlContent(loadedPages, context,
@@ -56,8 +68,10 @@ class ContentCubit extends Cubit<ContentState> {
         pages: loadedPages,
         htmlContent: html,
       ));
+      print('✅ Content initialized successfullyaaaaaa');
     } catch (e) {
       print('❌ Error loading content: $e');
+      print('❌ Stack trace: ${StackTrace.current}');
       emit(state.copyWith(status: ContentStatus.error));
     }
   }

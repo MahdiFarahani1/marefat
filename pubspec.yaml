@@ -68,6 +68,8 @@ dependencies:
   palette_generator: ^0.3.3+7
   file_picker: ^10.2.1
   flutter_html: ^3.0.0
+  sqflite_common_ffi: ^2.3.4+4
+  sqlite3_flutter_libs: ^0.5.24
 
 dev_dependencies:
   flutter_test:

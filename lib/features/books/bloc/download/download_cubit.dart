@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:bookapp/core/constant/const_class.dart';
 import 'package:bookapp/features/books/model/model_books.dart';
 import 'package:bookapp/features/books/widgets/file_downloader.dart';
+import 'package:bookapp/shared/func/folder_check.dart';
 import 'download_state.dart';
 
 class DownloadCubit extends Cubit<Map<String, DownloadState>> {
@@ -24,8 +25,8 @@ class DownloadCubit extends Cubit<Map<String, DownloadState>> {
   Future<void> checkIfBookDownloaded(
     String bookId,
   ) async {
-    final dir = '/storage/emulated/0/Download/Books';
-    final file = File('$dir/$bookId.zip');
+    final base = await getBooksBaseDir();
+    final file = File('${base.path}/$bookId.zip');
     final exists = await file.exists();
 
     _updateState(bookId, (s) => s.copyWith(isDownloadedBook: exists));
@@ -63,7 +64,7 @@ class DownloadCubit extends Cubit<Map<String, DownloadState>> {
       await FileDownloader.downloadFile(
         url: url,
         fileName: '$bookId.zip',
-        customDirectoryPath: '/storage/emulated/0/Download/Books',
+        customDirectoryPath: (await getBooksBaseDir()).path,
         onProgress: (progress) {
           print('📊 Progress for $bookId: $progress%');
           _updateState(key, (s) => s.copyWith(progressBook: progress));

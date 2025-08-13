@@ -25,9 +25,16 @@ class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
     context.read<GalleryCubit>().fetchGallery();
   }
 
+  int getCrossAxisCount(double width) {
+    if (width >= 1200) return 4; // دسکتاپ بزرگ
+    if (width >= 800) return 3; // دسکتاپ/تبلت
+    return 2; // موبایل و پنجره کوچک
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: BlocBuilder<GalleryCubit, GalleryState>(
@@ -46,12 +53,12 @@ class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
             return RefreshIndicator(
               onRefresh: () => context.read<GalleryCubit>().fetchGallery(),
               child: GridView.builder(
-                padding: const EdgeInsets.all(16),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 0.8,
+                padding: EdgeInsets.all(screenWidth * 0.02),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: getCrossAxisCount(screenWidth),
+                  crossAxisSpacing: screenWidth * 0.02,
+                  mainAxisSpacing: screenWidth * 0.02,
+                  childAspectRatio: 0.75,
                 ),
                 itemCount: photos.length,
                 itemBuilder: (context, index) {
@@ -72,20 +79,13 @@ class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
                                 child: CachedNetworkImage(
-                                  imageUrl:
-                                      '${ConstantApp.baseUrlGalleryContent}${photo.img}',
+                                  imageUrl: imageUrl,
                                   fit: BoxFit.cover,
-                                  placeholder: (context, url) =>
-                                      Shimmer.fromColors(
-                                    baseColor: Colors.grey[300]!,
-                                    highlightColor: Colors.grey[100]!,
-                                    child: Container(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.broken_image,
-                                          size: 60, color: Colors.grey),
+                                  placeholder: (_, __) => shimmerBox(),
+                                  errorWidget: (_, __, ___) => const Icon(
+                                      Icons.broken_image,
+                                      size: 60,
+                                      color: Colors.grey),
                                 ),
                               ),
                             ),
@@ -93,22 +93,21 @@ class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
                               top: -15,
                               right: -5,
                               child: GestureDetector(
-                                onTap: () {
-                                  Share.share('$imageUrl}');
-                                },
+                                onTap: () => Share.share(imageUrl),
                                 child: Container(
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: theme.primaryColor),
-                                    child: Assets.newicons.paperPlaneTop
-                                        .image(
-                                            color:
-                                                theme.scaffoldBackgroundColor,
-                                            width: 20,
-                                            height: 20)
-                                        .padAll(10)),
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: theme.primaryColor,
+                                  ),
+                                  child: Assets.newicons.paperPlaneTop.image(
+                                    color: theme.scaffoldBackgroundColor,
+                                    width: 20,
+                                    height: 20,
+                                  ),
+                                ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -131,13 +130,14 @@ class _PhotoGalleryPageState extends State<PhotoGalleryPage> {
               ),
             );
           }
+
           return const SizedBox.shrink();
         },
       ),
     );
   }
 
-  Widget shimmerBox({double width = double.infinity, double height = 100}) {
+  Widget shimmerBox({double width = double.infinity, double height = 150}) {
     return Shimmer.fromColors(
       baseColor: Colors.grey.shade300,
       highlightColor: Colors.grey.shade100,

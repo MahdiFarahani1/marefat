@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
+import 'package:path/path.dart' as p;
+import 'package:bookapp/shared/func/folder_check.dart';
 
 class ReadingBooksScreen extends StatelessWidget {
   final List<Map<String, dynamic>> readingBooks;
@@ -52,8 +54,11 @@ class ReadingBooksScreen extends StatelessWidget {
                 pagesL > 0 ? (currentPage / pagesL).clamp(0.0, 1.0) : 0.0;
             final String percentText = '${(percent * 100).toStringAsFixed(0)}%';
             final String bookId = book['book_id'].toString();
-            final String imagePath =
-                '/storage/emulated/0/Download/Books/tmp/$bookId/$bookId.jpg';
+            // Resolve image path lazily inside FutureBuilder to avoid async here
+            final Future<String> imagePathFuture = (() async {
+              final booksBase = await getBooksBaseDir();
+              return p.join(booksBase.path, 'tmp', bookId, '$bookId.jpg');
+            })();
 
             return ZoomTapAnimation(
               onTap: () {
@@ -84,20 +89,26 @@ class ReadingBooksScreen extends StatelessWidget {
                     children: [
                       // Background image
                       Positioned.fill(
-                        child: (imagePath.isNotEmpty &&
-                                File(imagePath).existsSync())
-                            ? Image.file(
-                                File(imagePath),
+                        child: FutureBuilder<String>(
+                          future: imagePathFuture,
+                          builder: (context, snap) {
+                            final imgPath = snap.data;
+                            if (imgPath != null && File(imgPath).existsSync()) {
+                              return Image.file(
+                                File(imgPath),
                                 fit: BoxFit.cover,
-                              ).animate().fadeIn(duration: 450.ms)
-                            : Container(
-                                color: theme.colorScheme.surfaceVariant,
-                                child: Icon(
-                                  Icons.menu_book_rounded,
-                                  size: 64,
-                                  color: Colors.grey.shade500,
-                                ),
+                              ).animate().fadeIn(duration: 450.ms);
+                            }
+                            return Container(
+                              color: theme.colorScheme.surfaceVariant,
+                              child: Icon(
+                                Icons.menu_book_rounded,
+                                size: 64,
+                                color: Colors.grey.shade500,
                               ),
+                            );
+                          },
+                        ),
                       ),
 
                       // Gradient overlay

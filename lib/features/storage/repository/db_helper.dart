@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart' as ffi;
 
 class DatabaseStorageHelper {
   static Database? _database;
@@ -19,6 +20,12 @@ class DatabaseStorageHelper {
   }
 
   static Future<Database> _initDatabase() async {
+    // در دسکتاپ باید FFI را مقداردهی کنیم
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      ffi.sqfliteFfiInit();
+      databaseFactory = ffi.databaseFactoryFfi;
+    }
+
     // مسیر پوشه داده دستگاه
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, dbName);
