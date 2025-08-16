@@ -83,23 +83,46 @@ class _DownloadedBooksPageState extends State<DownloadedBooksPage> {
                   // 🔍 سرچ بار
                   Padding(
                     padding: const EdgeInsets.all(16),
-                    child: TextField(
-                      controller: _searchController,
-                      onChanged: _filterBooks,
-                      decoration: InputDecoration(
-                        hintText: 'البحث في العنوان أو المؤلف...',
-                        hintStyle: TextStyle(color: Colors.grey.shade400),
-                        prefixIcon: Assets.newicons.search
-                            .image(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: TextField(
+                        controller: _searchController,
+                        onChanged: _filterBooks,
+                        decoration: InputDecoration(
+                          hintText: 'البحث في العنوان أو المؤلف...',
+                          hintStyle: TextStyle(color: Colors.grey.shade400),
+                          prefixIcon: Assets.newicons.search
+                              .image(
                                 width: 20,
                                 height: 20,
-                                color: Colors.grey.shade400)
-                            .padAll(12),
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 16),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(color: Colors.black12),
+                                color: Colors.grey.shade400,
+                              )
+                              .padAll(12),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
+                          fillColor:
+                              Theme.of(context).colorScheme.primaryContainer,
+                          filled: true, // مهم! پس‌زمینه رو رنگی می‌کنه
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide:
+                                BorderSide.none, // هیچ بوردر رنگی نشون داده نشه
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide.none,
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide.none,
+                          ),
                         ),
                       ),
                     ),

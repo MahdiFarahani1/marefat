@@ -94,7 +94,7 @@ class QuestionsContent extends StatelessWidget {
                       'الجواب:',
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.secondary,
+                        color: Colors.green.shade500,
                       ),
                     ),
                     const SizedBox(height: 8),
