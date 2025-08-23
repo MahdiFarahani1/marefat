@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "181709168690",
+    "project_id": "almarifaaldenyah",
+    "storage_bucket": "almarifaaldenyah.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181709168690:android:c5bec60589ca22b88a9c2b",
+        "android_client_info": {
+          "package_name": "com.dijlah.almarifaaldenyah"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACrPelZCvaXHpWCIq7VKP88lE3_HQQOpk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

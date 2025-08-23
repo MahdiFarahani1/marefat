@@ -16,10 +16,11 @@ class BookDatabaseHelper {
 
   Future<Directory> getBaseBooksDir() async {
     if (Platform.isAndroid) {
-      final dir = await getExternalStorageDirectory() ??
+      final dir = await getApplicationDocumentsDirectory() ??
           await getApplicationDocumentsDirectory();
       return Directory(p.join(dir.path, 'Books'));
     }
+
     if (Platform.isIOS) {
       final dir = await getApplicationDocumentsDirectory();
       return Directory(p.join(dir.path, 'Books'));

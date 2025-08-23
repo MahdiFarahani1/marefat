@@ -4,7 +4,7 @@ import 'package:path/path.dart' as p;
 
 Future<Directory> getBooksBaseDir() async {
   if (Platform.isAndroid) {
-    final base = await getExternalStorageDirectory() ??
+    final base = await getApplicationDocumentsDirectory() ??
         await getApplicationDocumentsDirectory();
     final dir = Directory(p.join(base.path, 'Books'));
     if (!await dir.exists()) {

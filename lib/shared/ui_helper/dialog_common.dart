@@ -62,7 +62,6 @@ class AppDialog {
                     ),
                     child: Text(
                       "موافق",
-                      style: TextStyle(color: theme.colorScheme.tertiary),
                     ),
                   ),
                 )

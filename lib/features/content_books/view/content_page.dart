@@ -409,11 +409,12 @@ class _ContentPageState extends State<ContentPage> {
                                               if (existingBookmarkIndex != -1) {
                                                 bookmarks.removeAt(
                                                     existingBookmarkIndex);
-                                                print('Bookmark removed');
+                                                AppSnackBar.showSuccess(context,
+                                                    "تم حذف صفحة الكتاب بنجاح");
                                               } else {
                                                 bookmarks.add(bookmarkData);
-                                                print(
-                                                    'Bookmark saved: $bookmarkData');
+                                                AppSnackBar.showSuccess(context,
+                                                    'تمت إضافة صفحة الكتاب بنجاح');
                                               }
 
                                               localStorage.write('bookmark',

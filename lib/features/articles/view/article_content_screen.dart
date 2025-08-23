@@ -1,7 +1,5 @@
-import 'package:bookapp/features/articles/bloc/cubit/article_cubit_cubit.dart';
 import 'package:bookapp/features/articles/bloc/fontsize/cubit/article_cubit.dart';
 import 'package:bookapp/features/articles/model/artile_model.dart';
-import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/scaffold/back_btn.dart';
 import 'package:bookapp/shared/ui_helper/dialog_common.dart';

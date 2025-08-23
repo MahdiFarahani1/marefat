@@ -8,7 +8,7 @@
 PRODUCT_NAME = bookapp
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.bookapp
+PRODUCT_BUNDLE_IDENTIFIER = com.dijlah.almarifaaldenyah
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2025 com.example. All rights reserved.

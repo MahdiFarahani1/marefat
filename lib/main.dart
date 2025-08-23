@@ -1,3 +1,4 @@
+import 'package:bookapp/config/firebase/firebase_setup.dart';
 import 'package:bookapp/config/splash/splash.dart';
 import 'package:bookapp/features/articles/bloc/cubit/article_cubit_cubit.dart';
 import 'package:bookapp/features/articles/bloc/fontsize/cubit/article_cubit.dart';
@@ -27,6 +28,7 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await firebaseSetup();
   await GetStorage.init();
   // Initialize SQLite FFI on desktop platforms
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {

@@ -38,11 +38,12 @@ class ReadingBooksScreen extends StatelessWidget {
         child: GridView.builder(
           physics: BouncingScrollPhysics(),
           itemCount: readingBooks.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: MediaQuery.of(context).size.width > 600 ? 5 : 2,
             mainAxisSpacing: 18,
             crossAxisSpacing: 18,
-            childAspectRatio: 0.62,
+            childAspectRatio:
+                MediaQuery.of(context).size.width > 600 ? 0.7 : 0.62,
           ),
           itemBuilder: (context, index) {
             final book = readingBooks[index];

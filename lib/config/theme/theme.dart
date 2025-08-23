@@ -116,7 +116,7 @@ class AppTheme {
         titleLarge: TextStyle(color: white, fontWeight: FontWeight.bold),
         labelLarge: TextStyle(color: white),
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: surfaceColor,
         titleTextStyle: const TextStyle(
           color: white,
