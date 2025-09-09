@@ -1,3 +1,4 @@
+import 'package:bookapp/core/utils/re_html_tag.dart';
 import 'package:bookapp/features/articles/bloc/fontsize/cubit/article_cubit.dart';
 import 'package:bookapp/features/articles/model/artile_model.dart';
 import 'package:bookapp/gen/assets.gen.dart';
@@ -21,10 +22,10 @@ class ArticleDetailScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.tertiary;
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Share.share('${article.title}\n${article.content}');
+          Share.share(
+              '${removeHtmlTags(article.title!)}\n${removeHtmlTags(article.content!)}');
         },
         backgroundColor: primaryColor,
         child: Assets.newicons.paperPlaneTop
@@ -32,7 +33,6 @@ class ArticleDetailScreen extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: Back.btn(context),
         actions: [

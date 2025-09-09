@@ -17,9 +17,7 @@ import 'package:bookapp/features/search/bloc/search_cubit.dart';
 import 'package:bookapp/features/settings/bloc/settings_cubit.dart';
 import 'package:bookapp/features/settings/bloc/settings_state.dart';
 import 'package:bookapp/features/storage/bloc/page_bookmark/page_bookmark_cubit.dart';
-import 'package:bookapp/firebase_notification_service.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,13 +31,9 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (defaultTargetPlatform == TargetPlatform.android) {
-    await firebaseSetup();
+    await firebaseSetupAndroid();
   }
-  if (defaultTargetPlatform == TargetPlatform.iOS) {
-    await Firebase.initializeApp();
-    FirebaseMessaging.onBackgroundMessage(handleFirebaseBackgroundMessage);
-    await FirebaseNotificationService().initializeNotifications();
-  }
+
   await GetStorage.init();
 
   // Initialize SQLite FFI on desktop platforms

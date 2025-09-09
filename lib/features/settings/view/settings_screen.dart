@@ -134,8 +134,8 @@ class SettingsPage extends StatelessWidget {
                     valueIndicatorTextStyle: TextStyle(color: Colors.white)),
                 child: Slider(
                   value: fontSize,
-                  min: 10,
-                  max: 26,
+                  min: 16,
+                  max: 30,
                   divisions: 9,
                   label: fontSize.toStringAsFixed(0),
                   onChanged: (value) {

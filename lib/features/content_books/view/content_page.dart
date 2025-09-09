@@ -100,10 +100,10 @@ class _ContentPageState extends State<ContentPage> {
                               (value) {
                                 if (state.isSaved) {
                                   AppSnackBar.showSuccess(
-                                      context, "تم الحفظ بنجاح");
+                                      context, "تم الحذف بنجاح");
                                 } else {
                                   AppSnackBar.showSuccess(
-                                      context, "تم الحذف بنجاح");
+                                      context, "تم الحفظ بنجاح");
                                 }
                               },
                             );

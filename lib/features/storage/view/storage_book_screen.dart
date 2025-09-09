@@ -162,28 +162,6 @@ class _StorageBookScreenState extends State<StorageBookScreen> {
                                   color: Colors.black87,
                                 ),
                               ),
-                              subtitle: Padding(
-                                padding: const EdgeInsets.only(top: 8),
-                                child: Row(
-                                  children: [
-                                    Assets.newicons.calendarClock
-                                        .image(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            width: 14,
-                                            height: 14)
-                                        .padAll(4),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      'الملف المحفوظ',
-                                      style: TextStyle(
-                                        color: Colors.grey.shade600,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
                               trailing: Container(
                                 decoration: BoxDecoration(
                                   color: Colors.red.shade50,

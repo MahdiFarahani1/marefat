@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-Future<void> firebaseSetup() async {
+Future<void> firebaseSetupAndroid() async {
   try {
     await Firebase.initializeApp();
     print("✅ Firebase initialized successfully");

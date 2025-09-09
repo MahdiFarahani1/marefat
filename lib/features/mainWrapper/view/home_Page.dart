@@ -396,7 +396,7 @@ class _HomePageState extends State<HomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SectionHeader(
-                                    title: 'الكتب الأحدث',
+                                    title: 'اكمال المطالعة',
                                     onPressed: () {
                                       Navigator.push(
                                         context,
@@ -651,7 +651,7 @@ class FeatureItem extends StatelessWidget {
 
     double iconSize = 34;
     double fontSize = 13;
-    double spacing = 8;
+    double spacing = 4;
 
     if (width >= 1200) {
       // دسکتاپ
@@ -674,13 +674,13 @@ class FeatureItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
               model.icon,
               width: iconSize,
               height: iconSize,
-              color: Theme.of(context).colorScheme.tertiary,
             )
                 .animate()
                 .fadeIn(duration: 500.ms)

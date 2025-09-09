@@ -1,8 +1,10 @@
+import 'package:bookapp/core/utils/re_html_tag.dart';
 import 'package:bookapp/gen/assets.gen.dart';
 import 'package:bookapp/shared/scaffold/back_btn.dart';
 import 'package:bookapp/shared/utils/esay_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:share_plus/share_plus.dart';
 
 class QuestionsContent extends StatelessWidget {
   final String question, awnser;
@@ -18,6 +20,15 @@ class QuestionsContent extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Share.share('${removeHtmlTags(question)}\n${removeHtmlTags(awnser)}');
+        },
+        backgroundColor: theme.primaryColor,
+        child: Assets.newicons.paperPlaneTop
+            .image(color: theme.scaffoldBackgroundColor, width: 24, height: 24),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(

@@ -123,7 +123,7 @@ class CustomDrawer extends StatelessWidget {
               padding: EdgeInsets.only(bottom: 12),
               child: Column(
                 children: [
-                  Text('الاصدار: 1.0.0', style: TextStyle(fontSize: 12)),
+                  Text('الاصدار: 2.0.0', style: TextStyle(fontSize: 12)),
                   SizedBox(height: 4),
                   Text(
                     'Powered by Dlijah IT',

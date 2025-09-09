@@ -86,8 +86,8 @@ class TextSettingsDialog {
                                   ),
                                   child: Slider(
                                     value: state.fontSize,
-                                    min: 10,
-                                    max: 26,
+                                    min: 16,
+                                    max: 30,
                                     divisions: 20,
                                     label: state.fontSize.round().toString(),
                                     onChanged: (value) {
